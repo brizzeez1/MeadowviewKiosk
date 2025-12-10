@@ -198,7 +198,7 @@ const KIOSK_CONFIG = {
         BULLETIN_URL: "https://bulletin.yourward.org",
         
         // Custom greeting message (optional)
-        GREETING: "Touch anywhere to begin"
+        GREETING: "Touch Anywhere To Explore"
     },
 
 
