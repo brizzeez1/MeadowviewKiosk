@@ -127,24 +127,48 @@
 }
 
 .prompt-card {
-    background: rgba(255, 255, 255, 0.08);
+    position: relative;
+    background: rgba(0, 0, 0, 0.55); /* darker, more readable */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: var(--radius-xl);
     padding: var(--spacing-xl) var(--spacing-3xl);
     text-align: center;
-    animation: pulse 3s ease-in-out infinite;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+
+    /* gentle “breathing” animation */
+    animation: promptPulse 3s ease-in-out infinite alternate;
+}
+
+.prompt-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        135deg,
+        rgba(201, 162, 39, 0.5),
+        rgba(201, 162, 39, 0.15),
+        rgba(201, 162, 39, 0.5)
+    );
+    border-radius: calc(var(--radius-xl) + 2px);
+    z-index: -1;
+    opacity: 0.75;
 }
 
 .prompt-text {
-    font-family: var(--font-display);
-    font-size: var(--text-4xl);
-    font-weight: var(--weight-medium);
-    color: var(--color-text-light);
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
-    letter-spacing: 0.05em;
+    font-family: "Georgia", "Times New Roman", serif; /* LDS-ish display */
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 600;
+    color: #fdf8ec; /* warm off-white, not stark white */
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
+
 
 /* Optional: Subtle glow effect around the card */
 .prompt-card::before {
@@ -171,30 +195,32 @@
     transform: translateX(-50%);
     padding: 10px 24px;
 
-    /* Soft dark background behind text only */
-    background: rgba(0, 0, 0, 0.45);
-    border-radius: 16px;
+    /* Glowing reflective plate look */
+    background: rgba(20, 20, 20, 0.55);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
 
-    /* LDS-style serif font */
+    /* LDS serif font */
     font-family: "Georgia", "Times New Roman", serif;
-    font-size: 2rem;
-    color: #fff;
+    font-size: 1.8rem;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    color: #f5f5f5;
+    letter-spacing: 0.4px;
 
-    /* Text & container glow */
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    /* Glow + deep shadow for readability */
+    text-shadow: 0 2px 6px rgba(0,0,0,0.9);
+    box-shadow: 0 6px 28px rgba(0,0,0,0.6);
 
-    /* Animation: fade in + soft glow pulse */
+    /* Animations */
     opacity: 0;
     animation:
         templeNameFadeIn 0.9s ease-out forwards,
         templeNameGlowPulse 4s ease-in-out infinite alternate;
 
-    z-index: 50;
     pointer-events: none;
+    z-index: 50;
 }
+
 
 
 
@@ -713,7 +739,7 @@
 @keyframes templeNameFadeIn {
     0% {
         opacity: 0;
-        transform: translateX(-50%) translateY(10px);
+        transform: translateX(-50%) translateY(12px);
     }
     100% {
         opacity: 1;
@@ -729,5 +755,17 @@
     100% {
         box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);
         background: rgba(0, 0, 0, 0.55);
+    }
+}
+@keyframes promptPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.95;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+    }
+    100% {
+        transform: scale(1.03);
+        opacity: 1;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.75);
     }
 }
