@@ -76,7 +76,7 @@
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    transition: opacity 1.5s ease-in-out;
+    transition: none;
     /* Subtle zoom animation for cinematic effect */
     animation: slowZoom 20s ease-in-out infinite alternate;
 }
