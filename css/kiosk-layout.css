@@ -169,22 +169,33 @@
     bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 10px 20px;
+    padding: 10px 24px;
 
-    /* Soft black translucent background */
-    background: rgba(0, 0, 0, 0.35);
-    border-radius: 12px;
+    /* Soft dark background behind text only */
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 16px;
 
-    /* Text styling */
+    /* LDS-style serif font */
+    font-family: "Georgia", "Times New Roman", serif;
     font-size: 2rem;
     color: #fff;
     font-weight: 600;
     letter-spacing: 0.5px;
-    text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+
+    /* Text & container glow */
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+    /* Animation: fade in + soft glow pulse */
+    opacity: 0;
+    animation:
+        templeNameFadeIn 0.9s ease-out forwards,
+        templeNameGlowPulse 4s ease-in-out infinite alternate;
 
     z-index: 50;
     pointer-events: none;
 }
+
 
 
 
