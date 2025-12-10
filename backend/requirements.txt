@@ -1,0 +1,46 @@
+# ================================================================
+# REQUIREMENTS.TXT - PYTHON DEPENDENCIES
+# ================================================================
+# Install these dependencies before running the backend:
+#
+#   pip install -r requirements.txt
+#
+# Or if you're using a virtual environment:
+#
+#   python -m venv venv
+#   source venv/bin/activate  (Mac/Linux)
+#   venv\Scripts\activate     (Windows)
+#   pip install -r requirements.txt
+#
+# ================================================================
+
+# ================================================================
+# CORE DEPENDENCIES (Required)
+# ================================================================
+
+# Flask - Web framework for the REST API
+flask>=2.3.0
+
+# Flask-CORS - Enable Cross-Origin Resource Sharing
+# Allows frontend to call API from different origin
+flask-cors>=4.0.0
+
+
+# ================================================================
+# GOOGLE DRIVE INTEGRATION (Optional - Phase 2)
+# ================================================================
+# Uncomment these if you want to use Google Drive storage
+
+# google-api-python-client>=2.100.0
+# google-auth-httplib2>=0.1.0
+# google-auth-oauthlib>=1.0.0
+
+
+# ================================================================
+# DEVELOPMENT DEPENDENCIES (Optional)
+# ================================================================
+# Uncomment these for development/debugging
+
+# python-dotenv>=1.0.0    # Load environment variables from .env
+# pytest>=7.4.0           # Testing framework
+# requests>=2.31.0        # HTTP library for testing API

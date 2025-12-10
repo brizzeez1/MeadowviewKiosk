@@ -1,0 +1,675 @@
+/* ================================================================
+   KIOSK-LAYOUT.CSS - KIOSK-SPECIFIC LAYOUTS
+   ================================================================
+   This file contains layout styles specific to the kiosk app:
+   - App container and screen management
+   - Screensaver / attract mode styles
+   - Home screen with circle buttons
+   - View/modal layouts
+   
+   Optimized for 24" touchscreen at 1920x1080 resolution
+   ================================================================ */
+
+/* ================================================================
+   SECTION 1: APP CONTAINER & SCREEN MANAGEMENT
+   ================================================================
+   The app uses a simple show/hide system for screens.
+   Only one screen is visible at a time.
+   ================================================================ */
+
+#app-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--color-bg-dark);
+}
+
+/* Base screen styles */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-slow), visibility var(--transition-slow);
+}
+
+/* Active screen */
+.screen.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+}
+
+/* Phase 2 screens (hidden until feature is enabled) */
+.phase2-screen {
+    /* Same as base screen, controlled by JS */
+}
+
+
+/* ================================================================
+   SECTION 2: SCREENSAVER / ATTRACT MODE
+   ================================================================
+   Fullscreen rotating temple photos with touch prompt.
+   ================================================================ */
+
+#screensaver-screen {
+    cursor: pointer;
+    background-color: var(--color-bg-dark);
+}
+
+/* ----------------------------------------------------------
+   2a. Background Image Layers
+   ---------------------------------------------------------- 
+   Two layers for smooth crossfade transitions.
+   ---------------------------------------------------------- */
+
+.screensaver-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    transition: opacity 1.5s ease-in-out;
+    /* Subtle zoom animation for cinematic effect */
+    animation: slowZoom 20s ease-in-out infinite alternate;
+}
+
+#screensaver-bg-current {
+    z-index: 1;
+    opacity: 1;
+}
+
+#screensaver-bg-next {
+    z-index: 0;
+    opacity: 0;
+}
+
+/* ----------------------------------------------------------
+   2b. Dark Overlay
+   ---------------------------------------------------------- */
+
+.screensaver-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.2) 0%,
+        rgba(0, 0, 0, 0.35) 50%,
+        rgba(0, 0, 0, 0.4) 100%
+    );
+    z-index: 2;
+}
+
+/* ----------------------------------------------------------
+   2c. Touch Prompt Card
+   ---------------------------------------------------------- */
+
+.screensaver-prompt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.prompt-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl) var(--spacing-3xl);
+    text-align: center;
+    animation: pulse 3s ease-in-out infinite;
+}
+
+.prompt-text {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    font-weight: var(--weight-medium);
+    color: var(--color-text-light);
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.05em;
+}
+
+/* Optional: Subtle glow effect around the card */
+.prompt-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        135deg,
+        rgba(201, 162, 39, 0.3),
+        rgba(201, 162, 39, 0.1),
+        rgba(201, 162, 39, 0.3)
+    );
+    border-radius: calc(var(--radius-xl) + 2px);
+    z-index: -1;
+    opacity: 0.5;
+}
+
+
+/* ================================================================
+   SECTION 3: HOME SCREEN
+   ================================================================
+   Main menu with circular navigation buttons.
+   ================================================================ */
+
+#home-screen {
+    background-color: var(--color-bg-light);
+}
+
+/* ----------------------------------------------------------
+   3a. Background
+   ---------------------------------------------------------- */
+
+.home-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Option 1: Solid gradient background */
+    background: linear-gradient(
+        135deg,
+        var(--color-bg-light) 0%,
+        var(--color-bg-cream) 50%,
+        #EDE8DA 100%
+    );
+    /* Option 2: Blurred temple image (uncomment to use) */
+    /* background-image: url('../assets/temple_photos/placeholder1.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(30px) brightness(0.9);
+    transform: scale(1.1); */
+    z-index: 0;
+}
+
+/* Subtle pattern overlay for texture */
+.home-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(201, 162, 39, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(201, 162, 39, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* ----------------------------------------------------------
+   3b. Main Content Area
+   ---------------------------------------------------------- */
+
+.home-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    padding: var(--spacing-2xl);
+}
+
+/* ----------------------------------------------------------
+   3c. Header / Ward Title
+   ---------------------------------------------------------- */
+
+.home-header {
+    position: absolute;
+    top: var(--spacing-3xl);
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.ward-title {
+    font-family: var(--font-display);
+    font-size: var(--text-5xl);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    letter-spacing: 0.02em;
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* ----------------------------------------------------------
+   3d. Circle Buttons Container
+   ---------------------------------------------------------- */
+
+.circle-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+    padding: var(--spacing-2xl);
+    animation: slideUp 0.6s ease-out;
+    animation-delay: 0.2s;
+    animation-fill-mode: both;
+}
+
+/* ----------------------------------------------------------
+   3e. Individual Circle Button
+   ---------------------------------------------------------- */
+
+.circle-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform var(--transition-normal);
+}
+
+.circle-button:hover {
+    transform: scale(1.05);
+}
+
+.circle-button:active {
+    transform: scale(0.98);
+}
+
+/* Circle button inner (the actual circle) */
+.circle-button-inner {
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-button);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shine effect on hover */
+.circle-button-inner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.circle-button:hover .circle-button-inner::before {
+    left: 100%;
+}
+
+.circle-button:hover .circle-button-inner {
+    box-shadow: var(--shadow-button-hover);
+}
+
+/* Button icon */
+.button-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    /* Makes icons white */
+}
+
+/* Button label */
+.button-label {
+    font-family: var(--font-body);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+/* ----------------------------------------------------------
+   3f. Button Gradient Classes
+   ---------------------------------------------------------- */
+
+.temple365-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-temple-start) 0%,
+        var(--gradient-temple-end) 100%
+    );
+}
+
+.selfie-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-selfie-start) 0%,
+        var(--gradient-selfie-end) 100%
+    );
+}
+
+.bulletin-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-bulletin-start) 0%,
+        var(--gradient-bulletin-end) 100%
+    );
+}
+
+/* Phase 2 gradients */
+.youth-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-youth-start) 0%,
+        var(--gradient-youth-end) 100%
+    );
+}
+
+.primary-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-primary-start) 0%,
+        var(--gradient-primary-end) 100%
+    );
+}
+
+.miracles-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-miracles-start) 0%,
+        var(--gradient-miracles-end) 100%
+    );
+}
+
+.missionaries-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-missionaries-start) 0%,
+        var(--gradient-missionaries-end) 100%
+    );
+}
+
+.calendar-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-calendar-start) 0%,
+        var(--gradient-calendar-end) 100%
+    );
+}
+
+
+/* ================================================================
+   SECTION 4: VIEW/MODAL LAYOUTS
+   ================================================================
+   Common layouts for Temple 365, Selfie, Bulletin, and
+   Phase 2 placeholder screens.
+   ================================================================ */
+
+/* ----------------------------------------------------------
+   4a. View Container (centers content)
+   ---------------------------------------------------------- */
+
+.view-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+        135deg,
+        var(--color-bg-light) 0%,
+        var(--color-bg-cream) 100%
+    );
+    padding: var(--spacing-2xl);
+}
+
+/* ----------------------------------------------------------
+   4b. View Card (main content card)
+   ---------------------------------------------------------- */
+
+.view-card {
+    width: 100%;
+    max-width: 900px;
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-3xl);
+    box-shadow: var(--shadow-strong);
+    text-align: center;
+    animation: scaleIn 0.4s ease-out;
+}
+
+.view-title {
+    font-family: var(--font-display);
+    font-size: var(--text-5xl);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.view-content {
+    margin-bottom: var(--spacing-lg);
+}
+
+.view-description {
+    font-size: var(--text-xl);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto var(--spacing-xl);
+}
+
+/* ----------------------------------------------------------
+   4c. Selfie-Specific Styles
+   ---------------------------------------------------------- */
+
+.camera-placeholder {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #1a1a1a;
+    border-color: #333;
+}
+
+.camera-icon-large {
+    font-size: 80px;
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.5;
+}
+
+.camera-placeholder .placeholder-text {
+    color: #888;
+}
+
+.selfie-actions {
+    margin-top: var(--spacing-xl);
+}
+
+/* ----------------------------------------------------------
+   4d. Bulletin / QR Code Styles
+   ---------------------------------------------------------- */
+
+.bulletin-card {
+    max-width: 700px;
+}
+
+.qr-container {
+    display: flex;
+    justify-content: center;
+    margin: var(--spacing-xl) 0;
+}
+
+.qr-placeholder {
+    width: 280px;
+    height: 280px;
+    background: white;
+    border: 3px solid var(--color-text-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.bulletin-url {
+    margin-top: var(--spacing-xl);
+}
+
+.url-label {
+    display: block;
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-sm);
+}
+
+.url-text {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-semibold);
+    color: var(--color-accent-gold);
+}
+
+
+/* ================================================================
+   SECTION 5: RESPONSIVE ADJUSTMENTS
+   ================================================================
+   The kiosk is primarily 1920x1080, but these adjustments
+   help if the display resolution varies.
+   ================================================================ */
+
+/* For smaller screens (tablets, smaller displays) */
+@media screen and (max-width: 1400px) {
+    .circle-button-inner {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .button-icon {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .circle-buttons-container {
+        gap: 50px;
+    }
+    
+    .prompt-text {
+        font-size: var(--text-3xl);
+    }
+}
+
+/* For very small screens */
+@media screen and (max-width: 1024px) {
+    .circle-button-inner {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .button-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .circle-buttons-container {
+        gap: 30px;
+    }
+    
+    .button-label {
+        font-size: var(--text-base);
+    }
+    
+    .view-card {
+        padding: var(--spacing-xl);
+    }
+    
+    .view-title {
+        font-size: var(--text-4xl);
+    }
+}
+
+/* For larger 4K displays */
+@media screen and (min-width: 2500px) {
+    .circle-button-inner {
+        width: 400px;
+        height: 400px;
+    }
+    
+    .button-icon {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .circle-buttons-container {
+        gap: 120px;
+    }
+    
+    .prompt-text {
+        font-size: var(--text-5xl);
+    }
+}
+
+
+/* ================================================================
+   SECTION 6: TOUCH-SPECIFIC STYLES
+   ================================================================
+   Styles optimized for touch interaction.
+   ================================================================ */
+
+/* Larger touch targets */
+@media (pointer: coarse) {
+    .back-button {
+        min-height: 60px;
+        padding: var(--spacing-lg) var(--spacing-xl);
+    }
+    
+    .action-button {
+        min-height: 60px;
+        padding: var(--spacing-lg) var(--spacing-2xl);
+    }
+}
+
+/* Disable hover effects on touch (prevents sticky hover states) */
+@media (hover: none) {
+    .circle-button:hover {
+        transform: none;
+    }
+    
+    .circle-button:hover .circle-button-inner {
+        box-shadow: var(--shadow-button);
+    }
+    
+    .circle-button:active {
+        transform: scale(0.95);
+    }
+    
+    .circle-button:active .circle-button-inner {
+        box-shadow: var(--shadow-medium);
+    }
+}
