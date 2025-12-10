@@ -127,9 +127,25 @@ const KIOSK_CONFIG = {
         // List of temple photo paths
         // Add your own photos here!
         TEMPLE_PHOTOS: [
-            "assets/temple_photos/placeholder1.jpg",
-            "assets/temple_photos/placeholder2.jpg",
-            "assets/temple_photos/placeholder3.jpg"
+             "assets/temple_photos/aba_nigeria_temple_lds.jpeg",
+  "assets/temple_photos/accra_ghana_temple_lds.jpeg",
+  "assets/temple_photos/adelaide_australia_temple_lds.jpeg",
+  "assets/temple_photos/albuquerque_temple_lds.jpeg",
+  "assets/temple_photos/az-gilbert-temple-evening.jpg",
+  "assets/temple_photos/belem_brazil_temple_exterior.jpeg",
+  "assets/temple_photos/boston_temple_lds.jpeg",
+  "assets/temple_photos/brigham_city_utah_mormon_temple.jpeg",
+  "assets/temple_photos/casper_wyoming_temple_exteriors.jpeg",
+  "assets/temple_photos/fort_collins_temple_sun.jpeg",
+  "assets/temple_photos/frankfurt_germany_temple_lds.jpeg",
+  "assets/temple_photos/frankfurt_germany_temple_lds (1).jpeg",
+  "assets/temple_photos/freiberg_germany_temple_lds.jpeg",
+  "assets/temple_photos/guayaquil_ecuador_temple_lds.jpeg",
+  "assets/temple_photos/hawaii_temple.jpeg",
+  "assets/temple_photos/idaho_falls_temple_river_waterfall.jpeg",
+  "assets/temple_photos/kirtland_temple.jpeg",
+  "assets/temple_photos/las_vegas_temple_lds.jpeg",
+  "assets/temple_photos/rendering_arequipa_peru_temple.jpeg"
             // TODO: Add more temple photos
             // "assets/temple_photos/salt_lake_temple.jpg",
             // "assets/temple_photos/provo_temple.jpg",
