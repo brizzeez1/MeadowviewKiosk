@@ -195,6 +195,7 @@ const KIOSK_CONFIG = {
     
     DEBUG: {
         // Enable debug logging to console
+        DEMO_MODE: true,
         DEBUG_MODE: false,
         
         // Show state changes in console
