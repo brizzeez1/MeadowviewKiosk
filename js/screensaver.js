@@ -306,6 +306,42 @@ const Screensaver = (function() {
     function getPhotoCount() {
         return _photos.length;
     }
+function formatTempleNameFromFilename(path) {
+  // Extract file name only
+  let filename = path.split("/").pop().split(".")[0];
+
+  // Replace hyphens with underscores for consistent parsing
+  filename = filename.replace(/-/g, "_");
+
+  // Remove any part starting with _temple
+  let core = filename.split("_temple")[0];
+
+  // Split into pieces like ["az", "gilbert"] OR ["belem", "brazil"]
+  let parts = core.split("_");
+
+  // If the first part is a US state abbreviation
+  const usStates = [
+    "al","ak","az","ar","ca","co","ct","de","fl","ga","hi","id","il","in","ia","ks","ky","la",
+    "me","md","ma","mi","mn","ms","mo","mt","ne","nv","nh","nj","nm","ny","nc","nd","oh","ok",
+    "or","pa","ri","sc","sd","tn","tx","ut","vt","va","wa","wv","wi","wy"
+  ];
+
+  // Case 1: US state first (e.g., ["az", "gilbert"])
+  if (usStates.includes(parts[0])) {
+    const state = parts[0].toUpperCase();
+    const cityParts = parts.slice(1);
+    const city = cityParts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
+    return `${city} ${state}`;
+  }
+
+  // Case 2: International (e.g., ["belem", "brazil"])
+  const city = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+  const country = parts[1] 
+    ? parts[1].charAt(0).toUpperCase() + parts[1].slice(1) 
+    : "";
+
+  return `${city} ${country}`.trim();
+}
 
 
     /* ============================================================
