@@ -159,7 +159,11 @@ const Screensaver = (function() {
         
         // Prepare the next background
         setBackground(_bgNext, _photos[nextIndex]);
-        
+            // Update the printed temple name
+    const filename = _photos[nextIndex];
+    const name = formatTempleNameFromFilename(filename);
+    document.getElementById("temple-name-overlay").innerText = name;
+
         // Crossfade animation
         // Fade out current, fade in next
         _bgCurrent.style.opacity = '0';
