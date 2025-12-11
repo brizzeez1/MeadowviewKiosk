@@ -459,3 +459,230 @@ a:focus-visible {
     outline: 3px solid var(--color-accent-gold);
     outline-offset: 2px;
 }
+
+/* ================================================================
+   SECTION 10: MISSIONARY SPOTLIGHT STYLES
+   ================================================================
+   Styles for the missionary grid view and detail pages.
+   ================================================================ */
+
+/* Missionary Grid Container */
+.missionary-grid {
+    display: grid;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl) 0;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Individual Missionary Square */
+.missionary-square {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--color-bg-cream);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-soft);
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+}
+
+.missionary-square:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+    background-color: var(--color-bg-light);
+}
+
+.missionary-square:active {
+    transform: translateY(-2px);
+}
+
+/* Missionary Photo Container */
+.missionary-photo-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-light);
+    margin-bottom: var(--spacing-md);
+}
+
+.missionary-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.missionary-silhouette {
+    width: 60%;
+    height: 60%;
+}
+
+/* Missionary Name Label */
+.missionary-name-label {
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    text-align: center;
+    word-wrap: break-word;
+    width: 100%;
+}
+
+/* Missionary Detail Page */
+.missionary-detail-card {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.missionary-detail-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.missionary-detail-name {
+    font-family: var(--font-display);
+    font-size: var(--text-5xl);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.missionary-detail-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xl);
+}
+
+/* Missionary Info Section */
+.missionary-info-section {
+    background-color: var(--color-bg-cream);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.info-label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-value {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    color: var(--color-text-primary);
+}
+
+/* Missionary Features Section */
+.missionary-features-section {
+    background-color: var(--color-bg-light);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+}
+
+.feature-description {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.feature-list li {
+    padding-left: var(--spacing-lg);
+    position: relative;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.feature-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--color-accent-gold);
+    font-weight: bold;
+}
+
+.feature-list li strong {
+    color: var(--color-text-primary);
+}
+
+/* ================================================================
+   SECTION 11: FLOATING QR CODE STYLES
+   ================================================================
+   Styles for the persistent floating QR code in top right corner.
+   ================================================================ */
+
+.floating-qr-container {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    z-index: 9999;
+    opacity: 0.4;
+    transition: opacity var(--transition-normal);
+    cursor: pointer;
+}
+
+.floating-qr-container.hovered {
+    opacity: 0.9;
+}
+
+.floating-qr-code {
+    background-color: white;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-qr-code canvas,
+.floating-qr-code img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}
+
+.floating-qr-label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-text-light);
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+}

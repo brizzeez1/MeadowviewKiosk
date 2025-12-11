@@ -91,13 +91,13 @@ const KIOSK_CONFIG = {
         // Phase 1 features
         TEMPLE_365_ENABLED: true,
         SELFIE_CAPTURE_ENABLED: true,
-        BULLETIN_QR_ENABLED: true,
-        
+        BULLETIN_QR_ENABLED: false,  // Replaced with floating QR code
+        MISSIONARY_SECTION_ENABLED: true,  // Now a Phase 1 feature
+
         // Phase 2 features (set to true when ready)
         YOUTH_SECTION_ENABLED: false,
         PRIMARY_SECTION_ENABLED: false,
         MIRACLES_BOARD_ENABLED: false,
-        MISSIONARY_SECTION_ENABLED: false,
         WARD_CALENDAR_ENABLED: false
     },
 
@@ -189,16 +189,158 @@ const KIOSK_CONFIG = {
     ORGANIZATION: {
         // Ward/Branch name (displayed on home screen)
         NAME: "Welcome",
-        
+
         // Stake name (optional)
         STAKE: "",
-        
-        // Ward bulletin URL (for QR code)
+
+        // Ward bulletin URL (for floating QR code)
         // This is the URL that the QR code will link to
-        BULLETIN_URL: "https://bulletin.yourward.org",
-        
+        BULLETIN_URL: "https://app.wardbullet.com/channel/1007701",
+
         // Custom greeting message (optional)
         GREETING: "Touch Anywhere To Explore"
+    },
+
+
+    /* ============================================================
+       SECTION 6.5: MISSIONARY SPOTLIGHT CONFIGURATION
+       ============================================================
+       Configuration for the Missionary Spotlight feature.
+
+       HOW TO UPDATE MISSIONARIES:
+       1. Change MISSIONARY_COUNT to match your current number
+       2. Update the MISSIONARIES array with your missionary info
+       3. Add/remove missionary objects as needed
+       4. Each missionary should have: id, name, mission, language, scripture
+       5. Photos are stored in assets/missionary_photos/ folder
+
+       FUTURE FEATURES (Coming Soon):
+       - Video recording capability (saves to Google Drive folder)
+       - Photo carousel from Google Drive (parents can upload photos)
+       - Full-size photo viewing with swipe navigation
+       ============================================================ */
+
+    MISSIONARIES: {
+        // Current number of missionaries (CHANGE THIS as missionaries come/go)
+        MISSIONARY_COUNT: 14,
+
+        // Missionary data array
+        // TODO: In the future, this could be loaded from backend /api/missionaries
+        MISSIONARIES_LIST: [
+            {
+                id: 1,
+                name: "Elder John Smith",
+                mission: "Brazil São Paulo Mission",
+                language: "Portuguese",
+                scripture: "2 Nephi 2:25",
+                // Photo path (optional): "assets/missionary_photos/elder_smith.jpg"
+                photoUrl: null
+            },
+            {
+                id: 2,
+                name: "Sister Emily Johnson",
+                mission: "England London Mission",
+                language: "English",
+                scripture: "Doctrine & Covenants 4:2",
+                photoUrl: null
+            },
+            {
+                id: 3,
+                name: "Elder Michael Davis",
+                mission: "Philippines Manila Mission",
+                language: "Tagalog",
+                scripture: "Moroni 10:4-5",
+                photoUrl: null
+            },
+            {
+                id: 4,
+                name: "Elder David Martinez",
+                mission: "Mexico Guadalajara Mission",
+                language: "Spanish",
+                scripture: "Alma 26:12",
+                photoUrl: null
+            },
+            {
+                id: 5,
+                name: "Sister Sarah Anderson",
+                mission: "Japan Tokyo Mission",
+                language: "Japanese",
+                scripture: "3 Nephi 27:21",
+                photoUrl: null
+            },
+            {
+                id: 6,
+                name: "Elder James Wilson",
+                mission: "Germany Frankfurt Mission",
+                language: "German",
+                scripture: "Mosiah 2:17",
+                photoUrl: null
+            },
+            {
+                id: 7,
+                name: "Elder Robert Taylor",
+                mission: "Peru Lima Mission",
+                language: "Spanish",
+                scripture: "Ether 12:27",
+                photoUrl: null
+            },
+            {
+                id: 8,
+                name: "Sister Jennifer Lee",
+                mission: "South Korea Seoul Mission",
+                language: "Korean",
+                scripture: "Joshua 1:9",
+                photoUrl: null
+            },
+            {
+                id: 9,
+                name: "Elder Christopher Brown",
+                mission: "Argentina Buenos Aires Mission",
+                language: "Spanish",
+                scripture: "Helaman 5:12",
+                photoUrl: null
+            },
+            {
+                id: 10,
+                name: "Elder Daniel White",
+                mission: "France Paris Mission",
+                language: "French",
+                scripture: "D&C 84:88",
+                photoUrl: null
+            },
+            {
+                id: 11,
+                name: "Sister Amanda Thompson",
+                mission: "Italy Rome Mission",
+                language: "Italian",
+                scripture: "1 Nephi 3:7",
+                photoUrl: null
+            },
+            {
+                id: 12,
+                name: "Elder Matthew Garcia",
+                mission: "Chile Santiago Mission",
+                language: "Spanish",
+                scripture: "Alma 37:37",
+                photoUrl: null
+            },
+            {
+                id: 13,
+                name: "Elder Joshua Martinez",
+                mission: "Taiwan Taipei Mission",
+                language: "Mandarin",
+                scripture: "Mosiah 18:9",
+                photoUrl: null
+            },
+            {
+                id: 14,
+                name: "Sister Rachel Harris",
+                mission: "Australia Sydney Mission",
+                language: "English",
+                scripture: "D&C 88:67",
+                photoUrl: null
+            }
+        ]
     },
 
 
@@ -240,6 +382,7 @@ Object.freeze(KIOSK_CONFIG.FEATURE_FLAGS);
 Object.freeze(KIOSK_CONFIG.SCREENSAVER);
 Object.freeze(KIOSK_CONFIG.INACTIVITY);
 Object.freeze(KIOSK_CONFIG.ORGANIZATION);
+Object.freeze(KIOSK_CONFIG.MISSIONARIES);
 Object.freeze(KIOSK_CONFIG.DEBUG);
 
 // Make available globally
