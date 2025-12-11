@@ -37,11 +37,12 @@ const KioskApp = (function() {
         TEMPLE_365: 'TEMPLE_365',
         SELFIE: 'SELFIE',
         BULLETIN: 'BULLETIN',
+        MISSIONARIES: 'MISSIONARIES',
+        MISSIONARY_DETAIL: 'MISSIONARY_DETAIL',
         // Phase 2 states
         YOUTH: 'YOUTH',
         PRIMARY: 'PRIMARY',
         MIRACLES: 'MIRACLES',
-        MISSIONARIES: 'MISSIONARIES',
         CALENDAR: 'CALENDAR'
     };
 
@@ -78,32 +79,39 @@ const KioskApp = (function() {
         try {
             // Views must be initialized first to set up the DOM
             Views.init();
-            
+
             // Initialize screensaver
             Screensaver.init();
-            
+
             // Initialize home screen
             HomeScreen.init();
-            
+
+            // Initialize missionary modules
+            MissionarySpotlight.init();
+            MissionaryDetail.init();
+
+            // Initialize floating QR code
+            FloatingQR.init();
+
             // Initialize Phase 2 placeholders
             Phase2Placeholders.initAll();
-            
+
             // Set up event listeners
             setupEventListeners();
-            
+
             // Set up inactivity timer
             setupInactivityTimer();
-            
+
             // Start in screensaver state
             setState(STATES.SCREENSAVER);
-            
+
             _isInitialized = true;
-            
+
             console.log('[KioskApp] Initialization complete!');
-            
+
             // Optional: Check backend health
             checkBackendHealth();
-            
+
         } catch (error) {
             console.error('[KioskApp] Initialization failed:', error);
         }
@@ -232,9 +240,14 @@ const KioskApp = (function() {
                 break;
                 
             case STATES.MISSIONARIES:
-                Phase2Placeholders.activateMissionaries();
+                MissionarySpotlight.activate();
                 break;
-                
+
+            case STATES.MISSIONARY_DETAIL:
+                // Missionary ID will be passed via event detail
+                // This will be handled by the event listener
+                break;
+
             case STATES.CALENDAR:
                 Phase2Placeholders.activateCalendar();
                 break;
@@ -250,11 +263,19 @@ const KioskApp = (function() {
             case STATES.SCREENSAVER:
                 Screensaver.deactivate();
                 break;
-                
+
             case STATES.HOME:
                 HomeScreen.deactivate();
                 break;
-                
+
+            case STATES.MISSIONARIES:
+                MissionarySpotlight.deactivate();
+                break;
+
+            case STATES.MISSIONARY_DETAIL:
+                MissionaryDetail.deactivate();
+                break;
+
             // TODO: Add cleanup for other states as needed
             // For example, stopping camera for SELFIE state
         }
@@ -271,16 +292,19 @@ const KioskApp = (function() {
     function setupEventListeners() {
         // Listen for screensaver exit
         window.addEventListener('screensaver-exit', handleScreensaverExit);
-        
+
         // Listen for navigation requests from other modules
         window.addEventListener('navigate', handleNavigate);
-        
+
+        // Listen for missionary detail navigation
+        window.addEventListener('navigate-missionary-detail', handleMissionaryDetailNavigate);
+
         // Listen for user activity (for inactivity timer)
         document.addEventListener('click', handleUserActivity);
         document.addEventListener('touchstart', handleUserActivity);
         document.addEventListener('mousemove', handleUserActivity);
         document.addEventListener('keypress', handleUserActivity);
-        
+
         ConfigLoader.debugLog('Event listeners set up');
     }
     
@@ -301,7 +325,27 @@ const KioskApp = (function() {
             setState(state);
         }
     }
-    
+
+    /**
+     * Handle missionary detail navigation event.
+     * @param {CustomEvent} event - The navigation event with missionary ID
+     */
+    function handleMissionaryDetailNavigate(event) {
+        const { missionaryId } = event.detail;
+
+        // Store the missionary ID for the detail view
+        _currentState = STATES.MISSIONARY_DETAIL;
+
+        // Show the missionary detail screen
+        Views.showScreen('MISSIONARY_DETAIL');
+
+        // Activate the detail view with the specific missionary
+        MissionaryDetail.activate(missionaryId);
+
+        // Reset inactivity timer
+        resetInactivityTimer();
+    }
+
     /**
      * Handle any user activity.
      */

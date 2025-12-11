@@ -33,11 +33,12 @@ const Views = (function() {
         TEMPLE_365: 'temple365-screen',
         SELFIE: 'selfie-screen',
         BULLETIN: 'bulletin-screen',
+        MISSIONARIES: 'missionaries-screen',
+        MISSIONARY_DETAIL: 'missionary-detail-screen',
         // Phase 2 screens
         YOUTH: 'youth-screen',
         PRIMARY: 'primary-screen',
         MIRACLES: 'miracles-screen',
-        MISSIONARIES: 'missionaries-screen',
         CALENDAR: 'calendar-screen'
     };
 
@@ -158,25 +159,19 @@ const Views = (function() {
             'btn-youth',
             ConfigLoader.isFeatureEnabled('YOUTH_SECTION_ENABLED')
         );
-        
+
         // Primary button
         toggleButtonVisibility(
             'btn-primary',
             ConfigLoader.isFeatureEnabled('PRIMARY_SECTION_ENABLED')
         );
-        
+
         // Miracles button
         toggleButtonVisibility(
             'btn-miracles',
             ConfigLoader.isFeatureEnabled('MIRACLES_BOARD_ENABLED')
         );
-        
-        // Missionaries button
-        toggleButtonVisibility(
-            'btn-missionaries',
-            ConfigLoader.isFeatureEnabled('MISSIONARY_SECTION_ENABLED')
-        );
-        
+
         // Calendar button
         toggleButtonVisibility(
             'btn-calendar',
@@ -204,15 +199,20 @@ const Views = (function() {
             'btn-temple365',
             ConfigLoader.isFeatureEnabled('TEMPLE_365_ENABLED')
         );
-        
+
         toggleButtonVisibility(
             'btn-selfie',
             ConfigLoader.isFeatureEnabled('SELFIE_CAPTURE_ENABLED')
         );
-        
+
         toggleButtonVisibility(
             'btn-bulletin',
             ConfigLoader.isFeatureEnabled('BULLETIN_QR_ENABLED')
+        );
+
+        toggleButtonVisibility(
+            'btn-missionaries',
+            ConfigLoader.isFeatureEnabled('MISSIONARY_SECTION_ENABLED')
         );
     }
 

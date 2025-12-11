@@ -114,12 +114,12 @@
                         <span class="button-label">TAKE A SELFIE</span>
                     </button>
                     
-                    <!-- BUTTON 3: BULLETIN -->
-                    <button class="circle-button" data-action="bulletin" id="btn-bulletin">
-                        <div class="circle-button-inner bulletin-gradient">
-                            <img src="assets/icons/bulletin.svg" alt="Bulletin" class="button-icon">
+                    <!-- BUTTON 3: MISSIONARY SPOTLIGHT -->
+                    <button class="circle-button" data-action="missionaries" id="btn-missionaries">
+                        <div class="circle-button-inner missionaries-gradient">
+                            <img src="assets/icons/missionaries.svg" alt="Missionaries" class="button-icon">
                         </div>
-                        <span class="button-label">BULLETIN</span>
+                        <span class="button-label">MISSIONARIES</span>
                     </button>
                     
                     <!-- ================================================
@@ -153,13 +153,7 @@
                         <span class="button-label">MIRACLES</span>
                     </button>
                     
-                    <!-- TODO: Enable when MISSIONARY_SECTION_ENABLED = true -->
-                    <button class="circle-button phase2-button" data-action="missionaries" id="btn-missionaries" style="display: none;">
-                        <div class="circle-button-inner missionaries-gradient">
-                            <img src="assets/icons/missionaries.svg" alt="Missionaries" class="button-icon">
-                        </div>
-                        <span class="button-label">MISSIONARIES</span>
-                    </button>
+                    <!-- Missionaries button moved to Phase 1 (see above) -->
                     
                     <!-- TODO: Enable when WARD_CALENDAR_ENABLED = true -->
                     <button class="circle-button phase2-button" data-action="calendar" id="btn-calendar" style="display: none;">
@@ -349,20 +343,36 @@
             </div>
         </section>
         
-        <!-- MISSIONARIES SCREEN -->
-        <section id="missionaries-screen" class="screen phase2-screen">
+        <!-- MISSIONARIES GRID SCREEN -->
+        <section id="missionaries-screen" class="screen">
             <div class="view-container">
-                <div class="view-card">
+                <div class="view-card missionaries-card">
                     <h2 class="view-title">Our Missionaries</h2>
                     <div class="view-content">
-                        <p class="coming-soon-badge">Coming Soon</p>
                         <p class="view-description">
-                            See where our ward missionaries are serving around the world.
+                            Learn about our ward missionaries are serving around the world.
                         </p>
-                        <!-- TODO: Implement missionary map with /api/missions -->
+                        <!-- Missionary grid will be dynamically populated here -->
+                        <div id="missionary-grid" class="missionary-grid">
+                            <!-- Grid items will be added by missionarySpotlight.js -->
+                        </div>
                     </div>
                     <button class="back-button" data-action="home">
                         ← Back to Home
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MISSIONARY DETAIL SCREEN -->
+        <section id="missionary-detail-screen" class="screen">
+            <div class="view-container">
+                <div class="view-card missionary-detail-card">
+                    <!-- Content will be dynamically populated by missionaryDetail.js -->
+                    <div id="missionary-detail-content">
+                    </div>
+                    <button class="back-button" id="back-to-grid">
+                        ← Back to Missionaries
                     </button>
                 </div>
             </div>
@@ -390,17 +400,26 @@
     </div>
     
     <!-- ============================================================
+         THIRD-PARTY LIBRARIES
+         ============================================================ -->
+    <!-- QR Code generation library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- ============================================================
          JAVASCRIPT FILES
          ============================================================
          Loaded in order of dependency:
-         1. config/config.js      - Configuration values
-         2. js/configLoader.js    - Loads and validates config
-         3. js/apiClient.js       - HTTP calls to backend
-         4. js/views.js           - View rendering helpers
-         5. js/screensaver.js     - Screensaver logic
-         6. js/homeScreen.js      - Home screen logic
-         7. js/phase2Placeholders.js - Phase 2 stubs
-         8. js/app.js             - Main app initialization (must be last)
+         1. config/config.js          - Configuration values
+         2. js/configLoader.js        - Loads and validates config
+         3. js/apiClient.js           - HTTP calls to backend
+         4. js/views.js               - View rendering helpers
+         5. js/screensaver.js         - Screensaver logic
+         6. js/homeScreen.js          - Home screen logic
+         7. js/missionarySpotlight.js - Missionary grid view
+         8. js/missionaryDetail.js    - Individual missionary detail
+         9. js/floatingQR.js          - Floating QR code component
+         10. js/phase2Placeholders.js - Phase 2 stubs
+         11. js/app.js                - Main app initialization (must be last)
          ============================================================ -->
     <script src="config/config.js"></script>
     <script src="js/configLoader.js"></script>
@@ -408,6 +427,9 @@
     <script src="js/views.js"></script>
     <script src="js/screensaver.js"></script>
     <script src="js/homeScreen.js"></script>
+    <script src="js/missionarySpotlight.js"></script>
+    <script src="js/missionaryDetail.js"></script>
+    <script src="js/floatingQR.js"></script>
     <script src="js/phase2Placeholders.js"></script>
     <script src="js/app.js"></script>
 </body>

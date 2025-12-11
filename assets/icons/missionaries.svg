@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Name badge rectangle (white with black outline) -->
+  <rect x="15" y="30" width="90" height="60" rx="4" fill="white" stroke="black" stroke-width="2.5"/>
+
+  <!-- Top dividing line -->
+  <line x1="20" y1="55" x2="100" y2="55" stroke="black" stroke-width="1.5"/>
+
+  <!-- "MISSIONARIES" text -->
+  <text x="60" y="48" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="black">
+    MISSIONARIES
+  </text>
+
+  <!-- "The Church of Jesus Christ" -->
+  <text x="60" y="67" font-family="Arial, sans-serif" font-size="6.5" text-anchor="middle" fill="black">
+    The Church of Jesus Christ
+  </text>
+
+  <!-- "of Latter-day Saints" -->
+  <text x="60" y="77" font-family="Arial, sans-serif" font-size="6.5" text-anchor="middle" fill="black">
+    of Latter-day Saints
+  </text>
+
+  <!-- Lanyard hook/clip at top -->
+  <rect x="57" y="22" width="6" height="8" rx="1" fill="black"/>
+  <line x1="60" y1="22" x2="60" y2="30" stroke="black" stroke-width="2"/>
+</svg>
