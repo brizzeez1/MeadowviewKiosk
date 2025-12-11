@@ -493,8 +493,8 @@ a:focus-visible {
     cursor: pointer;
     transition: all var(--transition-normal);
     box-shadow: var(--shadow-soft);
-    aspect-ratio: 1 / 1;
     overflow: hidden;
+    /* Size is set by JavaScript based on available space */
 }
 
 .missionary-square:hover {
