@@ -102,28 +102,10 @@ const MissionarySpotlight = (function() {
         // Calculate grid layout
         const layout = calculateGridLayout(_missionaries.length);
 
-        // Get the available space in the grid container
-        const containerRect = _gridContainer.getBoundingClientRect();
-        const availableWidth = containerRect.width - (parseInt(getComputedStyle(_gridContainer).paddingLeft) * 2);
-        const availableHeight = containerRect.height - (parseInt(getComputedStyle(_gridContainer).paddingTop) * 2);
-
-        // Calculate gap size (24px = var(--spacing-lg))
-        const gapSize = 24;
-        const totalGapWidth = gapSize * (layout.cols - 1);
-        const totalGapHeight = gapSize * (layout.rows - 1);
-
-        // Calculate maximum square size based on available width and height
-        const maxSquareWidth = (availableWidth - totalGapWidth) / layout.cols;
-        const maxSquareHeight = (availableHeight - totalGapHeight) / layout.rows;
-
-        // Use the smaller of the two to ensure squares fit in both dimensions
-        const squareSize = Math.floor(Math.min(maxSquareWidth, maxSquareHeight));
-
-        // Set CSS grid properties with calculated size
-        _gridContainer.style.gridTemplateColumns = `repeat(${layout.cols}, ${squareSize}px)`;
-        _gridContainer.style.gridTemplateRows = `repeat(${layout.rows}, ${squareSize}px)`;
-        _gridContainer.style.justifyContent = 'center';
-        _gridContainer.style.alignContent = 'center';
+        // Use fr units to fill available space instead of fixed pixels
+        // This makes the grid expand to fill the tray
+        _gridContainer.style.gridTemplateColumns = `repeat(${layout.cols}, 1fr)`;
+        _gridContainer.style.gridTemplateRows = `repeat(${layout.rows}, 1fr)`;
 
         // Create missionary squares
         _missionaries.forEach(missionary => {
@@ -132,8 +114,7 @@ const MissionarySpotlight = (function() {
         });
 
         ConfigLoader.debugLog('Rendered', _missionaries.length, 'missionary squares in',
-                             `${layout.cols}x${layout.rows}`, 'grid',
-                             `Square size: ${squareSize}px`);
+                             `${layout.cols}x${layout.rows}`, 'grid (responsive fr-based layout)');
     }
 
     /**
