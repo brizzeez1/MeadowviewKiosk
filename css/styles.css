@@ -482,6 +482,7 @@ a:focus-visible {
     overflow-x: hidden;
 }
 
+
 /* Individual Missionary Square */
 .missionary-square {
     position: relative;
@@ -499,7 +500,7 @@ a:focus-visible {
     overflow: hidden;
     /* Let the grid control height - cards fill their grid cells */
     width: 100%;
-    height: 100%;
+    
 }
 
 
