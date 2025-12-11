@@ -96,9 +96,9 @@ const FloatingQR = (function() {
         _qrContainer.addEventListener('mouseenter', handleHoverStart);
         _qrContainer.addEventListener('mouseleave', handleHoverEnd);
 
-        // Touch
-        _qrContainer.addEventListener('touchstart', handleHoverStart);
-        _qrContainer.addEventListener('touchend', handleHoverEnd);
+        // Touch and click (for scanning time)
+        _qrContainer.addEventListener('touchstart', handleTouchStart);
+        _qrContainer.addEventListener('click', handleClick);
     }
 
     /* ============================================================
@@ -149,42 +149,64 @@ const FloatingQR = (function() {
        ============================================================ */
 
     /**
-     * Handle hover/touch start (brighten the QR code).
+     * Handle mouse hover start (brighten the QR code).
      */
-    function handleHoverStart(event) {
+    function handleHoverStart() {
         if (_qrContainer) {
             _qrContainer.classList.add('hovered');
+        }
+    }
 
-            // If this is a touch event, keep it bright for 10 seconds
-            if (event.type === 'touchstart') {
-                // Clear any existing timer
-                if (_brightnessTimer) {
-                    clearTimeout(_brightnessTimer);
-                }
-
-                // Set timer to remove hovered class after 10 seconds
-                _brightnessTimer = setTimeout(() => {
-                    if (_qrContainer) {
-                        _qrContainer.classList.remove('hovered');
-                    }
-                    _brightnessTimer = null;
-                }, 10000);
+    /**
+     * Handle mouse hover end (dim the QR code).
+     */
+    function handleHoverEnd() {
+        if (_qrContainer) {
+            // Only dim if there's no active timer (from touch/click)
+            if (!_brightnessTimer) {
+                _qrContainer.classList.remove('hovered');
             }
         }
     }
 
     /**
-     * Handle hover/touch end (return to normal opacity).
-     * For mouse, remove immediately. For touch, let the timer handle it.
+     * Handle touch start (brighten and stay bright for 10 seconds).
      */
-    function handleHoverEnd(event) {
-        if (_qrContainer) {
-            // Only remove hover class immediately for mouse events
-            // Touch events will be handled by the 10-second timer
-            if (event.type === 'mouseleave') {
+    function handleTouchStart(event) {
+        event.preventDefault();
+        activateBrightMode();
+    }
+
+    /**
+     * Handle click (brighten and stay bright for 10 seconds).
+     */
+    function handleClick() {
+        activateBrightMode();
+    }
+
+    /**
+     * Activate bright mode for 10 seconds (for scanning).
+     */
+    function activateBrightMode() {
+        if (!_qrContainer) return;
+
+        // Add hovered class
+        _qrContainer.classList.add('hovered');
+
+        // Clear any existing timer
+        if (_brightnessTimer) {
+            clearTimeout(_brightnessTimer);
+        }
+
+        // Set timer to remove hovered class after 10 seconds
+        _brightnessTimer = setTimeout(() => {
+            if (_qrContainer) {
                 _qrContainer.classList.remove('hovered');
             }
-        }
+            _brightnessTimer = null;
+        }, 10000);
+
+        ConfigLoader.debugLog('QR code bright mode activated for 10 seconds');
     }
 
     /* ============================================================
