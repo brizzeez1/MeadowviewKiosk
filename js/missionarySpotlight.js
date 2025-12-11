@@ -102,10 +102,10 @@ const MissionarySpotlight = (function() {
         // Calculate grid layout
         const layout = calculateGridLayout(_missionaries.length);
 
-        // Use fr units to fill available space instead of fixed pixels
-        // This makes the grid expand to fill the tray
+        // Use fr units for columns to distribute width evenly
+        // Use auto for rows to allow natural height and scrolling
         _gridContainer.style.gridTemplateColumns = `repeat(${layout.cols}, 1fr)`;
-        _gridContainer.style.gridTemplateRows = `repeat(${layout.rows}, 1fr)`;
+        _gridContainer.style.gridTemplateRows = `repeat(${layout.rows}, auto)`;
 
         // Create missionary squares
         _missionaries.forEach(missionary => {
