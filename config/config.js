@@ -188,10 +188,10 @@ const KIOSK_CONFIG = {
     
     ORGANIZATION: {
         // Ward/Branch name (displayed on home screen)
-        NAME: "Welcome",
+        NAME: "Meadowview Ward",
 
         // Stake name (optional)
-        STAKE: "",
+        STAKE: "Gateway Stake",
 
         // Ward bulletin URL (for floating QR code)
         // This is the URL that the QR code will link to
