@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor">
+  <!-- Temple Icon for Temple 365 Button -->
+  <!-- Simple stylized temple silhouette -->
+  
+  <!-- Spire -->
+  <polygon points="50,5 45,25 55,25" />
+  
+  <!-- Main tower top -->
+  <rect x="42" y="25" width="16" height="10" />
+  
+  <!-- Upper building -->
+  <rect x="30" y="35" width="40" height="15" />
+  
+  <!-- Columns area -->
+  <rect x="25" y="50" width="50" height="35" />
+  
+  <!-- Columns (decorative lines) -->
+  <rect x="30" y="52" width="4" height="30" />
+  <rect x="40" y="52" width="4" height="30" />
+  <rect x="48" y="52" width="4" height="30" />
+  <rect x="56" y="52" width="4" height="30" />
+  <rect x="66" y="52" width="4" height="30" />
+  
+  <!-- Base/Steps -->
+  <rect x="20" y="85" width="60" height="5" />
+  <rect x="15" y="90" width="70" height="5" />
+</svg>

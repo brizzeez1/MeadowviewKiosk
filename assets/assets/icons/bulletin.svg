@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor">
+  <!-- Bulletin/Document Icon -->
+  
+  <!-- Paper/Document shape with folded corner -->
+  <path d="M20,10 L65,10 L80,25 L80,90 L20,90 Z" />
+  
+  <!-- Folded corner -->
+  <path d="M65,10 L65,25 L80,25 Z" fill-opacity="0.5" />
+  
+  <!-- Text lines (representing content) -->
+  <rect x="30" y="35" width="40" height="4" rx="1" fill-opacity="0.3" />
+  <rect x="30" y="45" width="35" height="4" rx="1" fill-opacity="0.3" />
+  <rect x="30" y="55" width="40" height="4" rx="1" fill-opacity="0.3" />
+  <rect x="30" y="65" width="30" height="4" rx="1" fill-opacity="0.3" />
+  <rect x="30" y="75" width="38" height="4" rx="1" fill-opacity="0.3" />
+</svg>
