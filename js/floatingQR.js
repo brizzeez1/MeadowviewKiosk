@@ -24,6 +24,7 @@ const FloatingQR = (function() {
     let _qrContainer = null;
     let _qrCode = null;
     let _bulletinUrl = '';
+    let _brightnessTimer = null;
 
     /* ============================================================
        SECTION 2: INITIALIZATION
@@ -131,7 +132,7 @@ const FloatingQR = (function() {
                 text: _bulletinUrl,
                 width: 100,
                 height: 100,
-                colorDark: '#F7F3E8',  // Cream color to blend
+                colorDark: '#000000',  // Black for scannability
                 colorLight: 'transparent',
                 correctLevel: QRCode.CorrectLevel.M
             });
@@ -150,18 +151,39 @@ const FloatingQR = (function() {
     /**
      * Handle hover/touch start (brighten the QR code).
      */
-    function handleHoverStart() {
+    function handleHoverStart(event) {
         if (_qrContainer) {
             _qrContainer.classList.add('hovered');
+
+            // If this is a touch event, keep it bright for 10 seconds
+            if (event.type === 'touchstart') {
+                // Clear any existing timer
+                if (_brightnessTimer) {
+                    clearTimeout(_brightnessTimer);
+                }
+
+                // Set timer to remove hovered class after 10 seconds
+                _brightnessTimer = setTimeout(() => {
+                    if (_qrContainer) {
+                        _qrContainer.classList.remove('hovered');
+                    }
+                    _brightnessTimer = null;
+                }, 10000);
+            }
         }
     }
 
     /**
      * Handle hover/touch end (return to normal opacity).
+     * For mouse, remove immediately. For touch, let the timer handle it.
      */
-    function handleHoverEnd() {
+    function handleHoverEnd(event) {
         if (_qrContainer) {
-            _qrContainer.classList.remove('hovered');
+            // Only remove hover class immediately for mouse events
+            // Touch events will be handled by the 10-second timer
+            if (event.type === 'mouseleave') {
+                _qrContainer.classList.remove('hovered');
+            }
         }
     }
 
