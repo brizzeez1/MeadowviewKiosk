@@ -102,8 +102,9 @@ const MissionarySpotlight = (function() {
         // Calculate grid layout
         const layout = calculateGridLayout(_missionaries.length);
 
-        // Set CSS grid properties
-        _gridContainer.style.gridTemplateColumns = `repeat(${layout.cols}, 1fr)`;
+        // Set CSS grid properties with minmax to fit all squares
+        _gridContainer.style.gridTemplateColumns = `repeat(${layout.cols}, minmax(0, 1fr))`;
+        _gridContainer.style.gridTemplateRows = `repeat(${layout.rows}, minmax(0, 1fr))`;
 
         // Create missionary squares
         _missionaries.forEach(missionary => {
