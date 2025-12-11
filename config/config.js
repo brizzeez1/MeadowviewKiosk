@@ -227,120 +227,120 @@ const KIOSK_CONFIG = {
         // Missionary data array
         // TODO: In the future, this could be loaded from backend /api/missionaries
         MISSIONARIES_LIST: [
-            {
-                id: 1,
-                name: "Elder John Smith",
-                mission: "Brazil São Paulo Mission",
-                language: "Portuguese",
-                scripture: "2 Nephi 2:25",
-                // Photo path (optional): "assets/missionary_photos/elder_smith.jpg"
-                photoUrl: null
-            },
-            {
-                id: 2,
-                name: "Sister Emily Johnson",
-                mission: "England London Mission",
-                language: "English",
-                scripture: "Doctrine & Covenants 4:2",
-                photoUrl: null
-            },
-            {
-                id: 3,
-                name: "Elder Michael Davis",
-                mission: "Philippines Manila Mission",
-                language: "Tagalog",
-                scripture: "Moroni 10:4-5",
-                photoUrl: null
-            },
-            {
-                id: 4,
-                name: "Elder David Martinez",
-                mission: "Mexico Guadalajara Mission",
-                language: "Spanish",
-                scripture: "Alma 26:12",
-                photoUrl: null
-            },
-            {
-                id: 5,
-                name: "Sister Sarah Anderson",
-                mission: "Japan Tokyo Mission",
-                language: "Japanese",
-                scripture: "3 Nephi 27:21",
-                photoUrl: null
-            },
-            {
-                id: 6,
-                name: "Elder James Wilson",
-                mission: "Germany Frankfurt Mission",
-                language: "German",
-                scripture: "Mosiah 2:17",
-                photoUrl: null
-            },
-            {
-                id: 7,
-                name: "Elder Robert Taylor",
-                mission: "Peru Lima Mission",
-                language: "Spanish",
-                scripture: "Ether 12:27",
-                photoUrl: null
-            },
-            {
-                id: 8,
-                name: "Sister Jennifer Lee",
-                mission: "South Korea Seoul Mission",
-                language: "Korean",
-                scripture: "Joshua 1:9",
-                photoUrl: null
-            },
-            {
-                id: 9,
-                name: "Elder Christopher Brown",
-                mission: "Argentina Buenos Aires Mission",
-                language: "Spanish",
-                scripture: "Helaman 5:12",
-                photoUrl: null
-            },
-            {
-                id: 10,
-                name: "Elder Daniel White",
-                mission: "France Paris Mission",
-                language: "French",
-                scripture: "D&C 84:88",
-                photoUrl: null
-            },
-            {
-                id: 11,
-                name: "Sister Amanda Thompson",
-                mission: "Italy Rome Mission",
-                language: "Italian",
-                scripture: "1 Nephi 3:7",
-                photoUrl: null
-            },
-            {
-                id: 12,
-                name: "Elder Matthew Garcia",
-                mission: "Chile Santiago Mission",
-                language: "Spanish",
-                scripture: "Alma 37:37",
-                photoUrl: null
-            },
-            {
-                id: 13,
-                name: "Elder Joshua Martinez",
-                mission: "Taiwan Taipei Mission",
-                language: "Mandarin",
-                scripture: "Mosiah 18:9",
-                photoUrl: null
-            },
-            {
-                id: 14,
-                name: "Sister Rachel Harris",
-                mission: "Australia Sydney Mission",
-                language: "English",
-                scripture: "D&C 88:67",
-                photoUrl: null
-            }
-        ]
+    {
+        id: 1,
+        name: "Elder John Smith",
+        mission: "Brazil São Paulo Mission",
+        language: "Portuguese",
+        scripture: "2 Nephi 2:25",
+        photoUrl: "assets/missionary_photos/1.png"
+    },
+    {
+        id: 2,
+        name: "Sister Emily Johnson",
+        mission: "England London Mission",
+        language: "English",
+        scripture: "Doctrine & Covenants 4:2",
+        photoUrl: "assets/missionary_photos/2.png"
+    },
+    {
+        id: 3,
+        name: "Elder Michael Davis",
+        mission: "Philippines Manila Mission",
+        language: "Tagalog",
+        scripture: "Moroni 10:4-5",
+        photoUrl: "assets/missionary_photos/3.png"
+    },
+    {
+        id: 4,
+        name: "Elder David Martinez",
+        mission: "Mexico Guadalajara Mission",
+        language: "Spanish",
+        scripture: "Alma 26:12",
+        photoUrl: "assets/missionary_photos/4 - Copy.png"
+    },
+    {
+        id: 5,
+        name: "Sister Sarah Anderson",
+        mission: "Japan Tokyo Mission",
+        language: "Japanese",
+        scripture: "3 Nephi 27:21",
+        photoUrl: "assets/missionary_photos/6.png"
+    },
+    {
+        id: 6,
+        name: "Elder James Wilson",
+        mission: "Germany Frankfurt Mission",
+        language: "German",
+        scripture: "Mosiah 2:17",
+        photoUrl: "assets/missionary_photos/7.png"
+    },
+    {
+        id: 7,
+        name: "Elder Robert Taylor",
+        mission: "Peru Lima Mission",
+        language: "Spanish",
+        scripture: "Ether 12:27",
+        photoUrl: "assets/missionary_photos/9.png"
+    },
+    {
+        id: 8,
+        name: "Sister Jennifer Lee",
+        mission: "South Korea Seoul Mission",
+        language: "Korean",
+        scripture: "Joshua 1:9",
+        photoUrl: "assets/missionary_photos/11.png"
+    },
+    {
+        id: 9,
+        name: "Elder Christopher Brown",
+        mission: "Argentina Buenos Aires Mission",
+        language: "Spanish",
+        scripture: "Helaman 5:12",
+        photoUrl: "assets/missionary_photos/12.png"
+    },
+    {
+        id: 10,
+        name: "Elder Daniel White",
+        mission: "France Paris Mission",
+        language: "French",
+        scripture: "D&C 84:88",
+        photoUrl: "assets/missionary_photos/14.png"
+    },
+    {
+        id: 11,
+        name: "Sister Amanda Thompson",
+        mission: "Italy Rome Mission",
+        language: "Italian",
+        scripture: "1 Nephi 3:7",
+        photoUrl: "assets/missionary_photos/17.png"
+    },
+    {
+        id: 12,
+        name: "Elder Matthew Garcia",
+        mission: "Chile Santiago Mission",
+        language: "Spanish",
+        scripture: "Alma 37:37",
+        photoUrl: "assets/missionary_photos/18.png"
+    },
+    {
+        id: 13,
+        name: "Elder Joshua Martinez",
+        mission: "Taiwan Taipei Mission",
+        language: "Mandarin",
+        scripture: "Mosiah 18:9",
+        photoUrl: "assets/missionary_photos/20.png"
+    },
+    {
+        id: 14,
+        name: "Sister Rachel Harris",
+        mission: "Australia Sydney Mission",
+        language: "English",
+        scripture: "D&C 88:67",
+        photoUrl: "assets/missionary_photos/11111.png"
+    }
+]
+
     },
 
 
