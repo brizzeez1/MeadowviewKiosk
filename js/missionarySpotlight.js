@@ -101,22 +101,14 @@ const MissionarySpotlight = (function() {
             return;
         }
 
-        // Calculate grid layout
-        const layout = calculateGridLayout(_missionaries.length);
-
-        // Use fr units for columns to distribute width evenly
-        // Use auto for rows to allow natural height and scrolling
-        _gridContainer.style.gridTemplateColumns = `repeat(${layout.cols}, 1fr)`;
-        _gridContainer.style.gridTemplateRows = `repeat(${layout.rows}, auto)`;
-
-        // Create missionary squares
+        // Grid columns are now controlled by CSS media queries
+        // Just create the missionary squares
         _missionaries.forEach(missionary => {
             const square = createMissionarySquare(missionary);
             _gridContainer.appendChild(square);
         });
 
-        ConfigLoader.debugLog('Rendered', _missionaries.length, 'missionary squares in',
-                             `${layout.cols}x${layout.rows}`, 'grid (responsive fr-based layout)');
+        ConfigLoader.debugLog('Rendered', _missionaries.length, 'missionary squares (responsive CSS grid)');
 
         _scrollHintDismissed = false;
         scheduleScrollHintUpdate();
