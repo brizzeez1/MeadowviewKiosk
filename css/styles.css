@@ -468,15 +468,15 @@ a:focus-visible {
 
 /* Missionary Grid Container */
 .missionary-grid {
+    flex: 1;
     display: grid;
     gap: var(--spacing-lg);
-    padding: 45px;
-    width: calc(100vw - 90px);
-    height: calc(100vh - 300px);
-    margin: 0 auto;
+    padding: var(--spacing-xl);
     box-shadow: 0 0 60px rgba(0, 0, 0, 0.5), 0 0 120px rgba(0, 0, 0, 0.3);
     border-radius: var(--radius-xl);
     background-color: rgba(0, 0, 0, 0.05);
+    align-content: center;
+    justify-content: center;
 }
 
 /* Individual Missionary Square */
