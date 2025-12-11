@@ -39,12 +39,12 @@
     
     /* Button gradients - Temple 365 */
     --gradient-temple-start:  #93C5FD;  /* light sky blue */
-    --gradient-temple-end:    #1D4ED8;  /* rich royal blue */
+    --gradient-temple-end:    #61AAFC;  
 
     
     /* Button gradients - Selfie */
-    --gradient-selfie-start:  #A5B4FC;  /* indigo-300 */
-    --gradient-selfie-end:    #4F46E5;  /* indigo-600 */
+    --gradient-selfie-start:  #61AAFC;  /* indigo-300 */
+    --gradient-selfie-end:    #2F8FFB;  /* indigo-600 */
 
     
     /* Button gradients - Bulletin */
@@ -61,8 +61,8 @@
     --gradient-miracles-start: #FFE985;
     --gradient-miracles-end: #FA742B;
     
-    --gradient-missionaries-start: #4F46E5;  /* indigo-600 */
-    --gradient-missionaries-end:   #1E3A8A;  /* same deep blue as missionary name bar */
+    --gradient-missionaries-start: #2F8FFB;  /* indigo-600 */
+    --gradient-missionaries-end:   #0575F2;  /* same deep blue as missionary name bar */
 
     
     --gradient-calendar-start: #F093FB;
