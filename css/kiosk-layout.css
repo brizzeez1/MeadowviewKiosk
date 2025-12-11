@@ -526,9 +526,10 @@
     height: 100%;
     background: transparent;
     box-shadow: none;
-    padding: 20px 45px 45px 45px;
+    padding: 10px 45px 30px 45px;
     display: flex;
     flex-direction: column;
+    gap: var(--spacing-sm);
 }
 
 .missionaries-card .view-title {
@@ -537,7 +538,7 @@
 }
 
 .missionaries-card .view-description {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
 }
 
 .missionaries-card .view-content {
@@ -548,6 +549,10 @@
    /* NEW: crucial so the flex child (.missionary-grid) can shrink & scroll */
     min-height: 0;
     overflow: hidden; /* optional, just keeps the grid nicely clipped */
+}
+
+.missionaries-card .back-button {
+    margin-top: var(--spacing-2xl);
 }
 
 .view-title {
