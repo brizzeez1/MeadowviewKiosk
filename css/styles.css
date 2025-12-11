@@ -487,10 +487,11 @@ a:focus-visible {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    /* align content to top, name bar sits at bottom */
+    justify-content: flex-start;
     background-color: var(--color-bg-cream);
     border-radius: var(--radius-lg);
-    padding: 0;
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-xl);
     cursor: pointer;
     transition: all var(--transition-normal);
     box-shadow: var(--shadow-soft);
@@ -499,6 +500,7 @@ a:focus-visible {
     width: 100%;
     height: 100%;
 }
+
 
 .missionary-square:hover {
     transform: translateY(-4px) scale(1.02);
