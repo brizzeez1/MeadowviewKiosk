@@ -544,6 +544,9 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 0;
+   /* NEW: crucial so the flex child (.missionary-grid) can shrink & scroll */
+    min-height: 0;
+    overflow: hidden; /* optional, just keeps the grid nicely clipped */
 }
 
 .view-title {

@@ -22,6 +22,8 @@ const MissionarySpotlight = (function() {
     let _gridContainer = null;
     let _missionaries = [];
     let _isActive = false;
+    let _scrollHintDismissed = false;
+    let _hideHintOnScrollHandler = null;
 
     /* ============================================================
        SECTION 2: INITIALIZATION
@@ -102,9 +104,10 @@ const MissionarySpotlight = (function() {
         // Calculate grid layout
         const layout = calculateGridLayout(_missionaries.length);
 
-        // Set CSS grid properties with minmax to fit all squares
-        _gridContainer.style.gridTemplateColumns = `repeat(${layout.cols}, minmax(0, 1fr))`;
-        _gridContainer.style.gridTemplateRows = `repeat(${layout.rows}, minmax(0, 1fr))`;
+        // Use fr units for columns to distribute width evenly
+        // Use auto for rows to allow natural height and scrolling
+        _gridContainer.style.gridTemplateColumns = `repeat(${layout.cols}, 1fr)`;
+        _gridContainer.style.gridTemplateRows = `repeat(${layout.rows}, auto)`;
 
         // Create missionary squares
         _missionaries.forEach(missionary => {
@@ -113,7 +116,10 @@ const MissionarySpotlight = (function() {
         });
 
         ConfigLoader.debugLog('Rendered', _missionaries.length, 'missionary squares in',
-                             `${layout.cols}x${layout.rows}`, 'grid');
+                             `${layout.cols}x${layout.rows}`, 'grid (responsive fr-based layout)');
+
+        _scrollHintDismissed = false;
+        scheduleScrollHintUpdate();
     }
 
     /**
@@ -159,6 +165,52 @@ const MissionarySpotlight = (function() {
         });
 
         return square;
+    }
+
+    /**
+     * Wait for layout to settle, then update the scroll hint visibility.
+     * Uses double RAF to ensure grid dimensions reflect any late layout changes.
+     */
+    function scheduleScrollHintUpdate() {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(updateScrollHint);
+        });
+    }
+
+    /**
+     * Toggle the scroll hint based on overflow and hide after the first scroll.
+     */
+    function updateScrollHint() {
+        if (!_gridContainer) return;
+
+        const hintEl = document.getElementById('missionary-scroll-hint');
+        if (!hintEl) return;
+
+        const images = _gridContainer.querySelectorAll('img');
+        images.forEach(img => {
+            if (img.complete) return;
+            img.addEventListener('load', scheduleScrollHintUpdate, { once: true });
+        });
+
+        const canScroll = _gridContainer.scrollHeight > _gridContainer.clientHeight;
+        const shouldHide = !canScroll || _scrollHintDismissed;
+
+        hintEl.classList.toggle('hidden', shouldHide);
+
+        if (shouldHide) return;
+
+        if (_hideHintOnScrollHandler) {
+            _gridContainer.removeEventListener('scroll', _hideHintOnScrollHandler);
+        }
+
+        _hideHintOnScrollHandler = () => {
+            if (_gridContainer.scrollTop !== 0) {
+                _scrollHintDismissed = true;
+                hintEl.classList.add('hidden');
+            }
+        };
+
+        _gridContainer.addEventListener('scroll', _hideHintOnScrollHandler, { once: true });
     }
 
     /**
