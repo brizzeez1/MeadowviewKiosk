@@ -475,12 +475,15 @@ a:focus-visible {
     box-shadow: 0 0 60px rgba(0, 0, 0, 0.5), 0 0 120px rgba(0, 0, 0, 0.3);
     border-radius: var(--radius-xl);
     background-color: rgba(0, 0, 0, 0.05);
-    /* Grid fills available space with fr units for columns, auto rows allow scrolling */
+
     width: 100%;
-    max-height: 100%;
+    /* IMPORTANT: let flexbox give us the height; don't rely on max-height */
+    max-height: none;
+    min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
 }
+
 
 
 /* Individual Missionary Square */
