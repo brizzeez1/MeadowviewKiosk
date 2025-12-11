@@ -38,12 +38,14 @@
     --color-accent-warm: #B8860B;       /* Dark goldenrod */
     
     /* Button gradients - Temple 365 */
-    --gradient-temple-start: #F6D365;
-    --gradient-temple-end: #FDA085;
+    --gradient-temple-start:  #93C5FD;  /* light sky blue */
+    --gradient-temple-end:    #1D4ED8;  /* rich royal blue */
+
     
     /* Button gradients - Selfie */
-    --gradient-selfie-start: #FF5F6D;
-    --gradient-selfie-end: #FFC371;
+    --gradient-selfie-start:  #A5B4FC;  /* indigo-300 */
+    --gradient-selfie-end:    #4F46E5;  /* indigo-600 */
+
     
     /* Button gradients - Bulletin */
     --gradient-bulletin-start: #80D0C7;
@@ -59,8 +61,9 @@
     --gradient-miracles-start: #FFE985;
     --gradient-miracles-end: #FA742B;
     
-    --gradient-missionaries-start: #667EEA;
-    --gradient-missionaries-end: #764BA2;
+    --gradient-missionaries-start: #4F46E5;  /* indigo-600 */
+    --gradient-missionaries-end:   #1E3A8A;  /* same deep blue as missionary name bar */
+
     
     --gradient-calendar-start: #F093FB;
     --gradient-calendar-end: #F5576C;
