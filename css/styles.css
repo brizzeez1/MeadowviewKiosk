@@ -470,21 +470,25 @@ a:focus-visible {
 .missionary-grid {
     display: grid;
     gap: var(--spacing-lg);
-    padding: var(--spacing-xl) 0;
-    width: 100%;
-    max-width: 1600px;
+    padding: 45px;
+    width: calc(100vw - 90px);
+    height: calc(100vh - 300px);
     margin: 0 auto;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.5), 0 0 120px rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-xl);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* Individual Missionary Square */
 .missionary-square {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     background-color: var(--color-bg-cream);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
+    padding: 0;
     cursor: pointer;
     transition: all var(--transition-normal);
     box-shadow: var(--shadow-soft);
@@ -493,26 +497,26 @@ a:focus-visible {
 }
 
 .missionary-square:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-medium);
-    background-color: var(--color-bg-light);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-strong);
 }
 
 .missionary-square:active {
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.01);
 }
 
 /* Missionary Photo Container */
 .missionary-photo-container {
-    flex: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
     overflow: hidden;
-    border-radius: var(--radius-md);
     background-color: var(--color-bg-light);
-    margin-bottom: var(--spacing-md);
 }
 
 .missionary-photo {
@@ -526,15 +530,21 @@ a:focus-visible {
     height: 60%;
 }
 
-/* Missionary Name Label */
+/* Missionary Name Label - Overlaid at bottom */
 .missionary-name-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     font-family: var(--font-body);
     font-size: var(--text-lg);
     font-weight: var(--weight-semibold);
-    color: var(--color-text-primary);
+    color: white;
     text-align: center;
+    padding: var(--spacing-md);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6), transparent);
     word-wrap: break-word;
-    width: 100%;
+    z-index: 10;
 }
 
 /* Missionary Detail Page */
