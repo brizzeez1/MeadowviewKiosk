@@ -475,8 +475,9 @@ a:focus-visible {
     box-shadow: 0 0 60px rgba(0, 0, 0, 0.5), 0 0 120px rgba(0, 0, 0, 0.3);
     border-radius: var(--radius-xl);
     background-color: rgba(0, 0, 0, 0.05);
-    align-content: center;
-    justify-content: center;
+    /* Grid will be sized by JavaScript */
+    max-height: 100%;
+    overflow: hidden;
 }
 
 /* Individual Missionary Square */
