@@ -639,8 +639,8 @@
 
 /* Left column: title + description */
 .temple365-header {
-    width: 320px;                  /* fixed-ish sidebar */
-    max-width: 360px;
+    width: 220px;                  /* fixed-ish sidebar */
+    max-width: 260px;
     display: flex;
     flex-direction: column;
     justify-content: center;
