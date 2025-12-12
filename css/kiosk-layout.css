@@ -148,16 +148,17 @@
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(
+        background: linear-gradient(
         135deg,
-        rgba(201, 162, 39, 0.5),
-        rgba(201, 162, 39, 0.15),
-        rgba(201, 162, 39, 0.5)
+        rgba(30, 64, 120, 0.7),   /* deep blue */
+        rgba(59, 130, 246, 0.35), /* lighter blue highlight */
+        rgba(30, 64, 120, 0.7)
     );
     border-radius: calc(var(--radius-xl) + 2px);
     z-index: -1;
     opacity: 0.75;
 }
+
 
 .prompt-text {
     font-family: "Georgia", "Times New Roman", serif; /* LDS-ish display */
@@ -178,16 +179,17 @@
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(
+        background: linear-gradient(
         135deg,
-        rgba(201, 162, 39, 0.3),
-        rgba(201, 162, 39, 0.1),
-        rgba(201, 162, 39, 0.3)
+        rgba(30, 64, 120, 0.7),   /* deep blue */
+        rgba(59, 130, 246, 0.35), /* lighter blue highlight */
+        rgba(30, 64, 120, 0.7)
     );
     border-radius: calc(var(--radius-xl) + 2px);
     z-index: -1;
     opacity: 0.5;
 }
+
 .temple-name-overlay {
     position: absolute;
     bottom: 40px;
@@ -526,17 +528,19 @@
     height: 100%;
     background: transparent;
     box-shadow: none;
-    padding: 45px;
+    padding: 10px 45px 30px 45px;
     display: flex;
     flex-direction: column;
+    gap: var(--spacing-sm);
 }
 
 .missionaries-card .view-title {
-    margin-bottom: var(--spacing-md);
+    margin-top: 0;
+    margin-bottom: var(--spacing-sm);
 }
 
 .missionaries-card .view-description {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
 }
 
 .missionaries-card .view-content {
@@ -547,6 +551,10 @@
    /* NEW: crucial so the flex child (.missionary-grid) can shrink & scroll */
     min-height: 0;
     overflow: hidden; /* optional, just keeps the grid nicely clipped */
+}
+
+.missionaries-card .back-button {
+    margin-top: var(--spacing-2xl);
 }
 
 .view-title {
@@ -568,6 +576,110 @@
     max-width: 600px;
     margin: 0 auto var(--spacing-xl);
 }
+/*-----------------------------------------------------------
+   4b1. Temple 365 Embedded web app
+  -----------------------------------------------------------*/
+/* Temple 365 embedded web app */
+#temple365-screen .view-card {
+    max-width: 1600px;       /* wider layout for 3-column grid */
+    width: 100%;
+    padding: var(--spacing-3xl);
+}
+
+.temple365-iframe-wrapper {
+    margin-top: var(--spacing-xl);
+    width: 100%;
+    height: 720px;
+   
+    /* Nice rounded “window” */
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background-color: white;
+    box-shadow: var(--shadow-soft);
+
+    /* Height tuned for 1920x1080 kiosk */
+    height: 600px;                                /* Turn this up of down to adjust how it looks on screen*/
+    /* Or, for auto-sizing based on viewport:
+       height: calc(100vh - 320px);
+    */
+}
+
+.temple365-iframe-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* Temple 365 full-screen, side-by-side layout */
+#temple365-screen .temple365-fullscreen {
+    width: 100%;
+    height: 100%;
+    padding: var(--spacing-lg) var(--spacing-3xl) var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background: linear-gradient(
+        135deg,
+        var(--color-bg-light) 0%,
+        var(--color-bg-cream) 100%
+    );
+}
+
+/* Two-column area: header on left, app on right */
+.temple365-layout {
+    flex: 1;                       /* take all available height above Back button */
+    width: 100%;
+    max-width: 1800px;
+    display: flex;
+    gap: var(--spacing-2xl);
+    margin: 0 auto;
+}
+
+/* Left column: title + description */
+.temple365-header {
+    width: 320px;                  /* fixed-ish sidebar */
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+}
+
+.temple365-header .view-title {
+    margin-bottom: var(--spacing-md);
+}
+
+.temple365-header .view-description {
+    margin: 0;
+}
+
+/* Right column: iframe fills height */
+.temple365-iframe-wrapper {
+    flex: 1;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background-color: white;
+    box-shadow: var(--shadow-soft);
+
+    /* Fill vertical space inside the layout */
+    height: 100%;
+}
+
+.temple365-iframe-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* Back button sits right under the big block */
+#temple365-screen .back-button {
+    margin-top: var(--spacing-xl);
+}
+
+
 
 /* ----------------------------------------------------------
    4c. Selfie-Specific Styles
@@ -791,11 +903,12 @@
     0% {
         transform: scale(1);
         opacity: 0.95;
-        box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+        box-shadow: 0 10px 28px rgba(30, 58, 138, 0.45);
     }
     100% {
         transform: scale(1.03);
         opacity: 1;
-        box-shadow: 0 16px 40px rgba(0,0,0,0.75);
+        box-shadow: 0 16px 40px rgba(30, 58, 138, 0.65);
     }
 }
+
