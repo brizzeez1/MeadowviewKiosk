@@ -475,6 +475,67 @@ const KioskApp = (function() {
     };
 
 })();
+// ============================================================
+// Kiosk <-> Temple 365 integration for optional selfie
+// ============================================================
+
+// 1) Helper: go to the Selfie screen using the existing button
+function goToSelfieView() {
+  var selfieBtn = document.getElementById('btn-selfie');
+  if (selfieBtn) {
+    // Reuse the existing click handler so we don't duplicate logic
+    selfieBtn.click();
+  }
+}
+
+// 2) Listen for messages coming from the Temple 365 iframe
+window.addEventListener('message', function(event) {
+  // OPTIONAL: lock this down to only accept from Apps Script
+  // if (!event.origin.includes('script.google.com')) return;
+
+  var data = event.data;
+  if (!data || data.source !== 'Temple365') return;
+
+  if (data.type === 'TEMPLE_VISIT_LOGGED') {
+    console.log('Kiosk received visit from Temple 365:', data);
+
+    // If they already uploaded a selfie on the tracker page, no need to ask
+    if (data.hasSelfie) {
+      return;
+    }
+
+    var modal = document.getElementById('selfiePromptModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+    }
+  }
+});
+
+// 3) Wire up the Yes / No buttons on the selfie prompt modal
+document.addEventListener('DOMContentLoaded', function() {
+  var modal = document.getElementById('selfiePromptModal');
+  var yesBtn = document.getElementById('selfiePromptYesBtn');
+  var noBtn  = document.getElementById('selfiePromptNoBtn');
+
+  if (yesBtn) {
+    yesBtn.addEventListener('click', function() {
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+      // Navigate to the selfie screen
+      goToSelfieView();
+    });
+  }
+
+  if (noBtn) {
+    noBtn.addEventListener('click', function() {
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+      // Do nothing else; they stay where they are
+    });
+  }
+});
 
 
 /* ================================================================
