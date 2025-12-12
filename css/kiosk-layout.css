@@ -640,7 +640,7 @@
     overflow: hidden;
     background-color: white;
     box-shadow: var(--shadow-soft);
-    height: 720px;                  /* adjust if needed */
+    height: 720px;                  /* tweak up/down if needed */
 }
 
 .temple365-iframe-wrapper iframe {
@@ -653,6 +653,7 @@
 #temple365-screen .back-button {
     margin-top: var(--spacing-2xl);
 }
+
 
 /* ----------------------------------------------------------
    4c. Selfie-Specific Styles
