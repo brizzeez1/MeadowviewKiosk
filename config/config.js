@@ -245,7 +245,7 @@ TEMPLE_PHOTOS: [
         id: 1,
         name: "Sister Kylie Gorecki",
         mission: "Poland Warsaw Mission",
-        language: "Portuguese",
+        language: "Polish",
         scripture: "2 Nephi 2:25",
         photoUrl: "assets/missionary_photos/Kylie_Gorecki_Profile.jpg"
     },
