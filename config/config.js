@@ -225,13 +225,23 @@ TEMPLE_PHOTOS: [
        1. Change MISSIONARY_COUNT to match your current number
        2. Update the MISSIONARIES array with your missionary info
        3. Add/remove missionary objects as needed
-       4. Each missionary should have: id, name, mission, language, scripture
-       5. Photos are stored in assets/missionary_photos/ folder
+       4. Each missionary should have: id, name, mission, language, scripture, photoUrl, galleryFolder
+       5. Profile photos are stored in assets/missionary_photos/ folder
+       6. Gallery photos are stored in assets/missionary_photos/gallery/{missionary_name}/ folder
+
+       GALLERY FOLDER STRUCTURE:
+       - Each missionary has their own gallery subfolder
+       - Example: assets/missionary_photos/gallery/kylie/
+       - Parents/family can add photos to the missionary's folder
+       - Supported formats: .jpg, .jpeg, .png, .gif, .webp
+
+       FUTURE: GOOGLE DRIVE INTEGRATION
+       - Gallery photos will be pulled from a shared Google Drive folder
+       - Each missionary will have a Drive folder ID instead of local path
+       - Parents can upload directly to Google Drive
 
        FUTURE FEATURES (Coming Soon):
        - Video recording capability (saves to Google Drive folder)
-       - Photo carousel from Google Drive (parents can upload photos)
-       - Full-size photo viewing with swipe navigation
        ============================================================ */
 
     MISSIONARIES: {
@@ -247,7 +257,20 @@ TEMPLE_PHOTOS: [
         mission: "Poland Warsaw Mission",
         language: "Polish",
         scripture: "2 Nephi 2:25",
-        photoUrl: "assets/missionary_photos/Kylie_Gorecki_Profile.jpg"
+        photoUrl: "assets/missionary_photos/Kylie_Gorecki_Profile.jpg",
+        // Gallery folder path (relative to assets/missionary_photos/)
+        // Each missionary should have their own folder: gallery/{name}/
+        galleryFolder: "gallery/kylie/",
+        // Test photos - in production these would be loaded dynamically
+        galleryPhotos: [
+            "Kylie_Gorecki_Profile1 (2).JPG",
+            "Kylie_Gorecki_mission 1 (1).JPEG",
+            "Kylie_Gorecki_mission 1 (2).JPEG",
+            "Kylie_Gorecki_mission 1 (2).JPG"
+        ]
+        /* FUTURE: Google Drive Integration
+        googleDriveFolderId: "YOUR_DRIVE_FOLDER_ID_HERE",
+        */
     },
     {
         id: 2,
@@ -255,7 +278,9 @@ TEMPLE_PHOTOS: [
         mission: "England London Mission",
         language: "English",
         scripture: "Doctrine & Covenants 4:2",
-        photoUrl: "assets/missionary_photos/2.png"
+        photoUrl: "assets/missionary_photos/2.png",
+        galleryFolder: "gallery/emily_johnson/",
+        galleryPhotos: []
     },
     {
         id: 3,
@@ -263,7 +288,9 @@ TEMPLE_PHOTOS: [
         mission: "Philippines Manila Mission",
         language: "Tagalog",
         scripture: "Moroni 10:4-5",
-        photoUrl: "assets/missionary_photos/3.png"
+        photoUrl: "assets/missionary_photos/3.png",
+        galleryFolder: "gallery/michael_davis/",
+        galleryPhotos: []
     },
     {
         id: 4,
@@ -271,7 +298,9 @@ TEMPLE_PHOTOS: [
         mission: "Mexico Guadalajara Mission",
         language: "Spanish",
         scripture: "Alma 26:12",
-        photoUrl: "assets/missionary_photos/4 - Copy.png"
+        photoUrl: "assets/missionary_photos/4 - Copy.png",
+        galleryFolder: "gallery/david_martinez/",
+        galleryPhotos: []
     },
     {
         id: 5,
@@ -279,7 +308,9 @@ TEMPLE_PHOTOS: [
         mission: "Japan Tokyo Mission",
         language: "Japanese",
         scripture: "3 Nephi 27:21",
-        photoUrl: "assets/missionary_photos/6.png"
+        photoUrl: "assets/missionary_photos/6.png",
+        galleryFolder: "gallery/sarah_anderson/",
+        galleryPhotos: []
     },
     {
         id: 6,
@@ -287,7 +318,9 @@ TEMPLE_PHOTOS: [
         mission: "Germany Frankfurt Mission",
         language: "German",
         scripture: "Mosiah 2:17",
-        photoUrl: "assets/missionary_photos/7.png"
+        photoUrl: "assets/missionary_photos/7.png",
+        galleryFolder: "gallery/james_wilson/",
+        galleryPhotos: []
     },
     {
         id: 7,
@@ -295,7 +328,9 @@ TEMPLE_PHOTOS: [
         mission: "Peru Lima Mission",
         language: "Spanish",
         scripture: "Ether 12:27",
-        photoUrl: "assets/missionary_photos/9.png"
+        photoUrl: "assets/missionary_photos/9.png",
+        galleryFolder: "gallery/robert_taylor/",
+        galleryPhotos: []
     },
     {
         id: 8,
@@ -303,7 +338,9 @@ TEMPLE_PHOTOS: [
         mission: "South Korea Seoul Mission",
         language: "Korean",
         scripture: "Joshua 1:9",
-        photoUrl: "assets/missionary_photos/11.png"
+        photoUrl: "assets/missionary_photos/11.png",
+        galleryFolder: "gallery/jennifer_lee/",
+        galleryPhotos: []
     },
     {
         id: 9,
@@ -311,7 +348,9 @@ TEMPLE_PHOTOS: [
         mission: "Argentina Buenos Aires Mission",
         language: "Spanish",
         scripture: "Helaman 5:12",
-        photoUrl: "assets/missionary_photos/12.png"
+        photoUrl: "assets/missionary_photos/12.png",
+        galleryFolder: "gallery/christopher_brown/",
+        galleryPhotos: []
     },
     {
         id: 10,
@@ -319,7 +358,9 @@ TEMPLE_PHOTOS: [
         mission: "France Paris Mission",
         language: "French",
         scripture: "D&C 84:88",
-        photoUrl: "assets/missionary_photos/14.png"
+        photoUrl: "assets/missionary_photos/14.png",
+        galleryFolder: "gallery/daniel_white/",
+        galleryPhotos: []
     },
     {
         id: 11,
@@ -327,7 +368,9 @@ TEMPLE_PHOTOS: [
         mission: "Italy Rome Mission",
         language: "Italian",
         scripture: "1 Nephi 3:7",
-        photoUrl: "assets/missionary_photos/17.png"
+        photoUrl: "assets/missionary_photos/17.png",
+        galleryFolder: "gallery/amanda_thompson/",
+        galleryPhotos: []
     },
     {
         id: 12,
@@ -335,7 +378,9 @@ TEMPLE_PHOTOS: [
         mission: "Chile Santiago Mission",
         language: "Spanish",
         scripture: "Alma 37:37",
-        photoUrl: "assets/missionary_photos/18.png"
+        photoUrl: "assets/missionary_photos/18.png",
+        galleryFolder: "gallery/matthew_garcia/",
+        galleryPhotos: []
     },
     {
         id: 13,
@@ -343,7 +388,9 @@ TEMPLE_PHOTOS: [
         mission: "Taiwan Taipei Mission",
         language: "Mandarin",
         scripture: "Mosiah 18:9",
-        photoUrl: "assets/missionary_photos/20.png"
+        photoUrl: "assets/missionary_photos/20.png",
+        galleryFolder: "gallery/joshua_martinez/",
+        galleryPhotos: []
     },
     {
         id: 14,
@@ -351,7 +398,9 @@ TEMPLE_PHOTOS: [
         mission: "Australia Sydney Mission",
         language: "English",
         scripture: "D&C 88:67",
-        photoUrl: "assets/missionary_photos/11111.png"
+        photoUrl: "assets/missionary_photos/11111.png",
+        galleryFolder: "gallery/rachel_harris/",
+        galleryPhotos: []
     }
 ]
 

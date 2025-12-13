@@ -512,6 +512,49 @@
   </div>
 </div>
 
+<!-- ============================================================
+     MISSIONARY PHOTO GALLERY OVERLAY
+     ============================================================
+     Fullscreen gallery viewer for missionary photos.
+     Supports swipe navigation on touch devices.
+     ============================================================ -->
+<div id="missionaryGalleryOverlay" class="gallery-overlay">
+    <!-- Close Button -->
+    <button class="gallery-close-btn" id="galleryCloseBtn" aria-label="Close gallery">
+        ×
+    </button>
+
+    <!-- Photo Counter -->
+    <div class="gallery-counter" id="galleryCounter">1 of 1</div>
+
+    <!-- Image Container with Navigation -->
+    <div class="gallery-image-container">
+        <!-- Previous Button -->
+        <button class="gallery-nav-btn prev" id="galleryPrevBtn" aria-label="Previous photo">
+            ‹
+        </button>
+
+        <!-- Current Image -->
+        <img class="gallery-current-image" id="galleryCurrentImage" src="" alt="Missionary photo">
+
+        <!-- Next Button -->
+        <button class="gallery-nav-btn next" id="galleryNextBtn" aria-label="Next photo">
+            ›
+        </button>
+    </div>
+
+    <!-- Swipe Hint (shows on first open, disappears after first swipe) -->
+    <div class="gallery-swipe-hint" id="gallerySwipeHint">
+        <div class="swipe-hand">
+            <!-- Hand pointing SVG icon -->
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9.5 7.5V14l-2.25-2.25a1.5 1.5 0 0 0-2.12 2.12l4.24 4.24a3 3 0 0 0 2.12.89h4.01a3 3 0 0 0 3-3v-5a1.5 1.5 0 0 0-3 0v2a1.5 1.5 0 0 0-3 0v-1a1.5 1.5 0 0 0-3 0v-1.5a1.5 1.5 0 0 0-3 0v-3a1.5 1.5 0 0 0 3 0z"/>
+            </svg>
+        </div>
+        <span class="swipe-hint-text">Swipe to view more</span>
+    </div>
+</div>
+
     <!-- ============================================================
          THIRD-PARTY LIBRARIES
          ============================================================ -->
@@ -529,10 +572,11 @@
          5. js/screensaver.js         - Screensaver logic
          6. js/homeScreen.js          - Home screen logic
          7. js/missionarySpotlight.js - Missionary grid view
-         8. js/missionaryDetail.js    - Individual missionary detail
-         9. js/floatingQR.js          - Floating QR code component
-         10. js/phase2Placeholders.js - Phase 2 stubs
-         11. js/app.js                - Main app initialization (must be last)
+         8. js/missionaryGallery.js   - Photo gallery viewer
+         9. js/missionaryDetail.js    - Individual missionary detail
+         10. js/floatingQR.js         - Floating QR code component
+         11. js/phase2Placeholders.js - Phase 2 stubs
+         12. js/app.js                - Main app initialization (must be last)
          ============================================================ -->
     <script src="config/config.js"></script>
     <script src="js/configLoader.js"></script>
@@ -541,6 +585,7 @@
     <script src="js/screensaver.js"></script>
     <script src="js/homeScreen.js"></script>
     <script src="js/missionarySpotlight.js"></script>
+    <script src="js/missionaryGallery.js"></script>
     <script src="js/missionaryDetail.js"></script>
     <script src="js/floatingQR.js"></script>
     <script src="js/phase2Placeholders.js"></script>

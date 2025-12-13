@@ -88,6 +88,7 @@ const KioskApp = (function() {
 
             // Initialize missionary modules
             MissionarySpotlight.init();
+            MissionaryGallery.init();
             MissionaryDetail.init();
 
             // Initialize floating QR code
