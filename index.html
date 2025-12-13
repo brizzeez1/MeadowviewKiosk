@@ -195,12 +195,24 @@
         <!-- President Nelson Video Module -->
         <div class="temple365-video-card">
           <div class="video-container">
+            <!-- Using Google Drive embed URL for streaming -->
             <video id="presidentNelsonVideo"
-                   preload="metadata"
-                   playsinline>
-              <source src="https://drive.google.com/uc?export=download&id=18M0hcXZBfKWUjVukI-Kl7XleZZQU1C-D" type="video/mp4">
+                   preload="auto"
+                   playsinline
+                   crossorigin="anonymous">
+              <!-- Local video file - place video in assets/videos/ folder -->
+              <source src="assets/videos/president_nelson.mp4" type="video/mp4">
+              <!-- Fallback: Google Drive preview URL -->
+              <source src="https://drive.google.com/uc?export=preview&id=18M0hcXZBfKWUjVukI-Kl7XleZZQU1C-D" type="video/mp4">
               Your browser does not support the video tag.
             </video>
+            <!-- Fallback message if video fails -->
+            <div class="video-fallback" id="videoFallback" style="display: none;">
+              <p>Video unavailable</p>
+              <a href="https://drive.google.com/file/d/18M0hcXZBfKWUjVukI-Kl7XleZZQU1C-D/view" target="_blank" class="video-link">
+                Watch on Google Drive →
+              </a>
+            </div>
           </div>
           <button class="btn btn-kiosk-blue video-play-btn" id="videoPlayBtn">
             Start Video

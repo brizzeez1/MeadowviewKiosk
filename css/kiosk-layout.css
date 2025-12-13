@@ -197,10 +197,12 @@
     transform: translateX(-50%);
     padding: 12px 28px;
 
-    /* Blue theme to match "Touch anywhere" button */
-    background: rgba(30, 58, 138, 0.75);
+    /* Match exactly the "Touch anywhere" prompt-card styling */
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 14px;
-    border: 1px solid rgba(59, 130, 246, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.25);
 
     /* Match the prompt card font styling */
     font-family: "Georgia", "Times New Roman", serif;
@@ -211,8 +213,8 @@
     text-transform: uppercase;
 
     /* Glow + deep shadow for readability */
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
-    box-shadow: 0 6px 28px rgba(30, 58, 138, 0.5);
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 
     /* Animations */
     opacity: 0;
@@ -222,6 +224,25 @@
 
     pointer-events: none;
     z-index: 50;
+}
+
+/* Blue glow border effect to match prompt-card */
+.temple-name-overlay::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        135deg,
+        rgba(30, 64, 120, 0.7),
+        rgba(59, 130, 246, 0.35),
+        rgba(30, 64, 120, 0.7)
+    );
+    border-radius: 16px;
+    z-index: -1;
+    opacity: 0.75;
 }
 
 
@@ -708,6 +729,38 @@
     font-size: var(--text-base);
 }
 
+/* Video fallback when streaming fails */
+.temple365-video-card .video-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    text-align: center;
+    padding: var(--spacing-md);
+}
+
+.temple365-video-card .video-fallback p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: var(--spacing-sm);
+}
+
+.temple365-video-card .video-link {
+    color: #60a5fa;
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+}
+
+.temple365-video-card .video-link:hover {
+    text-decoration: underline;
+}
+
 /* Right column: iframe fills height */
 .temple365-iframe-wrapper {
     flex: 1;
@@ -727,9 +780,11 @@
     display: block;
 }
 
-/* Back button sits right under the big block */
+/* Back button positioned to align with iframe column */
 #temple365-screen .back-button {
-    margin-top: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+    /* Offset by sidebar width to center under iframe */
+    margin-left: calc(280px + var(--spacing-xl));
 }
 
 
@@ -944,12 +999,12 @@
 
 @keyframes templeNameGlowPulse {
     0% {
-        box-shadow: 0 6px 22px rgba(30, 58, 138, 0.45);
-        background: rgba(30, 58, 138, 0.70);
+        box-shadow: 0 10px 28px rgba(30, 58, 138, 0.45);
+        opacity: 0.95;
     }
     100% {
-        box-shadow: 0 10px 32px rgba(30, 58, 138, 0.65);
-        background: rgba(30, 58, 138, 0.80);
+        box-shadow: 0 16px 40px rgba(30, 58, 138, 0.65);
+        opacity: 1;
     }
 }
 @keyframes promptPulse {
