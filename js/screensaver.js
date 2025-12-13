@@ -45,6 +45,17 @@ const Screensaver = (function() {
      * Initialize the screensaver module.
      * Call this once when the app starts.
      */
+   function updateTempleDisplay(photoUrl, targetElement) {
+  // 1) Background
+  setBackground(targetElement, photoUrl);
+
+  // 2) Name overlay (safe)
+  const overlay = document.getElementById("temple-name-overlay");
+  if (overlay) {
+    overlay.innerText = formatTempleNameFromFilename(photoUrl);
+  }
+}
+
     function init() {
         // Get DOM elements
         _screenElement = document.getElementById('screensaver-screen');
@@ -67,7 +78,8 @@ const Screensaver = (function() {
         }
         
         // Set initial background
-        setBackground(_bgCurrent, _photos[0]);
+        updateTempleDisplay(_photos[0], _bgCurrent);
+
         
         // Preload all images
         preloadImages();
@@ -158,11 +170,8 @@ const Screensaver = (function() {
         const nextIndex = getNextIndex();
         
         // Prepare the next background
-        setBackground(_bgNext, _photos[nextIndex]);
-            // Update the printed temple name
-    const filename = _photos[nextIndex];
-    const name = formatTempleNameFromFilename(filename);
-    document.getElementById("temple-name-overlay").innerText = name;
+        updateTempleDisplay(_photos[nextIndex], _bgNext);
+
 
         // Crossfade animation
         // Fade out current, fade in next
@@ -235,7 +244,8 @@ const Screensaver = (function() {
         // Reset to first photo
         _currentIndex = 0;
         if (_photos.length > 0) {
-            setBackground(_bgCurrent, _photos[0]);
+            updateTempleDisplay(_photos[0], _bgCurrent);
+
         }
         
         // Start rotation
