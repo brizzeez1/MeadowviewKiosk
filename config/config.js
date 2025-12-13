@@ -229,11 +229,11 @@ const KIOSK_CONFIG = {
         MISSIONARIES_LIST: [
     {
         id: 1,
-        name: "Elder John Smith",
-        mission: "Brazil São Paulo Mission",
+        name: "Sister Kylie Gorecki",
+        mission: "Poland Warsaw Mission",
         language: "Portuguese",
         scripture: "2 Nephi 2:25",
-        photoUrl: "assets/missionary_photos/1.png"
+        photoUrl: "assets/missionary_photos/Kylie_Gorecki_Profile.jpg"
     },
     {
         id: 2,
