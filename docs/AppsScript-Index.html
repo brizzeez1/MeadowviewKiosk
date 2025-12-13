@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temple 365</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ========================================
+       GLOBAL RESET & VARIABLES
+       ======================================== */
+    :root {
+      --primary-blue: #1e3a8a;
+      --primary-blue-light: #3b82f6;
+      --bg-dark: rgba(0, 0, 0, 0.75);
+      --bg-card: rgba(255, 255, 255, 0.08);
+      --text-light: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.7);
+      --border-light: rgba(255, 255, 255, 0.15);
+      --success-green: #22c55e;
+      --font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-family);
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+
+    /* ========================================
+       MAIN CONTAINER
+       ======================================== */
+    .container {
+      min-height: 100%;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ========================================
+       HEADER
+       ======================================== */
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff 0%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .header .subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    /* ========================================
+       PROGRESS CARD
+       ======================================== */
+    .progress-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .progress-number {
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--primary-blue-light);
+      line-height: 1;
+    }
+
+    .progress-label {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .progress-bar-container {
+      margin-top: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      height: 12px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-blue), var(--primary-blue-light));
+      border-radius: 8px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-goal {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    /* ========================================
+       FORM CARD
+       ======================================== */
+    .form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .form-card h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="file"] {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-family: var(--font-family);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      color: var(--text-light);
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .form-group input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary-blue-light);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .form-group input[type="text"]::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .form-group input[type="file"] {
+      cursor: pointer;
+    }
+
+    .form-group input[type="file"]::file-selector-button {
+      padding: 8px 16px;
+      margin-right: 12px;
+      font-family: var(--font-family);
+      font-size: 0.875rem;
+      font-weight: 500;
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .form-group input[type="file"]::file-selector-button:hover {
+      transform: scale(1.02);
+    }
+
+    /* Optional label for selfie */
+    .optional-label {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    /* ========================================
+       SUBMIT BUTTON
+       ======================================== */
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 14px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: var(--font-family);
+      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(30, 58, 138, 0.35);
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(30, 58, 138, 0.45);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* ========================================
+       STATUS MESSAGES
+       ======================================== */
+    .status-message {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 0.875rem;
+      display: none;
+    }
+
+    .status-message.success {
+      display: block;
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      color: #86efac;
+    }
+
+    .status-message.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    .status-message.loading {
+      display: block;
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #93c5fd;
+    }
+
+    /* ========================================
+       KIOSK MODE STYLES
+       ======================================== */
+    .kiosk-mode .selfie-upload-group {
+      display: none;
+    }
+
+    /* ========================================
+       RECENT VISITS
+       ======================================== */
+    .recent-visits {
+      margin-top: 24px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .recent-visits h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-muted);
+    }
+
+    .visit-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .visit-name {
+      font-weight: 500;
+    }
+
+    .visit-date {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 480px) {
+      .container {
+        padding: 16px;
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .progress-number {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="appContainer">
+    <!-- Header -->
+    <div class="header">
+      <h1>Temple 365</h1>
+      <p class="subtitle">Track your temple visits</p>
+    </div>
+
+    <!-- Progress Card -->
+    <div class="progress-card">
+      <div class="progress-number" id="visitCount">--</div>
+      <div class="progress-label">visits in 2026</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+      </div>
+      <div class="progress-goal">Goal: 365 visits</div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+      <h2>Log Your Visit</h2>
+      <form id="visitForm">
+        <div class="form-group">
+          <label for="visitorName">Your Name / Family Name</label>
+          <input type="text" id="visitorName" name="visitorName" placeholder="e.g., The Smith Family" required>
+        </div>
+
+        <!-- Selfie upload - HIDDEN in kiosk mode, VISIBLE in direct access -->
+        <div class="form-group selfie-upload-group" id="selfieUploadGroup">
+          <label for="selfieFile">
+            Selfie Photo
+            <span class="optional-label">(optional)</span>
+          </label>
+          <input type="file" id="selfieFile" name="selfieFile" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          Save Visit
+        </button>
+      </form>
+
+      <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <!-- Recent Visits -->
+    <div class="recent-visits" id="recentVisits">
+      <h3>Recent Visits</h3>
+      <div id="visitsList"></div>
+    </div>
+  </div>
+
+  <script>
+    // ========================================
+    // KIOSK MODE DETECTION
+    // ========================================
+    // Detect if we're running inside an iframe (kiosk mode)
+    var isKioskMode = false;
+    try {
+      isKioskMode = (window.self !== window.top);
+    } catch (e) {
+      // If we can't access window.top due to security, assume we're in an iframe
+      isKioskMode = true;
+    }
+
+    console.log('[Temple365] Kiosk mode:', isKioskMode);
+
+    // Apply kiosk mode class to hide selfie upload
+    if (isKioskMode) {
+      document.getElementById('appContainer').classList.add('kiosk-mode');
+    }
+
+    // ========================================
+    // INITIALIZATION
+    // ========================================
+    document.addEventListener('DOMContentLoaded', function() {
+      loadVisitCount();
+      loadRecentVisits();
+    });
+
+    // ========================================
+    // LOAD DATA FROM BACKEND
+    // ========================================
+    function loadVisitCount() {
+      google.script.run
+        .withSuccessHandler(function(count) {
+          document.getElementById('visitCount').textContent = count || 0;
+          var percentage = Math.min((count / 365) * 100, 100);
+          document.getElementById('progressBar').style.width = percentage + '%';
+        })
+        .withFailureHandler(function(error) {
+          console.error('[Temple365] Failed to load count:', error);
+          document.getElementById('visitCount').textContent = '?';
+        })
+        .getVisitCount();
+    }
+
+    function loadRecentVisits() {
+      google.script.run
+        .withSuccessHandler(function(visits) {
+          var listEl = document.getElementById('visitsList');
+          listEl.innerHTML = '';
+
+          if (!visits || visits.length === 0) {
+            listEl.innerHTML = '<p style="color: var(--text-muted); font-size: 0.875rem;">No visits yet. Be the first!</p>';
+            return;
+          }
+
+          visits.slice(0, 5).forEach(function(visit) {
+            var item = document.createElement('div');
+            item.className = 'visit-item';
+            item.innerHTML =
+              '<span class="visit-name">' + escapeHtml(visit.name) + '</span>' +
+              '<span class="visit-date">' + formatDate(visit.timestamp) + '</span>';
+            listEl.appendChild(item);
+          });
+        })
+        .withFailureHandler(function(error) {
+          console.error('[Temple365] Failed to load visits:', error);
+        })
+        .getRecentVisits();
+    }
+
+    // ========================================
+    // FORM SUBMISSION
+    // ========================================
+    document.getElementById('visitForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var nameInput = document.getElementById('visitorName');
+      var name = nameInput.value.trim();
+
+      if (!name) {
+        showStatus('Please enter your name', 'error');
+        return;
+      }
+
+      var submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      showStatus('Saving your visit...', 'loading');
+
+      // Check if there's a selfie to upload (only in direct access mode)
+      var selfieFile = document.getElementById('selfieFile');
+      var hasSelfie = !isKioskMode && selfieFile && selfieFile.files && selfieFile.files.length > 0;
+
+      if (hasSelfie) {
+        // Read the file and upload with selfie
+        var reader = new FileReader();
+        reader.onload = function(event) {
+          var base64Data = event.target.result.split(',')[1];
+          saveVisitWithSelfie(name, base64Data);
+        };
+        reader.onerror = function() {
+          showStatus('Failed to read image file', 'error');
+          submitBtn.disabled = false;
+        };
+        reader.readAsDataURL(selfieFile.files[0]);
+      } else {
+        // Save visit without selfie
+        saveVisit(name);
+      }
+    });
+
+    function saveVisit(name) {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          handleSaveSuccess(result, name, false);
+        })
+        .withFailureHandler(function(error) {
+          handleSaveError(error);
+        })
+        .saveVisit(name);
+    }
+
+    function saveVisitWithSelfie(name, base64Data) {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          handleSaveSuccess(result, name, true);
+        })
+        .withFailureHandler(function(error) {
+          handleSaveError(error);
+        })
+        .saveVisitWithSelfie(name, base64Data);
+    }
+
+    function handleSaveSuccess(result, name, hadSelfie) {
+      var submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = false;
+
+      if (result && result.success) {
+        showStatus('Visit saved! Thank you, ' + escapeHtml(name) + '!', 'success');
+
+        // Clear form
+        document.getElementById('visitorName').value = '';
+        var selfieFile = document.getElementById('selfieFile');
+        if (selfieFile) {
+          selfieFile.value = '';
+        }
+
+        // Reload data
+        loadVisitCount();
+        loadRecentVisits();
+
+        // If in kiosk mode, notify parent to show selfie prompt
+        if (isKioskMode) {
+          notifyKioskParent('TEMPLE_VISIT_LOGGED', {
+            name: name,
+            hasSelfie: false  // In kiosk mode, selfie is taken separately
+          });
+        }
+      } else {
+        showStatus(result.message || 'Failed to save visit', 'error');
+      }
+    }
+
+    function handleSaveError(error) {
+      console.error('[Temple365] Save error:', error);
+      showStatus('An error occurred. Please try again.', 'error');
+      document.getElementById('submitBtn').disabled = false;
+    }
+
+    // ========================================
+    // KIOSK COMMUNICATION
+    // ========================================
+    function notifyKioskParent(type, data) {
+      if (!isKioskMode) return;
+
+      try {
+        var message = {
+          source: 'Temple365',
+          type: type,
+          timestamp: new Date().toISOString()
+        };
+
+        // Merge additional data
+        if (data) {
+          for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+              message[key] = data[key];
+            }
+          }
+        }
+
+        console.log('[Temple365] Sending message to parent:', message);
+        window.parent.postMessage(message, '*');
+      } catch (e) {
+        console.error('[Temple365] Failed to send message to parent:', e);
+      }
+    }
+
+    // ========================================
+    // UI HELPERS
+    // ========================================
+    function showStatus(message, type) {
+      var el = document.getElementById('statusMessage');
+      el.textContent = message;
+      el.className = 'status-message ' + type;
+    }
+
+    function escapeHtml(text) {
+      var div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) return '';
+      try {
+        var date = new Date(timestamp);
+        return date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric'
+        });
+      } catch (e) {
+        return '';
+      }
+    }
+  </script>
+</body>
+</html>

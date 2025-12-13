@@ -501,12 +501,18 @@ const ALLOWED_MESSAGE_TYPES = [
 // Security token for postMessage validation (optional additional security)
 const MESSAGE_SOURCE_TOKEN = 'Temple365';
 
-// 1) Helper: go to the Selfie screen using the existing button
+// 1) Helper: go to the Selfie screen using the state machine
 function goToSelfieView() {
-  var selfieBtn = document.getElementById('btn-selfie');
-  if (selfieBtn) {
-    // Reuse the existing click handler so we don't duplicate logic
-    selfieBtn.click();
+  // Use the KioskApp state machine directly for reliable navigation
+  if (window.KioskApp && typeof KioskApp.setState === 'function') {
+    console.log('[Kiosk] Navigating to SELFIE via state machine');
+    KioskApp.setState('SELFIE');
+  } else {
+    // Fallback: dispatch navigation event
+    console.log('[Kiosk] Navigating to SELFIE via event');
+    window.dispatchEvent(new CustomEvent('navigate', {
+      detail: { state: 'SELFIE' }
+    }));
   }
 }
 
