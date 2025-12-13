@@ -126,29 +126,43 @@ const KIOSK_CONFIG = {
         
         // List of temple photo paths
         // Add your own photos here!
-        TEMPLE_PHOTOS: [
-             "assets/temple_photos/aba_nigeria_temple_lds.jpeg",
+       // List of temple photo paths
+// Randomized order applied at runtime
+TEMPLE_PHOTOS: [
+  "assets/temple_photos/aba_nigeria_temple_lds.jpeg",
   "assets/temple_photos/accra_ghana_temple_lds.jpeg",
   "assets/temple_photos/adelaide_australia_temple_lds.jpeg",
-  "assets/temple_photos/albuquerque_temple_lds.jpeg",
+  "assets/temple_photos/nm_albuquerque_temple_lds.jpeg",
   "assets/temple_photos/az-gilbert-temple-evening.jpg",
   "assets/temple_photos/belem_brazil_temple_exterior.jpeg",
-  "assets/temple_photos/boston_temple_lds.jpeg",
+  "assets/temple_photos/ma_boston_temple_lds.jpeg",
   "assets/temple_photos/brigham_city_utah_mormon_temple.jpeg",
   "assets/temple_photos/casper_wyoming_temple_exteriors.jpeg",
-  "assets/temple_photos/fort_collins_temple_sun.jpeg",
-  "assets/temple_photos/frankfurt_germany_temple_lds.jpeg",
+  "assets/temple_photos/co_fort_collins_temple_sun.jpeg",
   "assets/temple_photos/frankfurt_germany_temple_lds (1).jpeg",
   "assets/temple_photos/freiberg_germany_temple_lds.jpeg",
   "assets/temple_photos/guayaquil_ecuador_temple_lds.jpeg",
-  "assets/temple_photos/hawaii_temple.jpeg",
-  "assets/temple_photos/idaho_falls_temple_river_waterfall.jpeg",
-  "assets/temple_photos/kirtland_temple.jpeg",
-  "assets/temple_photos/las_vegas_temple_lds.jpeg",
-  "assets/temple_photos/rendering_arequipa_peru_temple.jpeg"
-            // TODO: Add more temple photos
-            // "assets/temple_photos/salt_lake_temple.jpg",
-            // "assets/temple_photos/provo_temple.jpg",
+  "assets/temple_photos/laie_hawaii_temple.jpeg",
+  "assets/temple_photos/id_idaho_falls_temple_river_waterfall.jpeg",
+  "assets/temple_photos/oh_kirtland_temple.jpeg",
+  "assets/temple_photos/nv_las_vegas_temple_lds.jpeg",
+  "assets/temple_photos/manila_philippines_temple_lds.jpeg",
+  "assets/temple_photos/oakland_california_temple_fountain.jpeg",
+  "assets/temple_photos/palmyra_new_york_mormon_temple.jpeg",
+  "assets/temple_photos/papeete_tahiti_temple_lds.jpeg",
+  "assets/temple_photos/philadelphia_pennsylvania_temple_exterior.jpeg",
+  "assets/temple_photos/or_portland_temple_lds.jpeg",
+  "assets/temple_photos/ut_provo_city_center_temple.jpeg",
+  "assets/temple_photos/ut_provo_city_center_temple_exterior.jpeg",
+  "assets/temple_photos/puebla_mexico_temple_exterior.jpeg",
+  "assets/temple_photos/arequipa_peru_temple.jpeg",
+  "assets/temple_photos/rome_italy_temple.jpeg",
+  "assets/temple_photos/ut_salt_lake_city_temple.jpeg",
+  "assets/temple_photos/san_diego_california_temple.jpeg",
+  "assets/temple_photos/sapporo_japan_temple_night_photo.png",
+  "assets/temple_photos/seoul_korea_temple_lds.jpeg",
+  "assets/temple_photos/vancouver_canada_temple.jpeg",
+  "assets/temple_photos/washington_dc_mormon_temple.jpeg"
         ],
         
         // Enable/disable the slow zoom animation
