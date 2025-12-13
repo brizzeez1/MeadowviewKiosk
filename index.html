@@ -519,11 +519,6 @@
      Supports swipe navigation on touch devices.
      ============================================================ -->
 <div id="missionaryGalleryOverlay" class="gallery-overlay">
-    <!-- Close Button -->
-    <button class="gallery-close-btn" id="galleryCloseBtn" aria-label="Close gallery">
-        ×
-    </button>
-
     <!-- Photo Counter -->
     <div class="gallery-counter" id="galleryCounter">1 of 1</div>
 
@@ -541,18 +536,23 @@
         <button class="gallery-nav-btn next" id="galleryNextBtn" aria-label="Next photo">
             ›
         </button>
+
+        <!-- Swipe Hint (shows on first open, disappears after first swipe) -->
+        <div class="gallery-swipe-hint" id="gallerySwipeHint">
+            <div class="swipe-hand">
+                <!-- Hand pointing SVG icon -->
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.5 7.5V14l-2.25-2.25a1.5 1.5 0 0 0-2.12 2.12l4.24 4.24a3 3 0 0 0 2.12.89h4.01a3 3 0 0 0 3-3v-5a1.5 1.5 0 0 0-3 0v2a1.5 1.5 0 0 0-3 0v-1a1.5 1.5 0 0 0-3 0v-1.5a1.5 1.5 0 0 0-3 0v-3a1.5 1.5 0 0 0 3 0z"/>
+                </svg>
+            </div>
+            <span class="swipe-hint-text">Swipe to view more</span>
+        </div>
     </div>
 
-    <!-- Swipe Hint (shows on first open, disappears after first swipe) -->
-    <div class="gallery-swipe-hint" id="gallerySwipeHint">
-        <div class="swipe-hand">
-            <!-- Hand pointing SVG icon -->
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9.5 7.5V14l-2.25-2.25a1.5 1.5 0 0 0-2.12 2.12l4.24 4.24a3 3 0 0 0 2.12.89h4.01a3 3 0 0 0 3-3v-5a1.5 1.5 0 0 0-3 0v2a1.5 1.5 0 0 0-3 0v-1a1.5 1.5 0 0 0-3 0v-1.5a1.5 1.5 0 0 0-3 0v-3a1.5 1.5 0 0 0 3 0z"/>
-            </svg>
-        </div>
-        <span class="swipe-hint-text">Swipe to view more</span>
-    </div>
+    <!-- Back Button (below the photo) -->
+    <button class="back-button gallery-back-btn" id="galleryCloseBtn">
+        ← Back to Profile
+    </button>
 </div>
 
     <!-- ============================================================

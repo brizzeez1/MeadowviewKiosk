@@ -41,10 +41,11 @@ const MissionaryGallery = (function() {
     let _hasInteracted = false;
     let _isOpen = false;
 
-    // Touch handling
+    // Touch/Mouse handling
     let _touchStartX = 0;
     let _touchStartY = 0;
     let _touchEndX = 0;
+    let _isDragging = false;
     const SWIPE_THRESHOLD = 50;
 
     /* ============================================================
@@ -110,6 +111,12 @@ const MissionaryGallery = (function() {
         if (_imageContainer) {
             _imageContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
             _imageContainer.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+            // Mouse events for swipe (for testing without touchscreen)
+            _imageContainer.addEventListener('mousedown', handleMouseDown);
+            _imageContainer.addEventListener('mousemove', handleMouseMove);
+            _imageContainer.addEventListener('mouseup', handleMouseUp);
+            _imageContainer.addEventListener('mouseleave', handleMouseUp);
         }
 
         // Keyboard navigation
@@ -310,6 +317,62 @@ const MissionaryGallery = (function() {
                 showNext();
             } else {
                 // Swiped right - show previous
+                showPrevious();
+            }
+        }
+    }
+
+    /* ============================================================
+       SECTION 4B: MOUSE HANDLING (for desktop/testing)
+       ============================================================ */
+
+    /**
+     * Handle mouse down event (start drag).
+     */
+    function handleMouseDown(e) {
+        if (!_isOpen) return;
+
+        // Only respond to left mouse button
+        if (e.button !== 0) return;
+
+        _isDragging = true;
+        _touchStartX = e.clientX;
+        _touchStartY = e.clientY;
+
+        // Prevent default to avoid text selection
+        e.preventDefault();
+    }
+
+    /**
+     * Handle mouse move event (during drag).
+     */
+    function handleMouseMove(e) {
+        if (!_isDragging || !_isOpen) return;
+
+        // Track current position (for visual feedback if needed)
+        _touchEndX = e.clientX;
+    }
+
+    /**
+     * Handle mouse up event (end drag, determine swipe).
+     */
+    function handleMouseUp(e) {
+        if (!_isDragging || !_isOpen) return;
+
+        _isDragging = false;
+        _touchEndX = e.clientX;
+        const touchEndY = e.clientY;
+
+        const diffX = _touchStartX - _touchEndX;
+        const diffY = _touchStartY - touchEndY;
+
+        // Only register horizontal swipes (ignore vertical)
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > SWIPE_THRESHOLD) {
+            if (diffX > 0) {
+                // Dragged left - show next
+                showNext();
+            } else {
+                // Dragged right - show previous
                 showPrevious();
             }
         }

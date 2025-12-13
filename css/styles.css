@@ -930,29 +930,14 @@ a:focus-visible {
   visibility: visible;
 }
 
-/* Close Button */
-.gallery-close-btn {
+/* Gallery Back Button (below photos) */
+.gallery-back-btn {
   position: absolute;
-  top: var(--spacing-xl);
-  right: var(--spacing-xl);
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  font-size: 28px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+  bottom: var(--spacing-xl);
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 10;
-}
-
-.gallery-close-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.1);
+  /* Inherits .back-button styles */
 }
 
 /* Photo Counter */
@@ -975,21 +960,28 @@ a:focus-visible {
 .gallery-image-container {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 100px); /* Leave room for back button */
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 80px var(--spacing-2xl);
+  padding: 60px var(--spacing-2xl) 20px;
+  cursor: grab;
+}
+
+.gallery-image-container:active {
+  cursor: grabbing;
 }
 
 /* Current Image */
 .gallery-current-image {
   max-width: 90%;
-  max-height: 85vh;
+  max-height: 70vh;
   object-fit: contain;
   border-radius: var(--radius-lg);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   transition: opacity 0.3s ease;
+  pointer-events: none; /* Prevent image from interfering with swipe */
+  user-select: none;
 }
 
 .gallery-current-image.loading {
@@ -1032,17 +1024,18 @@ a:focus-visible {
 /* Swipe Hint Overlay */
 .gallery-swipe-hint {
   position: absolute;
-  bottom: 100px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.5s ease, visibility 0.5s ease;
   z-index: 10;
+  pointer-events: none;
 }
 
 .gallery-swipe-hint.visible {
