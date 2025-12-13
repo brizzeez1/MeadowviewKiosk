@@ -271,7 +271,7 @@ button.disabled {
     box-shadow: var(--shadow-medium);
 }
 
-/* Back button */
+/* Back button - Blue themed */
 .back-button {
     display: inline-flex;
     align-items: center;
@@ -279,19 +279,25 @@ button.disabled {
     padding: var(--spacing-md) var(--spacing-2xl);
     font-size: var(--text-lg);
     font-weight: var(--weight-medium);
-    color: var(--color-text-secondary);
-    background-color: var(--color-bg-cream);
+    color: white;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
     border-radius: var(--radius-full);
     margin: var(--spacing-xl) auto 0;
     width: fit-content;
-    box-shadow: var(--shadow-soft);
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
     transition: all var(--transition-normal);
 }
 
 .back-button:hover {
-    background-color: var(--color-bg-light);
-    color: var(--color-text-primary);
+    background: linear-gradient(135deg, #1e40af 0%, #60a5fa 100%);
+    color: white;
     transform: translateX(-4px);
+    box-shadow: 0 6px 20px rgba(30, 58, 138, 0.45);
+}
+
+.back-button:active {
+    transform: translateX(-2px);
+    box-shadow: 0 2px 10px rgba(30, 58, 138, 0.35);
 }
 
 /* ================================================================
@@ -864,4 +870,36 @@ a:focus-visible {
 .btn-secondary:hover {
   background-color: var(--color-bg-cream);
   transform: translateY(-1px);
+}
+
+/* ============================================================
+   Kiosk Blue Theme Button
+   ============================================================ */
+
+.btn-kiosk-blue {
+  background: linear-gradient(
+    135deg,
+    #1e3a8a 0%,
+    #3b82f6 100%
+  );
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--spacing-md) var(--spacing-2xl);
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 15px rgba(30, 58, 138, 0.35);
+}
+
+.btn-kiosk-blue:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.5);
+}
+
+.btn-kiosk-blue:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(30, 58, 138, 0.4);
 }

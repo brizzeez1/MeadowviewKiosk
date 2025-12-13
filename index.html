@@ -177,13 +177,35 @@
   <div class="temple365-fullscreen">
 
     <div class="temple365-layout">
-      <!-- Left side: heading + description -->
-      <aside class="temple365-header">
-        <h2 class="view-title">Temple 365</h2>
-        <p class="view-description">
-          Track your ward's temple attendance throughout the year.
-          See progress toward your goals and celebrate milestones together.
-        </p>
+      <!-- Left side: heading + description + video -->
+      <aside class="temple365-sidebar">
+        <div class="temple365-header">
+          <h2 class="view-title">Temple 365</h2>
+          <p class="view-description">
+            This is more than a counter—it's a ward-wide reminder to keep the temple in our lives throughout 2026.
+          </p>
+          <p class="view-description">
+            Log each visit you make. If you want, take a kiosk selfie to add to a mosaic that represents our ward becoming One in Christ.
+          </p>
+          <p class="view-description temple365-goal">
+            Together we're aiming for 365 total visits in 2026.
+          </p>
+        </div>
+
+        <!-- President Nelson Video Module -->
+        <div class="temple365-video-card">
+          <div class="video-container">
+            <video id="presidentNelsonVideo"
+                   preload="metadata"
+                   playsinline>
+              <source src="https://drive.google.com/uc?export=download&id=18M0hcXZBfKWUjVukI-Kl7XleZZQU1C-D" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <button class="btn btn-kiosk-blue video-play-btn" id="videoPlayBtn">
+            Start Video
+          </button>
+        </div>
       </aside>
 
       <!-- Right side: full-height iframe -->
@@ -210,34 +232,82 @@
         <!-- ========================================================
              SCREEN 4: SELFIE CAPTURE VIEW
              ========================================================
-             Placeholder for the camera/selfie feature.
+             Webcam selfie capture for the ward mosaic.
              ======================================================== -->
         <section id="selfie-screen" class="screen">
-            <div class="view-container">
-                <div class="view-card">
+            <div class="view-container selfie-view-container">
+                <div class="view-card selfie-card">
                     <h2 class="view-title">Take a Selfie</h2>
                     <div class="view-content">
-                        <p class="view-description">
-                            Capture a photo to share on our ward display board!
-                            Perfect for new members, visiting family, or special occasions.
+                        <p class="view-description selfie-instructions">
+                            Help us build our ward selfie mosaic—showing us becoming One in Christ.
                         </p>
-                        <div class="placeholder-box camera-placeholder">
-                            <div class="camera-icon-large">📷</div>
-                            <p class="placeholder-text">
-                                <!-- TODO: Implement camera capture using navigator.mediaDevices.getUserMedia() -->
-                                <!-- TODO: Connect to backend /api/selfies endpoint -->
-                                Camera preview will appear here.
-                            </p>
+                        <p class="view-description selfie-instructions">
+                            Tap <strong>Take Selfie</strong>, look at the camera, and smile. If you like the photo, choose <strong>Yes</strong> to add it to the mosaic.
+                        </p>
+
+                        <!-- Camera Preview Container -->
+                        <div class="selfie-preview-wrapper">
+                            <div class="selfie-preview-container" id="selfiePreviewContainer">
+                                <!-- Video preview (live camera) -->
+                                <video id="selfieVideo" autoplay playsinline muted></video>
+                                <!-- Canvas for captured image (hidden until capture) -->
+                                <canvas id="selfieCanvas"></canvas>
+                                <!-- Captured image preview -->
+                                <img id="selfiePreviewImg" alt="Captured selfie" style="display: none;">
+
+                                <!-- Countdown overlay -->
+                                <div class="selfie-countdown-overlay" id="selfieCountdown">
+                                    <span class="countdown-number" id="countdownNumber">3</span>
+                                </div>
+
+                                <!-- Camera error message -->
+                                <div class="selfie-error-overlay" id="selfieError" style="display: none;">
+                                    <div class="error-icon">⚠️</div>
+                                    <p class="error-message" id="selfieErrorMsg">Camera not available</p>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Capture Button -->
                         <div class="selfie-actions">
-                            <!-- TODO: Add capture button, retake button, and save button -->
-                            <button class="action-button disabled" disabled>
-                                Capture (Coming Soon)
+                            <button class="btn btn-kiosk-blue selfie-capture-btn" id="selfieCaptureBtn">
+                                Take Selfie
                             </button>
                         </div>
+
+                        <!-- Status message -->
+                        <p class="selfie-status" id="selfieStatus"></p>
                     </div>
                     <button class="back-button" data-action="home">
                         ← Back to Home
+                    </button>
+                </div>
+            </div>
+
+            <!-- Selfie Confirmation Modal -->
+            <div id="selfieConfirmModal" class="modal-backdrop hidden">
+                <div class="modal selfie-confirm-modal">
+                    <h2>Use this photo?</h2>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn btn-secondary" id="selfieConfirmNo">
+                            No
+                        </button>
+                        <button type="button" class="btn btn-kiosk-blue" id="selfieConfirmYes">
+                            Yes
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selfie Success Modal -->
+            <div id="selfieSuccessModal" class="modal-backdrop hidden">
+                <div class="modal selfie-success-modal">
+                    <div class="success-icon-large">✓</div>
+                    <h2>Saved!</h2>
+                    <p>Thank you for adding to our ward mosaic.</p>
+                    <button type="button" class="btn btn-kiosk-blue" id="selfieSuccessOk">
+                        OK
                     </button>
                 </div>
             </div>
@@ -465,6 +535,8 @@
     <script src="js/missionaryDetail.js"></script>
     <script src="js/floatingQR.js"></script>
     <script src="js/phase2Placeholders.js"></script>
+    <script src="js/selfieCapture.js"></script>
+    <script src="js/temple365Video.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

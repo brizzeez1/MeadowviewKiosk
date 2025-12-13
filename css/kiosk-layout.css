@@ -195,23 +195,24 @@
     bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 10px 24px;
+    padding: 12px 28px;
 
-    /* Glowing reflective plate look */
-    background: rgba(20, 20, 20, 0.55);
+    /* Blue theme to match "Touch anywhere" button */
+    background: rgba(30, 58, 138, 0.75);
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(59, 130, 246, 0.4);
 
-    /* LDS serif font */
+    /* Match the prompt card font styling */
     font-family: "Georgia", "Times New Roman", serif;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: 600;
-    color: #f5f5f5;
-    letter-spacing: 0.4px;
+    color: #fdf8ec;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 
     /* Glow + deep shadow for readability */
-    text-shadow: 0 2px 6px rgba(0,0,0,0.9);
-    box-shadow: 0 6px 28px rgba(0,0,0,0.6);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 6px 28px rgba(30, 58, 138, 0.5);
 
     /* Animations */
     opacity: 0;
@@ -627,32 +628,84 @@
     );
 }
 
-/* Two-column area: header on left, app on right */
+/* Two-column area: sidebar on left, iframe on right */
 .temple365-layout {
     flex: 1;                       /* take all available height above Back button */
     width: 100%;
     max-width: 1800px;
     display: flex;
-    gap: var(--spacing-2xl);
+    gap: var(--spacing-xl);
     margin: 0 auto;
+    min-height: 0;                 /* Allow flex child to shrink */
 }
 
-/* Left column: title + description */
-.temple365-header {
-    width: 220px;                  /* fixed-ish sidebar */
-    max-width: 260px;
+/* Left sidebar: title + description + video */
+.temple365-sidebar {
+    width: 280px;                  /* Fixed sidebar width */
+    min-width: 260px;
+    max-width: 320px;
+    flex-shrink: 0;                /* Don't let it shrink */
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: var(--spacing-lg);
+    padding-right: var(--spacing-md);
+}
+
+/* Header section within sidebar */
+.temple365-header {
+    display: flex;
+    flex-direction: column;
     text-align: left;
 }
 
 .temple365-header .view-title {
     margin-bottom: var(--spacing-md);
+    font-size: var(--text-4xl);
 }
 
 .temple365-header .view-description {
-    margin: 0;
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: var(--text-base);
+    line-height: 1.6;
+}
+
+.temple365-header .temple365-goal {
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    margin-top: var(--spacing-sm);
+}
+
+/* Video card module */
+.temple365-video-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.temple365-video-card .video-container {
+    position: relative;
+    width: 100%;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: #000;
+    aspect-ratio: 16 / 9;
+}
+
+.temple365-video-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.temple365-video-card .video-play-btn {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--text-base);
 }
 
 /* Right column: iframe fills height */
@@ -891,12 +944,12 @@
 
 @keyframes templeNameGlowPulse {
     0% {
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
-        background: rgba(0, 0, 0, 0.40);
+        box-shadow: 0 6px 22px rgba(30, 58, 138, 0.45);
+        background: rgba(30, 58, 138, 0.70);
     }
     100% {
-        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65);
-        background: rgba(0, 0, 0, 0.55);
+        box-shadow: 0 10px 32px rgba(30, 58, 138, 0.65);
+        background: rgba(30, 58, 138, 0.80);
     }
 }
 @keyframes promptPulse {
@@ -909,6 +962,240 @@
         transform: scale(1.03);
         opacity: 1;
         box-shadow: 0 16px 40px rgba(30, 58, 138, 0.65);
+    }
+}
+
+
+/* ================================================================
+   SECTION 7: SELFIE CAPTURE SCREEN STYLES
+   ================================================================
+   Styles for the webcam selfie capture functionality.
+   ================================================================ */
+
+/* Selfie view container */
+.selfie-view-container {
+    padding: var(--spacing-xl);
+}
+
+.selfie-card {
+    max-width: 700px;
+    padding: var(--spacing-xl) var(--spacing-2xl);
+}
+
+.selfie-card .view-title {
+    margin-bottom: var(--spacing-md);
+}
+
+.selfie-instructions {
+    font-size: var(--text-lg);
+    max-width: 550px;
+    margin: 0 auto var(--spacing-sm);
+    text-align: center;
+}
+
+.selfie-instructions strong {
+    color: var(--color-text-primary);
+}
+
+/* Camera preview wrapper */
+.selfie-preview-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: var(--spacing-xl) 0;
+}
+
+/* Camera preview container */
+.selfie-preview-container {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    aspect-ratio: 4 / 3;
+    background: #1a1a1a;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-medium);
+    border: 3px solid var(--border, #e2e8f0);
+}
+
+.selfie-preview-container video,
+.selfie-preview-container canvas,
+.selfie-preview-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.selfie-preview-container video {
+    transform: scaleX(-1);  /* Mirror the preview */
+}
+
+.selfie-preview-container canvas {
+    display: none;
+}
+
+.selfie-preview-container img {
+    transform: scaleX(-1);  /* Keep mirrored for preview */
+    z-index: 5;
+}
+
+/* Countdown overlay */
+.selfie-countdown-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.selfie-countdown-overlay.active {
+    display: flex;
+}
+
+.countdown-number {
+    font-family: var(--font-display);
+    font-size: 8rem;
+    font-weight: var(--weight-bold);
+    color: white;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    animation: countdownPulse 1s ease-in-out infinite;
+}
+
+@keyframes countdownPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.8;
+    }
+}
+
+/* Camera error overlay */
+.selfie-error-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(30, 30, 30, 0.95);
+    z-index: 15;
+}
+
+.selfie-error-overlay .error-icon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.selfie-error-overlay .error-message {
+    color: #f87171;
+    font-size: var(--text-lg);
+    text-align: center;
+    padding: 0 var(--spacing-lg);
+}
+
+/* Capture button area */
+.selfie-actions {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    justify-content: center;
+}
+
+.selfie-capture-btn {
+    min-width: 200px;
+    padding: var(--spacing-md) var(--spacing-2xl);
+    font-size: var(--text-xl);
+}
+
+.selfie-capture-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Status message */
+.selfie-status {
+    text-align: center;
+    margin-top: var(--spacing-md);
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    min-height: 1.5em;
+}
+
+/* Selfie confirmation modal */
+.selfie-confirm-modal {
+    text-align: center;
+    padding: var(--spacing-xl);
+}
+
+.selfie-confirm-modal h2 {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--spacing-lg);
+}
+
+.selfie-confirm-modal .modal-buttons {
+    gap: var(--spacing-lg);
+}
+
+.selfie-confirm-modal .btn {
+    min-width: 120px;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--text-lg);
+}
+
+/* Selfie success modal */
+.selfie-success-modal {
+    text-align: center;
+    padding: var(--spacing-xl);
+}
+
+.selfie-success-modal .success-icon-large {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-lg);
+    font-size: 2.5rem;
+    color: white;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+}
+
+.selfie-success-modal h2 {
+    color: #16a34a;
+    font-size: var(--text-3xl);
+    margin-bottom: var(--spacing-sm);
+}
+
+.selfie-success-modal p {
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Responsive adjustments for selfie screen */
+@media screen and (max-width: 600px) {
+    .selfie-preview-container {
+        max-width: 100%;
+    }
+
+    .selfie-instructions {
+        font-size: var(--text-base);
+    }
+
+    .countdown-number {
+        font-size: 5rem;
     }
 }
 
