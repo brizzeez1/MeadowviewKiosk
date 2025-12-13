@@ -119,24 +119,26 @@ const Temple365Video = (function() {
      * Handle video error.
      */
     function handleVideoError(e) {
-        console.error('[Temple365Video] Video error:', e);
+    console.error('[Temple365Video] Video error:', e);
 
-        // Show fallback link
-        var fallback = document.getElementById('videoFallback');
-        if (fallback) {
-            fallback.style.display = 'flex';
-        }
-
-        // Hide video element
-        if (_videoElement) {
-            _videoElement.style.display = 'none';
-        }
-
-        _playButton.textContent = 'Open in Drive';
-        _playButton.onclick = function() {
-            window.open('https://drive.google.com/file/d/18M0hcXZBfKWUjVukI-Kl7XleZZQU1C-D/view', '_blank');
-        };
+    // Show local-only fallback message
+    var fallback = document.getElementById('videoFallback');
+    if (fallback) {
+        fallback.style.display = 'flex';
     }
+
+    // Hide video element
+    if (_videoElement) {
+        _videoElement.style.display = 'none';
+    }
+
+    // Disable the play button since there is nothing to play
+    if (_playButton) {
+        _playButton.textContent = 'Video Not Found';
+        _playButton.disabled = true;
+    }
+}
+
 
 
     /* ============================================================
