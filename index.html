@@ -192,52 +192,25 @@
           </p>
         </div>
 
-        <!-- President Nelson Video Module -->
-        <div class="temple365-video-card">
-          <div class="video-container">
-            <!--
-              VIDEO OPTIONS - Uncomment ONE of these options:
+        <!-- President Nelson Video Module (LOCAL ONLY) -->
+<div class="temple365-video-card">
+  <div class="video-container">
+    <video id="presidentNelsonVideo" preload="auto" playsinline>
+      <source src="assets/videos/president_nelson.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
 
-              OPTION 1: YouTube Embed (RECOMMENDED - most reliable)
-              Replace VIDEO_ID with your YouTube video ID
-          
-           
-            <iframe
-              id="presidentNelsonYouTube"
-              src="https://www.youtube.com/embed/jyx-hCbExRo?rel=0&modestbranding=1"
-              title="President Nelson - Temple Message"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-              style="width: 100%; height: 100%; border-radius: 8px;">
-            </iframe>
+    <!-- Local-only fallback (no Drive links) -->
+    <div class="video-fallback" id="videoFallback" style="display: none;">
+      <p>Video Not Found.</p>
+    </div>
+  </div>
 
-           
-              OPTION 2: Local MP4 File (uncomment below, comment out YouTube above)
-              Place your video file at: assets/videos/president_nelson.mp4
--->
-            <video id="presidentNelsonVideo"
-                   preload="auto"
-                   playsinline>
-              <source src="assets/videos/president_nelson.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-          
-           
-            <!-- Fallback message if video fails 
-            <div class="video-fallback" id="videoFallback">
-              <p>Video unavailable</p>
-              <a href="https://drive.google.com/file/d/18M0hcXZBfKWUjVukI-Kl7XleZZQU1C-D/view" target="_blank" class="video-link">
-                Watch on Google Drive →
-              </a>
-            </div>
-              -->
-          </div>
-          <!-- Note: YouTube has its own play controls, so hide this button when using YouTube -->
-          <button class="btn btn-kiosk-blue video-play-btn" id="videoPlayBtn">
-            Start Video
-          </button>
-        </div>
+  <button class="btn btn-kiosk-blue video-play-btn" id="videoPlayBtn">
+    Start Video
+  </button>
+</div>
+
       </aside>
 
       <!-- Right side: full-height iframe -->
