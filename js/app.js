@@ -518,9 +518,25 @@ function goToSelfieView() {
 
 // 2) Listen for messages coming from the Temple 365 iframe
 window.addEventListener('message', function(event) {
-  // SECURITY: Validate origin - only accept from Google Apps Script
-  if (!event.origin || !event.origin.includes('script.google.com')) {
-    console.warn('[Kiosk] Rejected message from unauthorized origin:', event.origin);
+  // SECURITY: Validate origin - accept from Google Apps Script domains
+  // Apps Script can serve from script.google.com or googleusercontent.com
+  var validOrigins = ['script.google.com', 'googleusercontent.com', 'google.com'];
+  var originValid = false;
+
+  if (event.origin) {
+    for (var i = 0; i < validOrigins.length; i++) {
+      if (event.origin.indexOf(validOrigins[i]) !== -1) {
+        originValid = true;
+        break;
+      }
+    }
+  }
+
+  if (!originValid) {
+    // Only log if it looks like it might be from Temple365 (has source property)
+    if (event.data && event.data.source === 'Temple365') {
+      console.warn('[Kiosk] Message from Temple365 rejected - origin:', event.origin);
+    }
     return;
   }
 

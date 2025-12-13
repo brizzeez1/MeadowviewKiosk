@@ -195,17 +195,34 @@
         <!-- President Nelson Video Module -->
         <div class="temple365-video-card">
           <div class="video-container">
-            <!-- Using Google Drive embed URL for streaming -->
+            <!--
+              VIDEO OPTIONS - Uncomment ONE of these options:
+
+              OPTION 1: YouTube Embed (RECOMMENDED - most reliable)
+              Replace VIDEO_ID with your YouTube video ID
+            -->
+            <iframe
+              id="presidentNelsonYouTube"
+              src="https://www.youtube.com/embed/jyx-hCbExRo?rel=0&modestbranding=1"
+              title="President Nelson - Temple Message"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              style="width: 100%; height: 100%; border-radius: 8px;">
+            </iframe>
+
+            <!--
+              OPTION 2: Local MP4 File (uncomment below, comment out YouTube above)
+              Place your video file at: assets/videos/president_nelson.mp4
+
             <video id="presidentNelsonVideo"
                    preload="auto"
-                   playsinline
-                   crossorigin="anonymous">
-              <!-- Local video file - place video in assets/videos/ folder -->
+                   playsinline>
               <source src="assets/videos/president_nelson.mp4" type="video/mp4">
-              <!-- Fallback: Google Drive preview URL -->
-              <source src="https://drive.google.com/uc?export=preview&id=18M0hcXZBfKWUjVukI-Kl7XleZZQU1C-D" type="video/mp4">
               Your browser does not support the video tag.
             </video>
+            -->
+
             <!-- Fallback message if video fails -->
             <div class="video-fallback" id="videoFallback" style="display: none;">
               <p>Video unavailable</p>
@@ -214,7 +231,8 @@
               </a>
             </div>
           </div>
-          <button class="btn btn-kiosk-blue video-play-btn" id="videoPlayBtn">
+          <!-- Note: YouTube has its own play controls, so hide this button when using YouTube -->
+          <button class="btn btn-kiosk-blue video-play-btn" id="videoPlayBtn" style="display: none;">
             Start Video
           </button>
         </div>
