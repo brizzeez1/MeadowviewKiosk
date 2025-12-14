@@ -504,6 +504,8 @@ a:focus-visible {
     /* Scroll when we have more than 2 rows of missionaries */
     overflow-y: auto;
     overflow-x: hidden;
+
+
 }
 
 
