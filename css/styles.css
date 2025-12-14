@@ -505,10 +505,7 @@ a:focus-visible {
     overflow-y: auto;
     overflow-x: hidden;
 
-    /* Make touch swipe/drag scroll work reliably */
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+
 }
 
 
