@@ -1,326 +1,296 @@
 /* ================================================================
    MISSIONARYSPOTLIGHT.JS - MISSIONARY GRID VIEW
    ================================================================
-   This module handles the missionary grid/spotlight feature:
-   - Displays a grid of missionary squares
-   - Auto-calculates grid layout based on missionary count
-   - Shows missionary photos or silhouette placeholders
-   - Handles clicks to navigate to individual missionary details
-
-   PURPOSE:
-   Shows all current missionaries from the ward in an organized
-   grid layout that auto-sizes to fit all missionaries on screen.
+   Handles the missionary grid view:
+   - Displays all missionaries in a responsive grid
+   - Supports mouse wheel scrolling AND touch drag scrolling
+   - Prevents accidental taps while scrolling
+   - Navigates to missionary detail view on intentional tap
    ================================================================ */
 
-const MissionarySpotlight = (function() {
-    'use strict';
+const MissionarySpotlight = (function () {
+  'use strict';
 
-    /* ============================================================
-       SECTION 1: PRIVATE VARIABLES
-       ============================================================ */
+  /* ============================================================
+     SECTION 1: PRIVATE VARIABLES
+     ============================================================ */
 
-    let _gridContainer = null;
-    let _missionaries = [];
-    let _isActive = false;
-    let _scrollHintDismissed = false;
-    let _hideHintOnScrollHandler = null;
+  let _gridContainer = null;
+  let _missionaries = [];
+  let _isActive = false;
 
-    /* ============================================================
-       SECTION 2: INITIALIZATION
-       ============================================================ */
+  // Scroll hint handling
+  let _scrollHintDismissed = false;
+  let _hideHintOnScrollHandler = null;
 
-    /**
-     * Initialize the missionary spotlight module.
-     * Call this once when the app starts.
-     */
-    function init() {
-        _gridContainer = document.getElementById('missionary-grid');
+  // Drag-to-scroll state
+  let _isDraggingScroll = false;
+  let _dragStartY = 0;
+  let _dragStartScrollTop = 0;
+  let _dragMoved = false;
 
-        if (!_gridContainer) {
-            console.error('[MissionarySpotlight] Grid container not found!');
-            return;
-        }
+  /* ============================================================
+     SECTION 2: INITIALIZATION
+     ============================================================ */
 
-        // Load missionary data from config
-        loadMissionaryData();
+  function init() {
+    _gridContainer = document.getElementById('missionary-grid');
 
-        ConfigLoader.debugLog('Missionary spotlight initialized');
+    if (!_gridContainer) {
+      console.error('[MissionarySpotlight] Grid container not found!');
+      return;
     }
 
-    /* ============================================================
-       SECTION 3: DATA LOADING
-       ============================================================ */
+    enableDragToScroll(_gridContainer);
+    loadMissionaryData();
 
-    /**
-     * Load missionary data from the config.
-     */
-    function loadMissionaryData() {
-        if (window.KIOSK_CONFIG && window.KIOSK_CONFIG.MISSIONARIES) {
-            _missionaries = window.KIOSK_CONFIG.MISSIONARIES.MISSIONARIES_LIST || [];
-            ConfigLoader.debugLog('Loaded', _missionaries.length, 'missionaries');
-        } else {
-            console.error('[MissionarySpotlight] No missionary data in config!');
-            _missionaries = [];
-        }
+    ConfigLoader.debugLog('Missionary spotlight initialized');
+  }
+
+  /* ============================================================
+     SECTION 3: DRAG-TO-SCROLL (TOUCH + MOUSE)
+     ============================================================ */
+
+  function enableDragToScroll(container) {
+    container.style.cursor = 'grab';
+
+    container.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+      _isDraggingScroll = true;
+      _dragMoved = false;
+      _dragStartY = e.clientY;
+      _dragStartScrollTop = container.scrollTop;
+
+      container.setPointerCapture(e.pointerId);
+      container.style.cursor = 'grabbing';
+    });
+
+    container.addEventListener(
+      'pointermove',
+      (e) => {
+        if (!_isDraggingScroll) return;
+
+        const deltaY = e.clientY - _dragStartY;
+        if (Math.abs(deltaY) > 6) _dragMoved = true;
+
+        container.scrollTop = _dragStartScrollTop - deltaY;
+        e.preventDefault();
+      },
+      { passive: false }
+    );
+
+    function endDrag(e) {
+      if (!_isDraggingScroll) return;
+      _isDraggingScroll = false;
+      container.style.cursor = 'grab';
+
+      try {
+        container.releasePointerCapture(e.pointerId);
+      } catch (_) {}
     }
 
-    /* ============================================================
-       SECTION 4: GRID LAYOUT CALCULATION
-       ============================================================ */
+    container.addEventListener('pointerup', endDrag);
+    container.addEventListener('pointercancel', endDrag);
+  }
 
-    /**
-     * Calculate the optimal grid layout (columns x rows).
-     * @param {number} count - Number of missionaries
-     * @returns {Object} - { cols, rows }
-     */
-    function calculateGridLayout(count) {
-        if (count === 0) return { cols: 0, rows: 0 };
+  /* ============================================================
+     SECTION 4: DATA LOADING
+     ============================================================ */
 
-        // Try to make a roughly square grid
-        const cols = Math.ceil(Math.sqrt(count));
-        const rows = Math.ceil(count / cols);
+  function loadMissionaryData() {
+    if (
+      window.KIOSK_CONFIG &&
+      window.KIOSK_CONFIG.MISSIONARIES &&
+      Array.isArray(window.KIOSK_CONFIG.MISSIONARIES.MISSIONARIES_LIST)
+    ) {
+      _missionaries = window.KIOSK_CONFIG.MISSIONARIES.MISSIONARIES_LIST;
+      ConfigLoader.debugLog('Loaded', _missionaries.length, 'missionaries');
+    } else {
+      console.error('[MissionarySpotlight] No missionary data found in config!');
+      _missionaries = [];
+    }
+  }
 
-        return { cols, rows };
+  /* ============================================================
+     SECTION 5: GRID LAYOUT
+     ============================================================ */
+
+  function calculateGridLayout(count) {
+    if (count === 0) return { cols: 0, rows: 0 };
+
+    const cols = Math.ceil(Math.sqrt(count));
+    const rows = Math.ceil(count / cols);
+    return { cols, rows };
+  }
+
+  /* ============================================================
+     SECTION 6: GRID RENDERING
+     ============================================================ */
+
+  function renderGrid() {
+    if (!_gridContainer) return;
+
+    _gridContainer.innerHTML = '';
+
+    if (_missionaries.length === 0) {
+      _gridContainer.innerHTML =
+        '<p class="placeholder-text">No missionaries configured.</p>';
+      return;
     }
 
-    /* ============================================================
-       SECTION 5: GRID RENDERING
-       ============================================================ */
+    const layout = calculateGridLayout(_missionaries.length);
+    _gridContainer.style.gridTemplateColumns = `repeat(${layout.cols}, 1fr)`;
+    _gridContainer.style.gridTemplateRows = `repeat(${layout.rows}, auto)`;
 
-    /**
-     * Render the missionary grid.
-     */
-    function renderGrid() {
-        if (!_gridContainer) return;
+    _missionaries.forEach((missionary) => {
+      _gridContainer.appendChild(createMissionarySquare(missionary));
+    });
 
-        // Clear existing content
-        _gridContainer.innerHTML = '';
+    _scrollHintDismissed = false;
+    scheduleScrollHintUpdate();
+  }
 
-        if (_missionaries.length === 0) {
-            _gridContainer.innerHTML = '<p class="placeholder-text">No missionaries configured yet.</p>';
-            return;
-        }
+  function createMissionarySquare(missionary) {
+    const square = document.createElement('div');
+    square.className = 'missionary-square';
+    square.dataset.missionaryId = missionary.id;
 
-        // Calculate grid layout
-        const layout = calculateGridLayout(_missionaries.length);
+    const photoContainer = document.createElement('div');
+    photoContainer.className = 'missionary-photo-container';
 
-        // Use fr units for columns to distribute width evenly
-        // Use auto for rows to allow natural height and scrolling
-        _gridContainer.style.gridTemplateColumns = `repeat(${layout.cols}, 1fr)`;
-        _gridContainer.style.gridTemplateRows = `repeat(${layout.rows}, auto)`;
-
-        // Create missionary squares
-        _missionaries.forEach(missionary => {
-            const square = createMissionarySquare(missionary);
-            _gridContainer.appendChild(square);
-        });
-
-        ConfigLoader.debugLog('Rendered', _missionaries.length, 'missionary squares in',
-                             `${layout.cols}x${layout.rows}`, 'grid (responsive fr-based layout)');
-
-        _scrollHintDismissed = false;
-        scheduleScrollHintUpdate();
+    if (missionary.photoUrl) {
+      const img = document.createElement('img');
+      img.src = missionary.photoUrl;
+      img.alt = missionary.name;
+      img.className = 'missionary-photo';
+      photoContainer.appendChild(img);
+    } else {
+      photoContainer.innerHTML = createSilhouetteSVG();
     }
 
-    /**
-     * Create a missionary square element.
-     * @param {Object} missionary - The missionary data
-     * @returns {HTMLElement} - The square element
-     */
-    function createMissionarySquare(missionary) {
-        const square = document.createElement('div');
-        square.className = 'missionary-square';
-        square.setAttribute('data-missionary-id', missionary.id);
+    square.appendChild(photoContainer);
 
-        // Photo container
-        const photoContainer = document.createElement('div');
-        photoContainer.className = 'missionary-photo-container';
+    const nameLabel = document.createElement('div');
+    nameLabel.className = 'missionary-name-label';
+    nameLabel.textContent = missionary.name;
+    square.appendChild(nameLabel);
 
-        if (missionary.photoUrl) {
-            // Use actual photo
-            const img = document.createElement('img');
-            img.src = missionary.photoUrl;
-            img.alt = missionary.name;
-            img.className = 'missionary-photo';
-            photoContainer.appendChild(img);
-        } else {
-            // Use silhouette placeholder
-            const silhouette = createSilhouetteSVG();
-            photoContainer.innerHTML = silhouette;
-        }
+    square.addEventListener('click', () => {
+      if (_dragMoved) return;
+      handleMissionaryClick(missionary.id);
+    });
 
-        square.appendChild(photoContainer);
+    square.addEventListener('touchend', (e) => {
+      if (_dragMoved) return;
+      e.preventDefault();
+      handleMissionaryClick(missionary.id);
+    });
 
-        // Name label
-        const nameLabel = document.createElement('div');
-        nameLabel.className = 'missionary-name-label';
-        nameLabel.textContent = missionary.name;
-        square.appendChild(nameLabel);
+    return square;
+  }
 
-        // Click handler
-        square.addEventListener('click', () => handleMissionaryClick(missionary.id));
-        square.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            handleMissionaryClick(missionary.id);
-        });
+  /* ============================================================
+     SECTION 7: SCROLL HINT
+     ============================================================ */
 
-        return square;
+  function scheduleScrollHintUpdate() {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(updateScrollHint);
+    });
+  }
+
+  function updateScrollHint() {
+    const hintEl = document.getElementById('missionary-scroll-hint');
+    if (!hintEl || !_gridContainer) return;
+
+    const canScroll =
+      _gridContainer.scrollHeight > _gridContainer.clientHeight;
+    const shouldHide = !canScroll || _scrollHintDismissed;
+
+    hintEl.classList.toggle('hidden', shouldHide);
+    if (shouldHide) return;
+
+    if (_hideHintOnScrollHandler) {
+      _gridContainer.removeEventListener(
+        'scroll',
+        _hideHintOnScrollHandler
+      );
     }
 
-    /**
-     * Wait for layout to settle, then update the scroll hint visibility.
-     * Uses double RAF to ensure grid dimensions reflect any late layout changes.
-     */
-    function scheduleScrollHintUpdate() {
-        requestAnimationFrame(() => {
-            requestAnimationFrame(updateScrollHint);
-        });
-    }
-
-    /**
-     * Toggle the scroll hint based on overflow and hide after the first scroll.
-     */
-    function updateScrollHint() {
-        if (!_gridContainer) return;
-
-        const hintEl = document.getElementById('missionary-scroll-hint');
-        if (!hintEl) return;
-
-        const images = _gridContainer.querySelectorAll('img');
-        images.forEach(img => {
-            if (img.complete) return;
-            img.addEventListener('load', scheduleScrollHintUpdate, { once: true });
-        });
-
-        const canScroll = _gridContainer.scrollHeight > _gridContainer.clientHeight;
-        const shouldHide = !canScroll || _scrollHintDismissed;
-
-        hintEl.classList.toggle('hidden', shouldHide);
-
-        if (shouldHide) return;
-
-        if (_hideHintOnScrollHandler) {
-            _gridContainer.removeEventListener('scroll', _hideHintOnScrollHandler);
-        }
-
-        _hideHintOnScrollHandler = () => {
-            if (_gridContainer.scrollTop !== 0) {
-                _scrollHintDismissed = true;
-                hintEl.classList.add('hidden');
-            }
-        };
-
-        _gridContainer.addEventListener('scroll', _hideHintOnScrollHandler, { once: true });
-    }
-
-    /**
-     * Create a silhouette placeholder SVG.
-     * @returns {string} - SVG markup
-     */
-    function createSilhouetteSVG() {
-        return `
-            <svg class="missionary-silhouette" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <!-- Head circle -->
-                <circle cx="50" cy="35" r="15" fill="var(--color-text-muted)" opacity="0.3"/>
-                <!-- Shoulders/body -->
-                <ellipse cx="50" cy="70" rx="25" ry="20" fill="var(--color-text-muted)" opacity="0.3"/>
-            </svg>
-        `;
-    }
-
-    /* ============================================================
-       SECTION 6: EVENT HANDLERS
-       ============================================================ */
-
-    /**
-     * Handle click on a missionary square.
-     * @param {number} missionaryId - The missionary ID
-     */
-    function handleMissionaryClick(missionaryId) {
-        ConfigLoader.debugLog('Missionary clicked:', missionaryId);
-
-        // Dispatch event for app.js to handle navigation
-        window.dispatchEvent(new CustomEvent('navigate-missionary-detail', {
-            detail: { missionaryId }
-        }));
-    }
-
-    /* ============================================================
-       SECTION 7: ACTIVATION / DEACTIVATION
-       ============================================================ */
-
-    /**
-     * Activate the missionary spotlight view.
-     * Called when transitioning to MISSIONARIES state.
-     */
-    function activate() {
-        _isActive = true;
-
-        // Render the grid
-        renderGrid();
-
-        ConfigLoader.debugLog('Missionary spotlight activated');
-    }
-
-    /**
-     * Deactivate the missionary spotlight view.
-     */
-    function deactivate() {
-        _isActive = false;
-        ConfigLoader.debugLog('Missionary spotlight deactivated');
-    }
-
-    /**
-     * Check if missionary spotlight is currently active.
-     * @returns {boolean} True if active
-     */
-    function isActive() {
-        return _isActive;
-    }
-
-    /* ============================================================
-       SECTION 8: DATA RETRIEVAL
-       ============================================================ */
-
-    /**
-     * Get a missionary by ID.
-     * @param {number} id - The missionary ID
-     * @returns {Object|null} - The missionary object or null
-     */
-    function getMissionaryById(id) {
-        return _missionaries.find(m => m.id === id) || null;
-    }
-
-    /**
-     * Get all missionaries.
-     * @returns {Array} - Array of missionary objects
-     */
-    function getAllMissionaries() {
-        return [..._missionaries];
-    }
-
-    /* ============================================================
-       SECTION 9: PUBLIC API
-       ============================================================ */
-
-    return {
-        // Initialization
-        init: init,
-
-        // Activation
-        activate: activate,
-        deactivate: deactivate,
-        isActive: isActive,
-
-        // Data access
-        getMissionaryById: getMissionaryById,
-        getAllMissionaries: getAllMissionaries,
-
-        // Rendering
-        renderGrid: renderGrid
+    _hideHintOnScrollHandler = () => {
+      if (_gridContainer.scrollTop !== 0) {
+        _scrollHintDismissed = true;
+        hintEl.classList.add('hidden');
+      }
     };
 
+    _gridContainer.addEventListener(
+      'scroll',
+      _hideHintOnScrollHandler,
+      { once: true }
+    );
+  }
+
+  /* ============================================================
+     SECTION 8: UTILITIES
+     ============================================================ */
+
+  function createSilhouetteSVG() {
+    return `
+      <svg class="missionary-silhouette" viewBox="0 0 100 100">
+        <circle cx="50" cy="35" r="15" opacity="0.3"/>
+        <ellipse cx="50" cy="70" rx="25" ry="20" opacity="0.3"/>
+      </svg>
+    `;
+  }
+
+  function handleMissionaryClick(missionaryId) {
+    window.dispatchEvent(
+      new CustomEvent('navigate-missionary-detail', {
+        detail: { missionaryId },
+      })
+    );
+  }
+
+  /* ============================================================
+     SECTION 9: ACTIVATION
+     ============================================================ */
+
+  function activate() {
+    _isActive = true;
+    renderGrid();
+  }
+
+  function deactivate() {
+    _isActive = false;
+  }
+
+  function isActive() {
+    return _isActive;
+  }
+
+  function getMissionaryById(id) {
+    return _missionaries.find((m) => m.id === id) || null;
+  }
+
+  function getAllMissionaries() {
+    return [..._missionaries];
+  }
+
+  /* ============================================================
+     SECTION 10: PUBLIC API
+     ============================================================ */
+
+  return {
+    init,
+    activate,
+    deactivate,
+    isActive,
+    getMissionaryById,
+    getAllMissionaries,
+    renderGrid,
+  };
 })();
 
-// Make available globally
 window.MissionarySpotlight = MissionarySpotlight;
