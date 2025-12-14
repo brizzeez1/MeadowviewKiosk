@@ -504,6 +504,11 @@ a:focus-visible {
     /* Scroll when we have more than 2 rows of missionaries */
     overflow-y: auto;
     overflow-x: hidden;
+
+    /* Make touch swipe/drag scroll work reliably */
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 
