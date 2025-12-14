@@ -88,6 +88,7 @@ const KioskApp = (function() {
 
             // Initialize missionary modules
             MissionarySpotlight.init();
+            MissionaryGallery.init();
             MissionaryDetail.init();
 
             // Initialize floating QR code
@@ -95,6 +96,12 @@ const KioskApp = (function() {
 
             // Initialize Phase 2 placeholders
             Phase2Placeholders.initAll();
+
+            // Initialize selfie capture module
+            SelfieCapture.init();
+
+            // Initialize Temple 365 video module
+            Temple365Video.init();
 
             // Set up event listeners
             setupEventListeners();
@@ -216,10 +223,12 @@ const KioskApp = (function() {
                 
             case STATES.TEMPLE_365:
                 Views.renderTemple365View();
+                Temple365Video.activate();
                 break;
-                
+
             case STATES.SELFIE:
                 Views.renderSelfieView();
+                SelfieCapture.activate();
                 break;
                 
             case STATES.BULLETIN:
@@ -276,8 +285,13 @@ const KioskApp = (function() {
                 MissionaryDetail.deactivate();
                 break;
 
-            // TODO: Add cleanup for other states as needed
-            // For example, stopping camera for SELFIE state
+            case STATES.SELFIE:
+                SelfieCapture.deactivate();
+                break;
+
+            case STATES.TEMPLE_365:
+                Temple365Video.deactivate();
+                break;
         }
     }
 
@@ -475,6 +489,126 @@ const KioskApp = (function() {
     };
 
 })();
+// ============================================================
+// Kiosk <-> Temple 365 integration for optional selfie
+// ============================================================
+
+// Allowed message types from Temple 365 iframe
+const ALLOWED_MESSAGE_TYPES = [
+    'TEMPLE_VISIT_LOGGED',
+    'NAVIGATE_TO_SELFIE'
+];
+
+// Security token for postMessage validation (optional additional security)
+const MESSAGE_SOURCE_TOKEN = 'Temple365';
+
+// 1) Helper: go to the Selfie screen using the state machine
+function goToSelfieView() {
+  // Use the KioskApp state machine directly for reliable navigation
+  if (window.KioskApp && typeof KioskApp.setState === 'function') {
+    console.log('[Kiosk] Navigating to SELFIE via state machine');
+    KioskApp.setState('SELFIE');
+  } else {
+    // Fallback: dispatch navigation event
+    console.log('[Kiosk] Navigating to SELFIE via event');
+    window.dispatchEvent(new CustomEvent('navigate', {
+      detail: { state: 'SELFIE' }
+    }));
+  }
+}
+
+// 2) Listen for messages coming from the Temple 365 iframe
+window.addEventListener('message', function(event) {
+  // SECURITY: Validate origin - accept from Google Apps Script domains
+  // Apps Script can serve from script.google.com or googleusercontent.com
+  var validOrigins = ['script.google.com', 'googleusercontent.com', 'google.com'];
+  var originValid = false;
+
+  if (event.origin) {
+    for (var i = 0; i < validOrigins.length; i++) {
+      if (event.origin.indexOf(validOrigins[i]) !== -1) {
+        originValid = true;
+        break;
+      }
+    }
+  }
+
+  if (!originValid) {
+    // Only log if it looks like it might be from Temple365 (has source property)
+    if (event.data && event.data.source === 'Temple365') {
+      console.warn('[Kiosk] Message from Temple365 rejected - origin:', event.origin);
+    }
+    return;
+  }
+
+  var data = event.data;
+
+  // SECURITY: Validate message structure
+  if (!data || typeof data !== 'object') {
+    return;
+  }
+
+  // SECURITY: Validate source token
+  if (data.source !== MESSAGE_SOURCE_TOKEN) {
+    console.warn('[Kiosk] Rejected message with invalid source:', data.source);
+    return;
+  }
+
+  // SECURITY: Validate message type
+  if (!data.type || ALLOWED_MESSAGE_TYPES.indexOf(data.type) === -1) {
+    console.warn('[Kiosk] Rejected message with invalid type:', data.type);
+    return;
+  }
+
+  console.log('[Kiosk] Received valid message from Temple 365:', data.type);
+
+  // Handle TEMPLE_VISIT_LOGGED - show selfie prompt if no selfie was uploaded
+  if (data.type === 'TEMPLE_VISIT_LOGGED') {
+    console.log('[Kiosk] Visit logged:', data);
+
+    // If they already uploaded a selfie on the tracker page, no need to ask
+    if (data.hasSelfie) {
+      return;
+    }
+
+    var modal = document.getElementById('selfiePromptModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+    }
+  }
+
+  // Handle NAVIGATE_TO_SELFIE - direct navigation request from iframe
+  if (data.type === 'NAVIGATE_TO_SELFIE') {
+    console.log('[Kiosk] Navigation request to selfie screen');
+    goToSelfieView();
+  }
+});
+
+// 3) Wire up the Yes / No buttons on the selfie prompt modal
+document.addEventListener('DOMContentLoaded', function() {
+  var modal = document.getElementById('selfiePromptModal');
+  var yesBtn = document.getElementById('selfiePromptYesBtn');
+  var noBtn  = document.getElementById('selfiePromptNoBtn');
+
+  if (yesBtn) {
+    yesBtn.addEventListener('click', function() {
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+      // Navigate to the selfie screen
+      goToSelfieView();
+    });
+  }
+
+  if (noBtn) {
+    noBtn.addEventListener('click', function() {
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+      // Do nothing else; they stay where they are
+    });
+  }
+});
 
 
 /* ================================================================

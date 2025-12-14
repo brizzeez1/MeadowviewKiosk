@@ -79,6 +79,13 @@ const MissionaryDetail = (function() {
             return;
         }
 
+        // Check if this missionary has gallery photos
+        const hasGallery = _currentMissionary.galleryPhotos && _currentMissionary.galleryPhotos.length > 0;
+        const photoCount = hasGallery ? _currentMissionary.galleryPhotos.length : 0;
+
+        // Get first name for personalized messages section
+        const firstName = _currentMissionary.name.split(' ').pop(); // Gets last word (surname) - could also use first name
+
         // Build the detail view
         _contentContainer.innerHTML = `
             <div class="missionary-detail-header">
@@ -103,6 +110,14 @@ const MissionaryDetail = (function() {
                     </div>
                 </div>
 
+                <!-- Photo Gallery Button -->
+                <div class="gallery-button-section">
+                    <button class="btn-view-gallery" id="btnViewGallery" ${!hasGallery ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                        <span class="gallery-icon">📸</span>
+                        ${hasGallery ? `View Photo Gallery (${photoCount} photos)` : 'No Photos Available'}
+                    </button>
+                </div>
+
                 <div class="missionary-features-section">
                     <p class="coming-soon-badge">Coming Soon</p>
                     <p class="feature-description">
@@ -110,8 +125,7 @@ const MissionaryDetail = (function() {
                     </p>
                     <ul class="feature-list">
                         <li><strong>Video Messages:</strong> Record a message for the missionary (saves to Google Drive)</li>
-                        <li><strong>Photo Gallery:</strong> View recent photos uploaded by the missionary's family</li>
-                        <li><strong>Full-Size Viewing:</strong> Swipe through photos in full-screen mode</li>
+                        <li><strong>Messages from ${_currentMissionary.name}:</strong> View video messages sent by the missionary</li>
                     </ul>
                 </div>
 
@@ -170,7 +184,42 @@ const MissionaryDetail = (function() {
             </div>
         `;
 
+        // Set up gallery button click handler
+        setupGalleryButton();
+
         ConfigLoader.debugLog('Rendered detail for missionary:', _currentMissionary.name);
+    }
+
+    /**
+     * Set up the gallery button click handler.
+     */
+    function setupGalleryButton() {
+        const galleryBtn = document.getElementById('btnViewGallery');
+        if (galleryBtn && _currentMissionary) {
+            const hasGallery = _currentMissionary.galleryPhotos && _currentMissionary.galleryPhotos.length > 0;
+
+            if (hasGallery) {
+                galleryBtn.addEventListener('click', handleGalleryClick);
+                galleryBtn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    handleGalleryClick();
+                });
+            }
+        }
+    }
+
+    /**
+     * Handle gallery button click - open the photo gallery.
+     */
+    function handleGalleryClick() {
+        if (!_currentMissionary) return;
+
+        // Check if MissionaryGallery module is available
+        if (window.MissionaryGallery && typeof MissionaryGallery.open === 'function') {
+            MissionaryGallery.open(_currentMissionary);
+        } else {
+            console.error('[MissionaryDetail] MissionaryGallery module not found');
+        }
     }
 
     /* ============================================================

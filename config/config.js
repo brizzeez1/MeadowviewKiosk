@@ -126,29 +126,43 @@ const KIOSK_CONFIG = {
         
         // List of temple photo paths
         // Add your own photos here!
-        TEMPLE_PHOTOS: [
-             "assets/temple_photos/aba_nigeria_temple_lds.jpeg",
+       // List of temple photo paths
+// Randomized order applied at runtime
+TEMPLE_PHOTOS: [
+  "assets/temple_photos/aba_nigeria_temple_lds.jpeg",
   "assets/temple_photos/accra_ghana_temple_lds.jpeg",
   "assets/temple_photos/adelaide_australia_temple_lds.jpeg",
-  "assets/temple_photos/albuquerque_temple_lds.jpeg",
+  "assets/temple_photos/nm_albuquerque_temple_lds.jpeg",
   "assets/temple_photos/az-gilbert-temple-evening.jpg",
   "assets/temple_photos/belem_brazil_temple_exterior.jpeg",
-  "assets/temple_photos/boston_temple_lds.jpeg",
-  "assets/temple_photos/brigham_city_utah_mormon_temple.jpeg",
+  "assets/temple_photos/ma_boston_temple_lds.jpeg",
+  "assets/temple_photos/ut_brigham_city_temple.jpeg",
   "assets/temple_photos/casper_wyoming_temple_exteriors.jpeg",
-  "assets/temple_photos/fort_collins_temple_sun.jpeg",
-  "assets/temple_photos/frankfurt_germany_temple_lds.jpeg",
+  "assets/temple_photos/co_fort_collins_temple_sun.jpeg",
   "assets/temple_photos/frankfurt_germany_temple_lds (1).jpeg",
   "assets/temple_photos/freiberg_germany_temple_lds.jpeg",
   "assets/temple_photos/guayaquil_ecuador_temple_lds.jpeg",
-  "assets/temple_photos/hawaii_temple.jpeg",
-  "assets/temple_photos/idaho_falls_temple_river_waterfall.jpeg",
-  "assets/temple_photos/kirtland_temple.jpeg",
-  "assets/temple_photos/las_vegas_temple_lds.jpeg",
-  "assets/temple_photos/rendering_arequipa_peru_temple.jpeg"
-            // TODO: Add more temple photos
-            // "assets/temple_photos/salt_lake_temple.jpg",
-            // "assets/temple_photos/provo_temple.jpg",
+  "assets/temple_photos/laie_hawaii_temple.jpeg",
+  "assets/temple_photos/id_idaho_falls_temple_river_waterfall.jpeg",
+  "assets/temple_photos/oh_kirtland_temple.jpeg",
+  "assets/temple_photos/nv_las_vegas_temple_lds.jpeg",
+  "assets/temple_photos/manila_philippines_temple_lds.jpeg",
+  "assets/temple_photos/oakland_california_temple_fountain.jpeg",
+  "assets/temple_photos/palmyra_new_york_mormon_temple.jpeg",
+  "assets/temple_photos/papeete_tahiti_temple_lds.jpeg",
+  "assets/temple_photos/pa_pennsylvania_temple_exterior.jpeg",
+  "assets/temple_photos/or_portland_temple_lds.jpeg",
+  "assets/temple_photos/ut_provo_city_center_temple.jpeg",
+  "assets/temple_photos/ut_provo_city_center_temple_exterior.jpeg",
+  "assets/temple_photos/puebla_mexico_temple_exterior.jpeg",
+  "assets/temple_photos/arequipa_peru_temple.jpeg",
+  "assets/temple_photos/rome_italy_temple.jpeg",
+  "assets/temple_photos/ut_salt_lake_city_temple.jpeg",
+  "assets/temple_photos/ca_san_diego_temple.jpeg",
+  "assets/temple_photos/sapporo_japan_temple_night_photo.png",
+  "assets/temple_photos/seoul_korea_temple_lds.jpeg",
+  "assets/temple_photos/vancouver_canada_temple.jpeg",
+  "assets/temple_photos/washington_dc_mormon_temple.jpeg"
         ],
         
         // Enable/disable the slow zoom animation
@@ -211,13 +225,23 @@ const KIOSK_CONFIG = {
        1. Change MISSIONARY_COUNT to match your current number
        2. Update the MISSIONARIES array with your missionary info
        3. Add/remove missionary objects as needed
-       4. Each missionary should have: id, name, mission, language, scripture
-       5. Photos are stored in assets/missionary_photos/ folder
+       4. Each missionary should have: id, name, mission, language, scripture, photoUrl, galleryFolder
+       5. Profile photos are stored in assets/missionary_photos/ folder
+       6. Gallery photos are stored in assets/missionary_photos/gallery/{missionary_name}/ folder
+
+       GALLERY FOLDER STRUCTURE:
+       - Each missionary has their own gallery subfolder
+       - Example: assets/missionary_photos/gallery/kylie/
+       - Parents/family can add photos to the missionary's folder
+       - Supported formats: .jpg, .jpeg, .png, .gif, .webp
+
+       FUTURE: GOOGLE DRIVE INTEGRATION
+       - Gallery photos will be pulled from a shared Google Drive folder
+       - Each missionary will have a Drive folder ID instead of local path
+       - Parents can upload directly to Google Drive
 
        FUTURE FEATURES (Coming Soon):
        - Video recording capability (saves to Google Drive folder)
-       - Photo carousel from Google Drive (parents can upload photos)
-       - Full-size photo viewing with swipe navigation
        ============================================================ */
 
     MISSIONARIES: {
@@ -229,11 +253,24 @@ const KIOSK_CONFIG = {
         MISSIONARIES_LIST: [
     {
         id: 1,
-        name: "Elder John Smith",
-        mission: "Brazil São Paulo Mission",
-        language: "Portuguese",
+        name: "Sister Kylie Gorecki",
+        mission: "Poland Warsaw Mission",
+        language: "Polish",
         scripture: "2 Nephi 2:25",
-        photoUrl: "assets/missionary_photos/1.png"
+        photoUrl: "assets/missionary_photos/Kylie_Gorecki_Profile.jpg",
+        // Gallery folder path (relative to assets/missionary_photos/)
+        // Each missionary should have their own folder: gallery/{name}/
+        galleryFolder: "gallery/kylie/",
+        // Test photos - in production these would be loaded dynamically
+        galleryPhotos: [
+            "Kylie_Gorecki_Profile1 (2).JPG",
+            "Kylie_Gorecki_mission 1 (1).JPEG",
+            "Kylie_Gorecki_mission 1 (2).JPEG",
+            "Kylie_Gorecki_mission 1 (2).JPG"
+        ]
+        /* FUTURE: Google Drive Integration
+        googleDriveFolderId: "YOUR_DRIVE_FOLDER_ID_HERE",
+        */
     },
     {
         id: 2,
@@ -241,7 +278,9 @@ const KIOSK_CONFIG = {
         mission: "England London Mission",
         language: "English",
         scripture: "Doctrine & Covenants 4:2",
-        photoUrl: "assets/missionary_photos/2.png"
+        photoUrl: "assets/missionary_photos/2.png",
+        galleryFolder: "gallery/emily_johnson/",
+        galleryPhotos: []
     },
     {
         id: 3,
@@ -249,7 +288,9 @@ const KIOSK_CONFIG = {
         mission: "Philippines Manila Mission",
         language: "Tagalog",
         scripture: "Moroni 10:4-5",
-        photoUrl: "assets/missionary_photos/3.png"
+        photoUrl: "assets/missionary_photos/3.png",
+        galleryFolder: "gallery/michael_davis/",
+        galleryPhotos: []
     },
     {
         id: 4,
@@ -257,7 +298,9 @@ const KIOSK_CONFIG = {
         mission: "Mexico Guadalajara Mission",
         language: "Spanish",
         scripture: "Alma 26:12",
-        photoUrl: "assets/missionary_photos/4 - Copy.png"
+        photoUrl: "assets/missionary_photos/4 - Copy.png",
+        galleryFolder: "gallery/david_martinez/",
+        galleryPhotos: []
     },
     {
         id: 5,
@@ -265,7 +308,9 @@ const KIOSK_CONFIG = {
         mission: "Japan Tokyo Mission",
         language: "Japanese",
         scripture: "3 Nephi 27:21",
-        photoUrl: "assets/missionary_photos/6.png"
+        photoUrl: "assets/missionary_photos/6.png",
+        galleryFolder: "gallery/sarah_anderson/",
+        galleryPhotos: []
     },
     {
         id: 6,
@@ -273,7 +318,9 @@ const KIOSK_CONFIG = {
         mission: "Germany Frankfurt Mission",
         language: "German",
         scripture: "Mosiah 2:17",
-        photoUrl: "assets/missionary_photos/7.png"
+        photoUrl: "assets/missionary_photos/7.png",
+        galleryFolder: "gallery/james_wilson/",
+        galleryPhotos: []
     },
     {
         id: 7,
@@ -281,7 +328,9 @@ const KIOSK_CONFIG = {
         mission: "Peru Lima Mission",
         language: "Spanish",
         scripture: "Ether 12:27",
-        photoUrl: "assets/missionary_photos/9.png"
+        photoUrl: "assets/missionary_photos/9.png",
+        galleryFolder: "gallery/robert_taylor/",
+        galleryPhotos: []
     },
     {
         id: 8,
@@ -289,7 +338,9 @@ const KIOSK_CONFIG = {
         mission: "South Korea Seoul Mission",
         language: "Korean",
         scripture: "Joshua 1:9",
-        photoUrl: "assets/missionary_photos/11.png"
+        photoUrl: "assets/missionary_photos/11.png",
+        galleryFolder: "gallery/jennifer_lee/",
+        galleryPhotos: []
     },
     {
         id: 9,
@@ -297,7 +348,9 @@ const KIOSK_CONFIG = {
         mission: "Argentina Buenos Aires Mission",
         language: "Spanish",
         scripture: "Helaman 5:12",
-        photoUrl: "assets/missionary_photos/12.png"
+        photoUrl: "assets/missionary_photos/12.png",
+        galleryFolder: "gallery/christopher_brown/",
+        galleryPhotos: []
     },
     {
         id: 10,
@@ -305,7 +358,9 @@ const KIOSK_CONFIG = {
         mission: "France Paris Mission",
         language: "French",
         scripture: "D&C 84:88",
-        photoUrl: "assets/missionary_photos/14.png"
+        photoUrl: "assets/missionary_photos/14.png",
+        galleryFolder: "gallery/daniel_white/",
+        galleryPhotos: []
     },
     {
         id: 11,
@@ -313,7 +368,9 @@ const KIOSK_CONFIG = {
         mission: "Italy Rome Mission",
         language: "Italian",
         scripture: "1 Nephi 3:7",
-        photoUrl: "assets/missionary_photos/17.png"
+        photoUrl: "assets/missionary_photos/17.png",
+        galleryFolder: "gallery/amanda_thompson/",
+        galleryPhotos: []
     },
     {
         id: 12,
@@ -321,7 +378,9 @@ const KIOSK_CONFIG = {
         mission: "Chile Santiago Mission",
         language: "Spanish",
         scripture: "Alma 37:37",
-        photoUrl: "assets/missionary_photos/18.png"
+        photoUrl: "assets/missionary_photos/18.png",
+        galleryFolder: "gallery/matthew_garcia/",
+        galleryPhotos: []
     },
     {
         id: 13,
@@ -329,7 +388,9 @@ const KIOSK_CONFIG = {
         mission: "Taiwan Taipei Mission",
         language: "Mandarin",
         scripture: "Mosiah 18:9",
-        photoUrl: "assets/missionary_photos/20.png"
+        photoUrl: "assets/missionary_photos/20.png",
+        galleryFolder: "gallery/joshua_martinez/",
+        galleryPhotos: []
     },
     {
         id: 14,
@@ -337,7 +398,9 @@ const KIOSK_CONFIG = {
         mission: "Australia Sydney Mission",
         language: "English",
         scripture: "D&C 88:67",
-        photoUrl: "assets/missionary_photos/11111.png"
+        photoUrl: "assets/missionary_photos/11111.png",
+        galleryFolder: "gallery/rachel_harris/",
+        galleryPhotos: []
     }
 ]
 
