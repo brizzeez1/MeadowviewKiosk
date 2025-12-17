@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Temple 365">
+
+  <!-- App icons (Base64 from Apps Script) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="<?= dataUrl_(APPLE_TOUCH_ICON_180) ?>">
+  <link rel="icon" type="image/png" sizes="32x32" href="<?= dataUrl_(FAVICON_32) ?>">
+
+  <!-- Android / PWA -->
+  <link rel="manifest" href="<?= manifestDataUrl_() ?>">
+  <meta name="theme-color" content="<?= THEME_COLOR ?>">
+
+  <title>Temple 365</title>
+
+  
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+  <style>
+    /***************************************************************************
+     * CSS VARIABLES
+     ***************************************************************************/
+    :root {
+      --primary-dark: #1a365d;
+      --primary: #2c5282;
+      --primary-light: #4299e1;
+      --accent: #805ad5;
+      --accent-light: #b794f4;
+      --gold: #d69e2e;
+      --gold-light: #f6e05e;
+      --background: #f7fafc;
+      --card-bg: #ffffff;
+      --text-dark: #1a202c;
+      --text-medium: #4a5568;
+      --text-light: #718096;
+      --border: #e2e8f0;
+      --border-light: #edf2f7;
+      --success: #48bb78;
+      --mosaic-shell-bg: #faf8f5;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    /***************************************************************************
+     * RESET & BASE
+     ***************************************************************************/
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--background);
+      color: var(--text-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /***************************************************************************
+     * APP CONTAINER
+     ***************************************************************************/
+    .app {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      min-height: 100vh;
+      box-shadow: var(--shadow-lg);
+    }
+
+    /***************************************************************************
+     * HEADER
+     ***************************************************************************/
+    header {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: white;
+      text-align: center;
+    }
+
+    .header-image-container {
+      width: 100%;
+      background: #1a365d;
+    }
+
+    .header-image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .header-content {
+      padding: 24px 20px 28px;
+    }
+
+    .test-mode-banner {
+      background: #f59e0b;
+      color: white;
+      padding: 12px 16px;
+      margin: -24px -20px 16px;
+      font-weight: bold;
+      text-align: center;
+      font-size: 0.95rem;
+      border-radius: 0;
+      line-height: 1.4;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      opacity: 0.95;
+      line-height: 1.6;
+    }
+    
+    header h2 {
+      font-size: 2.9rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      opacity: 0.95;
+      line-height: 1.6;
+    }
+
+    /***************************************************************************
+     * MAIN CONTENT
+     ***************************************************************************/
+    main {
+      padding: 20px 16px 24px;
+    }
+
+    /***************************************************************************
+     * COUNTER SECTION
+     ***************************************************************************/
+    .counter-section {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    .counter-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .counter-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .counter-value .total {
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    /***************************************************************************
+     * SECTION TITLES
+     ***************************************************************************/
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--gold);
+      display: inline-block;
+    }
+
+    .section-wrapper {
+      margin-bottom: 32px;
+    }
+
+    /***************************************************************************
+     * CHECKBOX GRID WITH TEMPLE BACKGROUND
+     ***************************************************************************/
+    .checklist-grid-container {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .checklist-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #f8f9fa;
+      background-image: url('https://lh3.googleusercontent.com/d/1CKBt5_gdrXXZ6MxJwJyVSSpKF4lgrffD=s1000');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.80;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .checklist-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(19, 1fr);
+      gap: 4px;
+      padding: 12px;
+      background: transparent;
+    }
+
+    /* Individual checkbox */
+    .check-cell {
+      aspect-ratio: 1;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid #c5cdd8;
+      box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+
+    .check-cell:hover:not(.checked) {
+      border-color: var(--primary);
+      background: #edf5ff;
+    }
+
+    .check-cell.checked {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(47, 133, 90, 0.3);
+      box-shadow: none;
+      cursor: default;
+    }
+
+    .check-cell.checked::after {
+      content: '✓';
+      color: #2f855a;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    /***************************************************************************
+     * MOSAIC SHELL (Mobile base styles)
+     ***************************************************************************/
+    .mosaic-shell {
+      padding: 0 16px 24px;
+    }
+
+    /***************************************************************************
+     * MOSAIC SECTION
+     ***************************************************************************/
+    .mosaic-container {
+      background: var(--border-light);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    #mosaic {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #e8e8e8;
+    }
+
+    /* Faded Christ image background */
+    .mosaic-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://lh3.googleusercontent.com/d/1BA3UETEMLEtUifK-YpSUc7QmGv21SIyr=s800');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    .mosaic-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      gap: 1px;
+      z-index: 1;
+    }
+
+    .mosaic-tile {
+      overflow: hidden;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .mosaic-tile.empty {
+      background: transparent;
+      cursor: default;
+    }
+
+    .mosaic-tile.filled {
+      background: rgba(0,0,0,0.1);
+    }
+
+    .mosaic-tile.filled:hover {
+      opacity: 0.8;
+    }
+
+    .mosaic-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .mosaic-actions {
+      margin-top: 16px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .mosaic-info {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    /***************************************************************************
+     * CONTINUE SECTION
+     ***************************************************************************/
+    .continue-section {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      margin-top: 24px;
+    }
+
+    .continue-section h3 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .continue-section p {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-bottom: 16px;
+    }
+
+    /***************************************************************************
+     * BUTTONS
+     ***************************************************************************/
+    .btn {
+      border: none;
+      border-radius: 25px;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: #d0d5dc;
+      color: var(--text-dark);
+    }
+
+    .btn-secondary:hover {
+      background: #bfc5cd;
+    }
+
+    .btn-white {
+      background: white;
+      color: var(--accent);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /***************************************************************************
+     * MODALS
+     ***************************************************************************/
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-backdrop.visible {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal h2 {
+      font-size: 1.25rem;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+    }
+
+    .modal .day-label {
+      font-size: 1rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .modal label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-medium);
+      margin-bottom: 6px;
+      margin-top: 16px;
+    }
+
+    .modal input[type="text"],
+    .modal input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .modal input[type="file"] {
+      padding: 10px;
+      background: var(--border-light);
+    }
+
+    .modal-buttons {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Saving indicator */
+    .saving-indicator {
+      margin-top: 16px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--border-light);
+      border-radius: 8px;
+    }
+
+    .saving-indicator.visible {
+      display: flex;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Success modal */
+    .success-modal {
+      text-align: center;
+      padding: 32px 24px;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .success-icon::after {
+      content: '✓';
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .success-modal h2 {
+      color: var(--success);
+      margin-bottom: 12px;
+    }
+
+    .success-modal p {
+      color: var(--text-medium);
+      margin-bottom: 24px;
+    }
+
+    /* Image viewer modal */
+    .image-viewer-modal {
+      max-width: 90vw;
+      max-height: 90vh;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .image-viewer-modal img {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: 8px;
+    }
+
+    .image-viewer-modal .photo-info {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      color: var(--text-medium);
+    }
+
+    .image-viewer-modal .close-btn {
+      margin-top: 16px;
+    }
+
+    /***************************************************************************
+     * FOOTER
+     ***************************************************************************/
+    footer {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: white;
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    footer .scripture {
+      font-style: italic;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      opacity: 0.95;
+      margin-bottom: 12px;
+    }
+
+    footer .reference {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--gold-light);
+    }
+
+    /***************************************************************************
+     * RESPONSIVE - SMALL MOBILE
+     ***************************************************************************/
+    @media (max-width: 400px) {
+      .checklist-grid {
+        gap: 3px;
+        padding: 8px;
+      }
+      
+      .check-cell {
+        border-width: 1px;
+      }
+    }
+
+    /***************************************************************************
+     * RESPONSIVE - TABLET+
+     ***************************************************************************/
+    @media (min-width: 601px) {
+      .app {
+        margin: 20px auto;
+        border-radius: 16px;
+        overflow: hidden;
+        min-height: auto;
+      }
+    }
+
+    /***************************************************************************
+     * DESKTOP 3-COLUMN KIOSK LAYOUT (NO SCROLLING)
+     ***************************************************************************/
+    @media (min-width: 1024px) {
+      body {
+        background: var(--background);
+        overflow: hidden;
+      }
+
+      .app {
+        max-width: 98vw;
+        margin: 1vh auto;
+        border-radius: 12px;
+        height: 98vh;
+        
+        display: grid;
+        grid-template-columns: 320px 1fr 360px;
+        grid-template-rows: 1fr auto;
+        grid-template-areas:
+          "header  checklist mosaic"
+          "footer  footer    footer";
+        
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+      }
+
+      header {
+        grid-area: header;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .header-image-container {
+        flex-shrink: 0;
+        max-height: 35vh;
+        overflow: hidden;
+      }
+
+      .header-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .header-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 24px 20px;
+        overflow: hidden;
+      }
+
+      header h2 {
+        font-size: 2rem;
+        margin-bottom: 8px;
+      }
+
+      header h1 {
+        font-size: 1.25rem;
+        margin-bottom: 8px;
+      }
+
+      header p {
+        font-size: 0.85rem;
+        line-height: 1.5;
+      }
+
+      main {
+        grid-area: checklist;
+        padding: 20px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .counter-section {
+        flex-shrink: 0;
+        margin-bottom: 16px;
+        padding: 12px 16px;
+      }
+
+      .counter-label {
+        font-size: 0.9rem;
+      }
+
+      .counter-value {
+        font-size: 1.3rem;
+      }
+
+      .section-wrapper {
+        flex-grow: 1;
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .section-title {
+        font-size: 1rem;
+        margin-bottom: 10px;
+        flex-shrink: 0;
+      }
+
+      .checklist-grid-container {
+        flex-grow: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .checklist-grid {
+        flex-grow: 1;
+        gap: 4px;
+        padding: 10px;
+        grid-auto-rows: 1fr;
+      }
+
+      .check-cell {
+        aspect-ratio: auto;
+        border-width: 2px;
+        border-radius: 3px;
+        min-width: 0;
+        min-height: 0;
+      }
+
+      .check-cell.checked::after {
+        font-size: 12px;
+      }
+
+      .checklist-background {
+        opacity: 0.60;
+      }
+
+      .continue-section {
+        margin-top: 12px;
+        padding: 16px;
+        flex-shrink: 0;
+      }
+
+      .continue-section h3 {
+        font-size: 1rem;
+      }
+
+      .continue-section p {
+        font-size: 0.8rem;
+        margin-bottom: 12px;
+      }
+
+      .mosaic-shell {
+        grid-area: mosaic;
+        padding: 20px;
+        overflow: hidden;
+        background: var(--mosaic-shell-bg);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .mosaic-shell .section-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 0;
+        overflow: hidden;
+      }
+
+      .mosaic-shell .section-title {
+        flex-shrink: 0;
+      }
+
+      .mosaic-container {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding: 12px;
+      }
+
+      #mosaic {
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        max-height: none;
+        margin: 0 auto;
+      }
+
+      .mosaic-actions {
+        flex-shrink: 0;
+        margin-top: 12px;
+      }
+
+      .mosaic-info {
+        flex-shrink: 0;
+        margin-top: 8px;
+        font-size: 0.8rem;
+      }
+
+      footer {
+        grid-area: footer;
+        padding: 16px 20px;
+      }
+
+      footer .scripture {
+        font-size: 0.8rem;
+        line-height: 1.5;
+        margin-bottom: 8px;
+      }
+
+      footer .reference {
+        font-size: 0.75rem;
+      }
+    }
+
+    /***************************************************************************
+     * EXTRA LARGE DESKTOP
+     ***************************************************************************/
+    @media (min-width: 1400px) {
+      .app {
+        max-width: 1800px;
+        grid-template-columns: 380px 1fr 420px;
+      }
+
+      .checklist-grid {
+        gap: 5px;
+        padding: 12px;
+      }
+
+      header h2 {
+        font-size: 2.3rem;
+      }
+
+      header h1 {
+        font-size: 1.4rem;
+      }
+
+      header p {
+        font-size: 0.9rem;
+      }
+
+      .header-image-container {
+        max-height: 40vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!--==================== HEADER ====================-->
+    <header>
+      <div class="header-image-container">
+        <img 
+          src="https://lh3.googleusercontent.com/d/1vWrG0PSB-velGLzNRJK1vB7pjkNNBwX1=s1000" 
+          alt="Gilbert Arizona Temple"
+          onerror="this.src='https://www.churchofjesuschrist.org/imgs/e0c5971e9e3611ed9532eeeeac1ed5d31d73413f/full/1600%2C/0/default';"
+        >
+      </div>
+      <div class="header-content">
+        <? if (testMode) { ?>
+          <div class="test-mode-banner">
+            🧪 TEST MODE<br>
+            Viewing test data from "<?= testSheetName ?>" sheet
+          </div>
+        <? } ?>
+        <h2>Meadowview Ward</h2>
+        <h1>Becoming One with the Savior, One Temple Visit at a Time</h1>
+        <p>Our ward's goal is 365 temple visits in 2026—one for every day of the year. Each time you attend, mark a square and add your selfie. Your small square will join others to build a mosaic of Jesus Christ, showing our ward becoming one in Him.</p>
+      </div>
+    </header>
+
+    <!--==================== MAIN (CHECKLIST COLUMN) ====================-->
+    <main>
+      <div class="counter-section">
+        <span class="counter-label">Temple Visits</span>
+        <span class="counter-value">
+          <span id="completedCount">0</span>
+          <span class="total">/ 365</span>
+        </span>
+      </div>
+
+      <div class="section-wrapper">
+        <h2 class="section-title">Daily Checklist</h2>
+        <div class="checklist-grid-container">
+          <div class="checklist-background"></div>
+          <div id="checklistGrid" class="checklist-grid"></div>
+        </div>
+      </div>
+
+      <div class="continue-section" id="continueSection" style="display: none;">
+        <h3>🎉 All 365 Visits Complete!</h3>
+        <p>You can continue logging temple visits to add more photos to the mosaic.</p>
+        <button class="btn btn-white" onclick="openContinueModal()">Log Another Visit</button>
+      </div>
+    </main>
+
+    <!--==================== MOSAIC SHELL (RIGHT COLUMN ON DESKTOP) ====================-->
+    <section class="mosaic-shell">
+      <div class="section-wrapper">
+        <h2 class="section-title">Mosaic of Christ</h2>
+        <div class="mosaic-container">
+          <div id="mosaic">
+            <div class="mosaic-background"></div>
+            <div id="mosaicGrid" class="mosaic-grid"></div>
+          </div>
+          <div class="mosaic-actions">
+            <!-- to bring button back remove the comment out part below -->
+            <!--
+            <button class="btn btn-primary" id="downloadMosaicBtn" onclick="downloadMosaic()">                    
+              📥 Download Mosaic
+            </button>
+            -->
+          </div>
+          <p class="mosaic-info">
+            <span id="mosaicCount">0</span> selfies contributing to the mosaic
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!--==================== FOOTER ====================-->
+    <footer>
+      <div class="scripture">
+        "And inasmuch as my people build a house unto me in the name of the Lord, and do not suffer any unclean thing to come into it, that it be not defiled, my glory shall rest upon it. Yea, and my presence shall be there, for I will come into it, and all the pure in heart that shall come into it shall see God."
+      </div>
+      <div class="reference">Doctrine and Covenants 97:15–16</div>
+    </footer>
+  </div>
+
+  <!--==================== ENTRY MODAL ====================-->
+  <div id="entryModal" class="modal-backdrop">
+    <div class="modal">
+      <h2>Record Your Temple Visit</h2>
+      <p class="day-label" id="modalDayLabel">Visit #1</p>
+      
+      <form id="templeForm">
+        <input type="hidden" id="gridPositionInput" name="dayNumber" value="">
+        
+        <label for="nameInput">Your Name</label>
+        <input type="text" id="nameInput" name="name" placeholder="Enter your name" autocomplete="name">
+
+        
+<div id="savingIndicator" class="saving-indicator">
+  <div class="spinner"></div>
+  <span id="savingIndicatorText">Uploading your photo...</span>
+</div>
+
+        
+        <div class="modal-buttons">
+          <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+          <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!--==================== SUCCESS MODAL ====================-->
+  <div id="successModal" class="modal-backdrop">
+    <div class="modal success-modal">
+      <div class="success-icon"></div>
+      <h2>Thank You!</h2>
+      <p id="successMessage">Your temple visit has been recorded!</p>
+      <button class="btn btn-primary" id="successOkBtn">Continue</button>
+    </div>
+  </div>
+
+  <!--==================== ERROR MODAL ====================-->
+  <div id="errorModal" class="modal-backdrop">
+    <div class="modal">
+      <h2 style="color: #e53e3e;">Oops!</h2>
+      <p id="errorMessage" style="color: var(--text-medium); margin: 16px 0;"></p>
+      <div class="modal-buttons" style="justify-content: center;">
+        <button class="btn btn-primary" id="errorOkBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!--==================== IMAGE VIEWER MODAL ====================-->
+  <div id="imageViewerModal" class="modal-backdrop">
+    <div class="modal image-viewer-modal">
+      <img id="viewerImage" src="" alt="Temple selfie">
+      <div class="photo-info">
+        <strong id="viewerName"></strong><br>
+        <span id="viewerVisit"></span>
+      </div>
+      <button class="btn btn-secondary close-btn" id="closeViewerBtn">Close</button>
+    </div>
+  </div>
+
+
+  <!--==================== JAVASCRIPT ====================-->
+  <script>
+    /**************************************************************************
+ * CONFIGURATION & DATA
+ **************************************************************************/
+var CHECKED_POSITIONS = [];
+var SELFIE_DATA = [];
+var TOTAL_VISITS = 0;
+var TEST_MODE = false;
+
+
+// Parse data from server
+try {
+  var rawChecked = '<?= JSON.stringify(checkedVisits) ?>';
+  var rawSelfies = '<?= JSON.stringify(selfieData) ?>';
+  var rawTotal = '<?= totalVisits ?>';
+  var rawTestMode = '<?= testMode ?>';
+  
+  
+  console.log('Raw data lengths:');
+  console.log('- rawChecked length:', rawChecked.length);
+  console.log('- rawSelfies length:', rawSelfies.length);
+  
+  if (rawChecked && rawChecked !== '[]' && rawChecked.length > 2) {
+    CHECKED_POSITIONS = JSON.parse(rawChecked);
+    console.log('✅ Parsed CHECKED_POSITIONS:', CHECKED_POSITIONS.length);
+  }
+  
+  if (rawSelfies && rawSelfies !== '[]' && rawSelfies.length > 2) {
+    SELFIE_DATA = JSON.parse(rawSelfies);
+    console.log('✅ Parsed SELFIE_DATA:', SELFIE_DATA.length);
+  }
+  
+  if (rawTotal && !isNaN(rawTotal)) {
+    TOTAL_VISITS = Number(rawTotal);
+    console.log('✅ Parsed TOTAL_VISITS:', TOTAL_VISITS);
+  }
+  
+  TEST_MODE = (rawTestMode === 'true' || rawTestMode === true);
+  console.log('✅ TEST_MODE:', TEST_MODE);
+  
+} catch (e) {
+  console.error('❌ Error parsing server data:', e);
+  console.error('Error details:', e.message);
+}
+
+var TOTAL_CELLS = 365;
+var GRID_COLS = 19;
+var MOSAIC_COLS = 19;
+var MOSAIC_ROWS = 25;
+
+var currentGridPosition = null;
+var isSaving = false;
+
+// Log final state
+console.log('=== FINAL STATE ===');
+console.log('MODE:', TEST_MODE ? 'TEST' : 'PRODUCTION');
+console.log('CHECKED_POSITIONS length:', CHECKED_POSITIONS.length);
+console.log('SELFIE_DATA length:', SELFIE_DATA.length);
+console.log('TOTAL_VISITS:', TOTAL_VISITS);
+console.log('==================');
+
+
+
+    /**************************************************************************
+     * BUILD CHECKBOX GRID
+     **************************************************************************/
+    function buildChecklistGrid() {
+      var grid = document.getElementById('checklistGrid');
+      grid.innerHTML = '';
+      grid.style.gridTemplateColumns = 'repeat(' + GRID_COLS + ', 1fr)';
+      
+      for (var pos = 1; pos <= TOTAL_CELLS; pos++) {
+        var cell = document.createElement('div');
+        cell.className = 'check-cell';
+        cell.dataset.position = pos;
+        
+        if (CHECKED_POSITIONS.indexOf(pos) !== -1) {
+          cell.classList.add('checked');
+        } else if (!TEST_MODE) {
+          // ONLY MAKE CLICKABLE IN PRODUCTION MODE
+          (function(position) {
+            cell.addEventListener('click', function() {
+              if (!this.classList.contains('checked') && !isSaving) {
+                currentGridPosition = position;
+                openEntryModal(position);
+              }
+            });
+          })(pos);
+        } else {
+          // In test mode, show visual indicator that it's disabled
+          cell.style.cursor = 'not-allowed';
+          cell.style.opacity = '0.7';
+          cell.title = 'Test mode - cells are locked';
+        }
+        
+        grid.appendChild(cell);
+      }
+      
+      updateCount();
+    }
+
+    function updateCount() {
+      var count = document.querySelectorAll('.check-cell.checked').length;
+      document.getElementById('completedCount').textContent = count;
+      document.getElementById('continueSection').style.display = count >= TOTAL_CELLS ? 'block' : 'none';
+    }
+
+    /**************************************************************************
+     * MODAL FUNCTIONS
+     **************************************************************************/
+    function openEntryModal(gridPosition) {
+      var baseCount = (TOTAL_VISITS && !isNaN(TOTAL_VISITS)) 
+        ? Number(TOTAL_VISITS) 
+        : document.querySelectorAll('.check-cell.checked').length;
+
+      var nextVisitNumber = baseCount + 1;
+      
+      document.getElementById('modalDayLabel').textContent = 'Visit #' + nextVisitNumber;
+      document.getElementById('gridPositionInput').value = gridPosition;
+      document.getElementById('nameInput').value = '';
+     
+      
+      setSavingUI(false);
+      document.getElementById('entryModal').classList.add('visible');
+
+      applyKioskModeUI();
+      
+      setTimeout(function() {
+        document.getElementById('nameInput').focus();
+      }, 100);
+    }
+
+    function openContinueModal() {
+      var gridPosition = TOTAL_VISITS + 1;
+      for (var i = 1; i <= TOTAL_CELLS; i++) {
+        if (CHECKED_POSITIONS.indexOf(i) === -1) {
+          gridPosition = i;
+          break;
+        }
+      }
+      currentGridPosition = gridPosition;
+      openEntryModal(gridPosition);
+    }
+
+    function closeEntryModal() {
+      document.getElementById('entryModal').classList.remove('visible');
+      currentGridPosition = null;
+      isSaving = false;
+    }
+
+    function showSuccessModal(message) {
+      document.getElementById('successMessage').textContent = message;
+      document.getElementById('successModal').classList.add('visible');
+    }
+
+    function closeSuccessModal() {
+      document.getElementById('successModal').classList.remove('visible');
+    }
+
+    function showErrorModal(message) {
+      document.getElementById('errorMessage').textContent = message;
+      document.getElementById('errorModal').classList.add('visible');
+    }
+
+    function closeErrorModal() {
+      document.getElementById('errorModal').classList.remove('visible');
+    }
+
+    function setSavingUI(saving, showUploadingIndicator) {
+  isSaving = saving;
+  var indicator = document.getElementById('savingIndicator');
+  var saveBtn = document.getElementById('saveBtn');
+  var cancelBtn = document.getElementById('cancelBtn');
+  
+  // default: show indicator unless explicitly false
+  if (typeof showUploadingIndicator === 'undefined') {
+    showUploadingIndicator = true;
+  }
+
+  if (saving) {
+    if (showUploadingIndicator) {
+      // make sure text is correct when we DO show it
+      var textSpan = indicator.querySelector('span');
+      if (textSpan) {
+        textSpan.textContent = 'Saving your visit...';
+
+
+      }
+      indicator.classList.add('visible');
+    } else {
+      indicator.classList.remove('visible');
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+    cancelBtn.disabled = true;
+  } else {
+    indicator.classList.remove('visible');
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save';
+    cancelBtn.disabled = false;
+  }
+}
+ 
+/**************************************************************************
+ * FORM SUBMISSION  (selfie OPTIONAL + tracking flag)
+ **************************************************************************/
+function handleSave() {
+  if (isSaving) return;
+
+  var name = document.getElementById('nameInput').value.trim();
+  var gridPosition = document.getElementById('gridPositionInput').value;
+
+  if (!name) {
+    showErrorModal('Please enter your name.');
+    return;
+  }
+
+  if (!gridPosition) {
+    showErrorModal('Something went wrong. Please try again.');
+    closeEntryModal();
+    return;
+  }
+
+  // KIOSK: no file upload from this page
+  // Force hasSelfie = false and don't show the "Uploading..." indicator
+  var hasSelfie = false;
+
+  // Ensure a hidden field exists so the server can ignore selfie cleanly
+  var hasSelfieField = document.getElementById('hasSelfieInput');
+  if (!hasSelfieField) {
+    hasSelfieField = document.createElement('input');
+    hasSelfieField.type = 'hidden';
+    hasSelfieField.id = 'hasSelfieInput';
+    hasSelfieField.name = 'hasSelfie';
+    document.getElementById('templeForm').appendChild(hasSelfieField);
+  }
+  hasSelfieField.value = 'FALSE';
+
+  // Show saving UI, but NOT the upload indicator
+  setSavingUI(true, false);
+
+  var form = document.getElementById('templeForm');
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      handleSaveResult(result);
+    })
+    .withFailureHandler(function(error) {
+      handleSaveError(error);
+    })
+    .saveTempleCheck(form);
+}
+
+    function handleSaveResult(result) {
+  console.log('Save result:', result);
+  setSavingUI(false);
+
+  try {
+    if (!result) {
+      showErrorModal('No response from server. Please try again.');
+      return;
+    }
+
+    if (!result.success) {
+      showErrorModal(result.message || 'Error saving. Please try again.');
+      return;
+    }
+
+    var gridPosition = Number(result.gridPosition) || Number(currentGridPosition);
+
+    if (!gridPosition) {
+      console.warn('No valid gridPosition in result, using currentGridPosition:', currentGridPosition);
+      gridPosition = currentGridPosition;
+    }
+
+    var cell = document.querySelector('.check-cell[data-position="' + gridPosition + '"]');
+    if (cell) {
+      cell.classList.add('checked');
+      var newCell = cell.cloneNode(true);
+      cell.parentNode.replaceChild(newCell, cell);
+    }
+
+    if (CHECKED_POSITIONS.indexOf(gridPosition) === -1) {
+      CHECKED_POSITIONS.push(gridPosition);
+    }
+
+    if (result.visitNumber && !isNaN(result.visitNumber)) {
+      TOTAL_VISITS = Number(result.visitNumber);
+    } else {
+      TOTAL_VISITS++;
+    }
+
+    if (result.fileId) {
+      SELFIE_DATA.push({
+        visitNumber: result.visitNumber,
+        name: result.name,
+        fileId: result.fileId,
+        gridPosition: gridPosition
+      });
+    }
+
+    updateCount();
+    updateMosaic();
+
+    closeEntryModal();
+
+    // Decide message based on whether a selfie was uploaded
+    var message;
+    var hasSelfie = !!result.fileId;
+
+    if (hasSelfie) {
+      message = 'Thank you for logging your visit. Your photo has been uploaded.';
+    } else {
+      message = 'Thank you for logging your visit.';
+    }
+
+    // 🔔 NEW: Notify parent window (kiosk) that a visit was logged
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage(
+          {
+            source: 'Temple365',
+            type: 'TEMPLE_VISIT_LOGGED',
+            visitNumber: result.visitNumber,
+            gridPosition: gridPosition,
+            hasSelfie: hasSelfie
+          },
+          '*' // you *can* replace '*' with your kiosk origin, e.g. 'https://meadowviewward.com'
+        );
+      }
+    } catch (pmErr) {
+      console.warn('postMessage to parent failed:', pmErr);
+    }
+
+    // Show the standard success modal (this still appears inside the iframe)
+    setTimeout(function() {
+      showSuccessModal(message);
+    }, 150);
+
+  } catch (err) {
+    console.error('Error in handleSaveResult:', err);
+    showErrorModal('Your visit was saved, but there was a display error. Please refresh the page.');
+  }
+}
+
+
+
+    /**************************************************************************
+     * MOSAIC FUNCTIONS
+     **************************************************************************/
+    function buildMosaic() {
+      var grid = document.getElementById('mosaicGrid');
+      grid.innerHTML = '';
+      grid.style.gridTemplateColumns = 'repeat(' + MOSAIC_COLS + ', 1fr)';
+      grid.style.gridTemplateRows = 'repeat(' + MOSAIC_ROWS + ', 1fr)';
+      
+      var totalTiles = MOSAIC_COLS * MOSAIC_ROWS;
+      
+      for (var i = 0; i < totalTiles; i++) {
+        var tile = document.createElement('div');
+        tile.className = 'mosaic-tile empty';
+        tile.dataset.tile = i + 1;
+        grid.appendChild(tile);
+      }
+      
+      updateMosaic();
+    }
+
+    function updateMosaic() {
+      var totalTiles = MOSAIC_COLS * MOSAIC_ROWS;
+
+      var tiles = document.querySelectorAll('.mosaic-tile');
+      for (var i = 0; i < tiles.length; i++) {
+        tiles[i].innerHTML = '';
+        tiles[i].className = 'mosaic-tile empty';
+        tiles[i].onclick = null;
+      }
+      
+      for (var i = 0; i < SELFIE_DATA.length; i++) {
+        var selfie = SELFIE_DATA[i];
+        var tileIndex = selfie.visitNumber || (i + 1);
+        
+        if (tileIndex > totalTiles) {
+          tileIndex = ((tileIndex - 1) % totalTiles) + 1;
+        }
+        
+        var tile = document.querySelector('.mosaic-tile[data-tile="' + tileIndex + '"]');
+        if (tile && selfie.fileId) {
+          tile.className = 'mosaic-tile filled';
+          
+          var img = document.createElement('img');
+          img.src = 'https://lh3.googleusercontent.com/d/' + selfie.fileId + '=s150';
+          img.alt = selfie.name || 'Temple selfie';
+          img.loading = 'lazy';
+          img.onerror = function() { this.style.display = 'none'; };
+          
+          tile.appendChild(img);
+          
+          (function(s) {
+            tile.onclick = function() {
+              openImageViewer(s);
+            };
+          })(selfie);
+        }
+      }
+      
+      document.getElementById('mosaicCount').textContent = SELFIE_DATA.length;
+    }
+
+    function openImageViewer(selfie) {
+      document.getElementById('viewerImage').src = 'https://lh3.googleusercontent.com/d/' + selfie.fileId + '=s800';
+      document.getElementById('viewerName').textContent = selfie.name || 'Temple Visitor';
+      document.getElementById('viewerVisit').textContent = 'Visit #' + (selfie.visitNumber || '?');
+      document.getElementById('imageViewerModal').classList.add('visible');
+    }
+
+    function closeImageViewer() {
+      document.getElementById('imageViewerModal').classList.remove('visible');
+    }
+
+    function downloadMosaic() {
+      var mosaicEl = document.getElementById('mosaic');
+      var btn = document.getElementById('downloadMosaicBtn');
+      
+      btn.disabled = true;
+      btn.textContent = '⏳ Preparing...';
+      
+      html2canvas(mosaicEl, {
+        useCORS: true,
+        allowTaint: true,
+        scale: 2,
+        backgroundColor: '#ffffff'
+      }).then(function(canvas) {
+        var link = document.createElement('a');
+        link.download = 'Temple365_Mosaic_' + new Date().toISOString().slice(0,10) + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        btn.disabled = false;
+        btn.textContent = '📥 Download Mosaic';
+      }).catch(function(err) {
+        console.error('Mosaic error:', err);
+        showErrorModal('Could not create mosaic image.');
+        btn.disabled = false;
+        btn.textContent = '📥 Download Mosaic';
+      });
+    }
+
+    /**************************************************************************
+ * INITIALIZATION
+ **************************************************************************/
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('=== Temple 365 Loading ===');
+  console.log('Mode:', TEST_MODE ? 'TEST' : 'PRODUCTION');
+  console.log('Checked positions:', CHECKED_POSITIONS.length);
+  console.log('Selfies:', SELFIE_DATA.length);
+  console.log('Total visits:', TOTAL_VISITS);
+console.log('[Temple365] BUILD STAMP:', '2025-12-13T(put current time)');
+  // ✅ Apply kiosk UI rules once on load
+  if (typeof applyKioskModeUI === 'function') {
+  applyKioskModeUI();
+} else {
+  console.warn('[Temple365] applyKioskModeUI missing — skipping');
+}
+
+
+  buildChecklistGrid();
+  buildMosaic();
+
+  document.getElementById('cancelBtn').addEventListener('click', function() {
+    if (!isSaving) closeEntryModal();
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', handleSave);
+
+  document.getElementById('successOkBtn').addEventListener('click', closeSuccessModal);
+  document.getElementById('errorOkBtn').addEventListener('click', closeErrorModal);
+  document.getElementById('closeViewerBtn').addEventListener('click', closeImageViewer);
+
+  document.getElementById('entryModal').addEventListener('click', function(e) {
+    if (e.target === this && !isSaving) closeEntryModal();
+  });
+
+  document.getElementById('successModal').addEventListener('click', function(e) {
+    if (e.target === this) closeSuccessModal();
+  });
+
+  document.getElementById('errorModal').addEventListener('click', function(e) {
+    if (e.target === this) closeErrorModal();
+  });
+
+  document.getElementById('imageViewerModal').addEventListener('click', function(e) {
+    if (e.target === this) closeImageViewer();
+  });
+
+  console.log('Temple 365 ready!');
+});
+
+ 
+
+
+ </script>
+</body>
+</html>
