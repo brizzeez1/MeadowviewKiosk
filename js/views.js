@@ -280,7 +280,7 @@ const Views = (function() {
     /* ============================================================
        SECTION 6: INITIALIZATION
        ============================================================ */
-    
+
     /**
      * Initialize all views based on config.
      * Called during app startup.
@@ -288,23 +288,91 @@ const Views = (function() {
     function init() {
         // Update ward title
         updateWardTitle(ConfigLoader.getOrganizationName());
-        
+
         // Update screensaver greeting
         updateGreeting(ConfigLoader.getGreeting());
-        
+
         // Set up button visibility based on feature flags
         updatePhase1ButtonVisibility();
         updatePhase2ButtonVisibility();
-        
+
         // Pre-render bulletin URL
         updateBulletinUrl(ConfigLoader.getBulletinUrl());
-        
+
+        // PHASE 5 FIX: Set up back button handlers
+        setupBackButtons();
+
         ConfigLoader.debugLog('Views initialized');
     }
 
 
     /* ============================================================
-       SECTION 7: PUBLIC API
+       SECTION 7: PHASE 5 UTILITY HELPERS
+       ============================================================ */
+
+    // PHASE 5 FIX: Prevent double-binding
+    let _backButtonsWired = false;
+
+    /**
+     * PHASE 5 FIX: Set up back button event listeners with double-binding guard.
+     * Only binds to buttons with explicit data-action="home" attribute.
+     */
+    function setupBackButtons() {
+        if (_backButtonsWired) {
+            console.log('[Views] Back buttons already wired, skipping');
+            return;
+        }
+        _backButtonsWired = true;
+
+        // Only bind to buttons with explicit data-action="home"
+        const homeBackButtons = document.querySelectorAll('[data-action="home"]');
+        homeBackButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                console.log('[Views] Back button clicked, navigating to HOME');
+                // Trigger navigation to home (app.js should handle this)
+                if (window.App && window.App.navigateToHome) {
+                    window.App.navigateToHome();
+                } else {
+                    // Fallback: directly show home screen
+                    showScreen('HOME');
+                }
+            });
+        });
+
+        console.log('[Views] Wired', homeBackButtons.length, 'back buttons');
+    }
+
+    /**
+     * PHASE 5 FIX: Show element with respect for data-display attribute.
+     * Prevents breaking flex layouts by forcing display: block.
+     * @param {string} id - Element ID
+     */
+    function showElement(id) {
+        const el = document.getElementById(id);
+        if (!el) {
+            console.warn('[Views] Element not found:', id);
+            return;
+        }
+        const desired = el.getAttribute('data-display') || 'block';
+        el.style.display = desired;
+    }
+
+    /**
+     * PHASE 5 FIX: Hide element helper.
+     * @param {string} id - Element ID
+     */
+    function hideElement(id) {
+        const el = document.getElementById(id);
+        if (!el) {
+            console.warn('[Views] Element not found:', id);
+            return;
+        }
+        el.style.display = 'none';
+    }
+
+
+    /* ============================================================
+       SECTION 8: PUBLIC API
        ============================================================ */
     
     return {
@@ -313,25 +381,30 @@ const Views = (function() {
         hideAllScreens: hideAllScreens,
         isScreenVisible: isScreenVisible,
         getScreenElement: getScreenElement,
-        
+
         // Dynamic content
         updateWardTitle: updateWardTitle,
         updateGreeting: updateGreeting,
         updateBulletinUrl: updateBulletinUrl,
-        
+
         // Button visibility
         updatePhase1ButtonVisibility: updatePhase1ButtonVisibility,
         updatePhase2ButtonVisibility: updatePhase2ButtonVisibility,
         toggleButtonVisibility: toggleButtonVisibility,
-        
+
         // View-specific rendering
         renderTemple365View: renderTemple365View,
         renderSelfieView: renderSelfieView,
         renderBulletinView: renderBulletinView,
-        
+
+        // PHASE 5: Element helpers
+        showElement: showElement,
+        hideElement: hideElement,
+        setupBackButtons: setupBackButtons,
+
         // Initialization
         init: init,
-        
+
         // Constants
         SCREEN_IDS: SCREEN_IDS
     };

@@ -1,0 +1,19 @@
+{
+  "name": "Meadowview 1st Ward",
+  "templeAffiliation": "Bountiful Utah Temple",
+  "timezone": "America/Denver",
+  "goalSquares": 365,
+  "celebrationAutoDismissMs": 2000,
+  "uploadLimits": {
+    "maxBytes": 10485760,
+    "maxFilesPerDay": 100,
+    "allowedMimeTypes": ["image/jpeg", "image/png", "image/heic", "image/heif"]
+  },
+  "baseUrls": {
+    "kioskBaseUrl": "https://meadowview-kiosk.web.app",
+    "templeBaseUrl": "https://meadowview-kiosk.web.app/temple365",
+    "uploadBaseUrl": "https://meadowview-kiosk.web.app/upload"
+  },
+  "createdAt": "{{TIMESTAMP}}",
+  "updatedAt": "{{TIMESTAMP}}"
+}

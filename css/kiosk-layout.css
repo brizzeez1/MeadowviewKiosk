@@ -73,9 +73,10 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-size: cover;
+    background-size: contain;  /* PHASE 5 FIX: height-priority, no crop, letterbox if needed */
     background-position: center center;
     background-repeat: no-repeat;
+    background-color: #1a1a1a;  /* Letterbox color */
     transition: none;
     /* Subtle zoom animation for cinematic effect */
     animation: slowZoom 20s ease-in-out infinite alternate;

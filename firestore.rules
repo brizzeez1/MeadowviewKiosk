@@ -1,0 +1,111 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================================================
+    // HELPER FUNCTIONS
+    // ============================================================================
+
+    /**
+     * Check if request is from a valid source
+     * TODO: Tighten this in production with API key validation or App Check
+     */
+    function isValidRequest() {
+      return true;  // Permissive for development
+    }
+
+
+    // ============================================================================
+    // WARDS COLLECTION (Ward Configuration)
+    // ============================================================================
+
+    match /wards/{wardId} {
+      // Ward configuration - Read allowed for PWA/Kiosk (source of truth)
+      // Client writes denied (Cloud Functions only)
+      allow read: if isValidRequest();
+      allow write: if false;  // Only Cloud Functions can write
+    }
+
+
+    // ============================================================================
+    // WARD STATS COLLECTION (Top-level, keyed by wardId)
+    // ============================================================================
+
+    match /wardStats/{wardId} {
+      // Stats are public read-only for PWA/Kiosk
+      // Only Cloud Functions can update (transactional)
+      allow read: if isValidRequest();
+      allow write: if false;  // Only Cloud Functions can write
+    }
+
+
+    // ============================================================================
+    // TEMPLE SQUARES COLLECTION (Top-level, keyed by wardId)
+    // ============================================================================
+
+    match /templeSquares/{wardId} {
+      // Ward document is just a container
+      allow read: if isValidRequest();
+      allow write: if false;
+
+      // Squares subcollection
+      match /squares/{squareId} {
+        // Squares are public read-only for PWA/Kiosk
+        // Only Cloud Functions can claim squares (transactional)
+        allow read: if isValidRequest();
+        allow write: if false;  // Only Cloud Functions can write
+      }
+    }
+
+
+    // ============================================================================
+    // TEMPLE VISITS COLLECTION (Top-level, shared across wards)
+    // ============================================================================
+
+    match /templeVisits/{visitId} {
+      // Visits can be read publicly (for audit log, if needed)
+      // Or restrict to authenticated users in production
+      allow read: if isValidRequest();
+      allow write: if false;  // Only Cloud Functions can write
+    }
+
+
+    // ============================================================================
+    // DEFAULT DENY
+    // ============================================================================
+
+    // Deny all other reads/writes
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+
+// ============================================================================
+// ARCHITECTURE NOTES
+// ============================================================================
+//
+// CLIENT READS:
+// - PWA and kiosk read directly using Firestore client SDK
+// - Real-time sync via onSnapshot listeners
+// - Collections: wards/{wardId}, wardStats/{wardId}, templeSquares/{wardId}/squares/*
+//
+// CLIENT WRITES:
+// - All client writes are BLOCKED (allow write: if false)
+// - Mutations only via Cloud Functions API:
+//   - POST /api/v1/temple/logVisit
+//   - POST /api/v1/temple/logBonusVisit
+//
+// CLOUD FUNCTIONS:
+// - Use Admin SDK (bypasses security rules)
+// - Transactions for atomic updates (stats, squares, visits)
+// - No REST GET endpoints (clients read directly from Firestore)
+//
+// PRODUCTION HARDENING:
+// 1. Replace isValidRequest() with App Check or API key validation
+// 2. Add rate limiting via Cloud Functions
+// 3. Consider restricting templeVisits reads if audit log should be private
+// 4. Enable Firebase Authentication if user-specific access is needed
+//
+// ============================================================================

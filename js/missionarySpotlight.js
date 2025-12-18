@@ -25,6 +25,11 @@ const MissionarySpotlight = (function() {
     let _scrollHintDismissed = false;
     let _hideHintOnScrollHandler = null;
 
+    // PHASE 5 FIX: Scroll detection to prevent accidental taps
+    let _touchStartY = 0;
+    let _hasScrolled = false;
+    let _scrollEndTimer = null;
+
     /* ============================================================
        SECTION 2: INITIALIZATION
        ============================================================ */
@@ -44,7 +49,40 @@ const MissionarySpotlight = (function() {
         // Load missionary data from config
         loadMissionaryData();
 
+        // PHASE 5 FIX: Set up scroll detection
+        setupScrollDetection();
+
         ConfigLoader.debugLog('Missionary spotlight initialized');
+    }
+
+    /**
+     * PHASE 5 FIX: Set up pointer event listeners for scroll detection.
+     * Supports both touch and mouse/trackpad input.
+     */
+    function setupScrollDetection() {
+        if (!_gridContainer) return;
+
+        // Track pointer down (start of potential scroll)
+        _gridContainer.addEventListener('pointerdown', (e) => {
+            _touchStartY = e.clientY;
+            _hasScrolled = false;
+        }, { passive: true });
+
+        // Track pointer movement (detect scrolling)
+        _gridContainer.addEventListener('pointermove', (e) => {
+            const deltaY = Math.abs(e.clientY - _touchStartY);
+            if (deltaY > 10) {
+                _hasScrolled = true;
+            }
+        }, { passive: true });
+
+        // Clear scroll flag after scroll ends
+        _gridContainer.addEventListener('scroll', () => {
+            clearTimeout(_scrollEndTimer);
+            _scrollEndTimer = setTimeout(() => {
+                _hasScrolled = false;
+            }, 100);
+        }, { passive: true });
     }
 
     /* ============================================================
@@ -157,9 +195,21 @@ const MissionarySpotlight = (function() {
         nameLabel.textContent = missionary.name;
         square.appendChild(nameLabel);
 
-        // Click handler
-        square.addEventListener('click', () => handleMissionaryClick(missionary.id));
+        // PHASE 5 FIX: Click handler with scroll detection
+        square.addEventListener('click', (e) => {
+            // Ignore clicks that were actually scrolls
+            if (_hasScrolled) {
+                console.log('[MissionarySpotlight] Click ignored (was scrolling)');
+                return;
+            }
+            handleMissionaryClick(missionary.id);
+        });
+
+        // Keep touchend for better touch response (when not scrolling)
         square.addEventListener('touchend', (e) => {
+            if (_hasScrolled) {
+                return;
+            }
             e.preventDefault();
             handleMissionaryClick(missionary.id);
         });

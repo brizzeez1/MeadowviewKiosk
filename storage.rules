@@ -1,0 +1,68 @@
+rules_version = '2';
+
+/**
+ * Firebase Storage Security Rules - Temple 365 & Selfie Mosaic
+ *
+ * Phase 6: Selfie-Only Upload Pipeline
+ *
+ * IMPORTANT:
+ * - Signed URL uploads don't require authentication
+ * - Cloud Function controls who gets signed URLs (rate limiting, validation)
+ * - Uploads restricted to specific path patterns
+ *
+ * Deploy: firebase deploy --only storage
+ */
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ========================================================================
+    // WARD SELFIES (Phase 6)
+    // ========================================================================
+    // Path: wards/{wardId}/selfies/{fileName}
+    //
+    // Write access: Via signed URLs only (15-minute expiration)
+    // Read access: Public (for mosaic display)
+    //
+    match /wards/{wardId}/selfies/{fileName} {
+      // Allow signed URL uploads (request.auth is null for signed URLs)
+      allow write: if request.auth == null
+                   && request.resource.contentType.matches('image/.*')
+                   && request.resource.size < 10 * 1024 * 1024;  // Max 10MB
+
+      // Allow public read for mosaic display
+      allow read: if true;
+    }
+
+    // ========================================================================
+    // TEMPLE 365 VISIT SELFIES (Future - Phase 7+)
+    // ========================================================================
+    // When visits can include selfies, they'll be stored here
+    //
+    match /wards/{wardId}/visit-selfies/{fileName} {
+      // Same rules as above
+      allow write: if request.auth == null
+                   && request.resource.contentType.matches('image/.*')
+                   && request.resource.size < 10 * 1024 * 1024;
+      allow read: if true;
+    }
+
+    // ========================================================================
+    // MISSIONARY CONTENT (Future - Phase 7+)
+    // ========================================================================
+    // Missionary uploads via portal (authenticated)
+    //
+    match /wards/{wardId}/missionary/{type}/{fileName} {
+      // Require authentication for missionary uploads
+      allow write: if request.auth != null;
+      allow read: if true;
+    }
+
+    // ========================================================================
+    // DENY ALL OTHER ACCESS
+    // ========================================================================
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
