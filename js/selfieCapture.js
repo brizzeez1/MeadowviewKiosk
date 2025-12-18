@@ -6,7 +6,7 @@
 
    DEPENDENCIES:
    - Views.js for screen management
-   - Apps Script endpoint for upload
+   - Firebase Cloud Functions for upload (Phase 6)
    ================================================================ */
 
 const SelfieCapture = (function() {
@@ -16,8 +16,10 @@ const SelfieCapture = (function() {
        SECTION 1: CONFIGURATION
        ============================================================ */
 
-    // Apps Script web app URL for kiosk selfie uploads
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFqa1EIlhbDGkTruKe1T_3qq50ITqYxtGsYdbwYFZidGzyutZqWIRwaUsRKn-a0trb8g/exec';
+    // Firebase Cloud Functions API URL (Phase 6 - Selfie Upload Pipeline)
+    // TODO: Update these values to match your Firebase project
+    const FIREBASE_API_BASE_URL = 'https://us-central1-your-project.cloudfunctions.net/api';
+    const WARD_ID = 'meadowview';  // CHANGE for each ward deployment
 
     // Camera constraints
     const CAMERA_CONSTRAINTS = {
@@ -359,57 +361,89 @@ const SelfieCapture = (function() {
 
 
     /* ============================================================
-       SECTION 7: UPLOAD TO APPS SCRIPT
+       SECTION 7: UPLOAD TO FIREBASE CLOUD STORAGE
+       ============================================================
+       Phase 6 - Selfie Upload Pipeline
+
+       Flow:
+       1. Request signed upload URL from Cloud Function
+       2. Upload image directly to Cloud Storage
+       3. Storage trigger creates Firestore document and updates stats
+       4. NO visit document is created (selfie-only upload)
        ============================================================ */
 
     /**
-     * Upload selfie to Apps Script backend.
+     * Upload selfie via Firebase Cloud Storage.
      * @param {Blob} imageBlob - The captured image blob
      * @returns {Promise<Object>} - Upload result
      */
     async function uploadSelfie(imageBlob) {
-        console.log('[SelfieCapture] Uploading selfie...');
-
-        // Convert blob to base64
-        const base64Data = await blobToBase64(imageBlob);
-
-        // Create form data for Apps Script
-        const formData = new FormData();
-        formData.append('action', 'saveKioskSelfie');
-        formData.append('imageData', base64Data);
-        formData.append('timestamp', new Date().toISOString());
-
-        // Send to Apps Script
-        const response = await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            body: formData
-        });
-
-        // Apps Script returns text, parse as JSON
-        const text = await response.text();
+        console.log('[SelfieCapture] Uploading selfie via Firebase...');
 
         try {
-            return JSON.parse(text);
-        } catch (e) {
-            console.error('[SelfieCapture] Failed to parse response:', text);
-            return { success: false, message: 'Invalid server response' };
-        }
-    }
+            // Step 1: Request signed upload URL from Cloud Function
+            console.log('[SelfieCapture] Requesting signed upload URL...');
+            const signedUrlResponse = await fetch(`${FIREBASE_API_BASE_URL}/v1/mosaic/requestSelfieUpload`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    wardId: WARD_ID,
+                    mode: 'kiosk',
+                    uploadedBy: null  // Anonymous kiosk upload
+                })
+            });
 
-    /**
-     * Convert blob to base64 string.
-     */
-    function blobToBase64(blob) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                // Remove data URL prefix, keep only base64
-                const base64 = reader.result.split(',')[1];
-                resolve(base64);
+            if (!signedUrlResponse.ok) {
+                const errorData = await signedUrlResponse.json();
+                throw new Error(errorData.error || `Failed to get upload URL: ${signedUrlResponse.status}`);
+            }
+
+            const signedUrlData = await signedUrlResponse.json();
+            console.log('[SelfieCapture] Received signed URL');
+
+            if (!signedUrlData.success || !signedUrlData.data.uploadUrl) {
+                throw new Error('Invalid response from server');
+            }
+
+            const { uploadUrl, metadata } = signedUrlData.data;
+
+            // Step 2: Upload image directly to Cloud Storage using signed URL
+            console.log('[SelfieCapture] Uploading to Cloud Storage...');
+            const uploadResponse = await fetch(uploadUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'image/jpeg',
+                    // Include metadata as custom headers
+                    'x-goog-meta-wardId': metadata.wardId,
+                    'x-goog-meta-mode': metadata.mode,
+                    'x-goog-meta-uploadSessionId': metadata.uploadSessionId,
+                    'x-goog-meta-requestedAt': metadata.requestedAt
+                },
+                body: imageBlob
+            });
+
+            if (!uploadResponse.ok) {
+                throw new Error(`Upload failed: ${uploadResponse.status}`);
+            }
+
+            console.log('[SelfieCapture] Upload successful');
+
+            // Step 3: Storage trigger will automatically create Firestore doc
+            // Return success (no need to wait for trigger)
+            return {
+                success: true,
+                message: 'Selfie uploaded successfully'
             };
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-        });
+
+        } catch (error) {
+            console.error('[SelfieCapture] Upload error:', error);
+            return {
+                success: false,
+                message: error.message || 'Upload failed'
+            };
+        }
     }
 
 

@@ -97,9 +97,47 @@ All 12 locked decisions from spec followed exactly:
 11. ✅ Kiosk video capped at 30 seconds
 12. ✅ Missionary gallery newest first
 
+## Phase 6: Selfie-Only Upload Pipeline
+
+**Completed:**
+- POST /api/v1/mosaic/requestSelfieUpload - Generate signed Cloud Storage URLs
+- Storage trigger (onSelfieUploaded) - Process uploaded selfies automatically
+- Kiosk selfie capture migrated from Apps Script to Firebase Cloud Storage
+- Direct client-to-storage uploads using signed URLs (no base64 conversion)
+- Automatic Firestore document creation via storage trigger
+- totalSelfies counter increment in ward stats
+- **CRITICAL**: Selfie-only uploads do NOT create visit documents
+
+**Architecture:**
+- **Upload Request**: Client requests signed URL from Cloud Function
+- **Direct Upload**: Client uploads blob directly to Cloud Storage (PUT with signed URL)
+- **Trigger Processing**: Storage trigger fires automatically, creates selfie doc in Firestore
+- **Stats Update**: Transaction updates totalSelfies counter atomically
+- **No Visit Logging**: Selfie-only uploads never create visit documents (per spec decision #6)
+
+**Files Created:**
+- `functions/src/mosaic/requestSelfieUpload.js` - Signed URL generation
+- `functions/src/mosaic/onSelfieUploaded.js` - Storage trigger processor
+
+**Files Updated:**
+- `functions/index.js` - New mosaic routes and storage trigger export
+- `js/selfieCapture.js` - Migrated from Apps Script to Firebase upload
+
+**Security:**
+- Signed URLs valid for 15 minutes only
+- Custom metadata passed via x-goog-meta-* headers
+- Storage rules will need configuration (TODO: firestore.rules equivalent for storage)
+
+**Testing Checklist:**
+- [ ] Signed URL generation works
+- [ ] Client can upload to Cloud Storage via signed URL
+- [ ] Storage trigger fires and creates selfie Firestore doc
+- [ ] totalSelfies counter increments correctly
+- [ ] NO visit documents are created for selfie-only uploads
+- [ ] Kiosk UI shows success message
+
 ## Next Steps
 
-Phase 6: Selfie-Only Upload Pipeline
 Phase 7: Missionary Portal Data
 Phase 8: Upload Portal
 Phase 9: Kiosk-Recorded Missionary Video
