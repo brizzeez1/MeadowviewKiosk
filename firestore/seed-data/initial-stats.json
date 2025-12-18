@@ -1,0 +1,8 @@
+{
+  "totalVisits": 0,
+  "totalBonusVisits": 0,
+  "totalSelfies": 0,
+  "squaresFilled": 0,
+  "lastVisitAt": null,
+  "updatedAt": "{{TIMESTAMP}}"
+}
