@@ -3,6 +3,7 @@
   "totalBonusVisits": 0,
   "totalSelfies": 0,
   "squaresFilled": 0,
+  "goalMetAt": null,
   "lastVisitAt": null,
   "updatedAt": "{{TIMESTAMP}}"
 }

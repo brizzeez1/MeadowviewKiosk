@@ -1,13 +1,15 @@
 /**
  * Temple Squares Seed Script
  *
- * Generates all 365 temple squares for a ward.
+ * Generates all 365 temple squares for a ward using the correct collection structure.
  *
  * Usage:
  *   node temple-squares-seed.js <wardId>
+ *   node temple-squares-seed.js <wardId> --init  (full ward initialization)
  *
  * Example:
  *   node temple-squares-seed.js meadowview-1st
+ *   node temple-squares-seed.js meadowview-1st --init
  *
  * Prerequisites:
  *   - Firebase Admin SDK initialized
@@ -25,12 +27,14 @@ const db = admin.firestore();
 
 /**
  * Generate seed data for 365 temple squares
+ * Collection structure: templeSquares/{wardId}/squares/{squareId}
  * @param {string} wardId - Ward identifier
  */
 async function seedTempleSquares(wardId) {
   console.log(`[Seed] Initializing 365 temple squares for ward: ${wardId}`);
 
-  const squaresRef = db.collection('wards').doc(wardId).collection('templeSquares');
+  // Correct collection structure: templeSquares/{wardId}/squares/{squareId}
+  const squaresRef = db.collection('templeSquares').doc(wardId).collection('squares');
 
   // Create batch writes (max 500 per batch)
   const batches = [];
@@ -82,30 +86,43 @@ async function seedTempleSquares(wardId) {
 async function initializeWard(wardId, wardConfig) {
   console.log(`[Seed] Initializing complete ward structure: ${wardId}`);
 
+  // 1. Create ward configuration document
   const wardRef = db.collection('wards').doc(wardId);
-
-  // 1. Create ward document
   await wardRef.set({
     name: wardConfig.name,
     templeAffiliation: wardConfig.templeAffiliation,
     timezone: wardConfig.timezone || 'America/Denver',
+    goalSquares: wardConfig.goalSquares || 365,
+    celebrationAutoDismissMs: wardConfig.celebrationAutoDismissMs || 2000,
+    uploadLimits: wardConfig.uploadLimits || {
+      maxBytes: 10485760,
+      maxFilesPerDay: 100,
+      allowedMimeTypes: ['image/jpeg', 'image/png', 'image/heic', 'image/heif']
+    },
+    baseUrls: wardConfig.baseUrls || {
+      kioskBaseUrl: 'https://meadowview-kiosk.web.app',
+      templeBaseUrl: 'https://meadowview-kiosk.web.app/temple365',
+      uploadBaseUrl: 'https://meadowview-kiosk.web.app/upload'
+    },
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   });
-  console.log('[Seed] ✅ Ward document created');
+  console.log('[Seed] ✅ Ward configuration created');
 
-  // 2. Create initial stats
-  await wardRef.collection('stats').doc('current').set({
+  // 2. Create initial ward stats (top-level collection)
+  const statsRef = db.collection('wardStats').doc(wardId);
+  await statsRef.set({
     totalVisits: 0,
     totalBonusVisits: 0,
     totalSelfies: 0,
     squaresFilled: 0,
+    goalMetAt: null,
     lastVisitAt: null,
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   });
-  console.log('[Seed] ✅ Initial stats created');
+  console.log('[Seed] ✅ Ward stats initialized');
 
-  // 3. Create 365 temple squares
+  // 3. Create 365 temple squares (top-level collection with subcollection)
   await seedTempleSquares(wardId);
 
   console.log(`[Seed] ✅ Ward ${wardId} fully initialized!`);
@@ -120,7 +137,11 @@ async function main() {
   if (!wardId) {
     console.error('Error: Ward ID is required');
     console.log('Usage: node temple-squares-seed.js <wardId>');
-    console.log('Example: node temple-squares-seed.js meadowview-1st');
+    console.log('       node temple-squares-seed.js <wardId> --init');
+    console.log('');
+    console.log('Examples:');
+    console.log('  node temple-squares-seed.js meadowview-1st');
+    console.log('  node temple-squares-seed.js meadowview-1st --init');
     process.exit(1);
   }
 
@@ -133,7 +154,19 @@ async function main() {
       const wardConfig = {
         name: 'Meadowview 1st Ward',  // TODO: Customize
         templeAffiliation: 'Bountiful Utah Temple',  // TODO: Customize
-        timezone: 'America/Denver'  // TODO: Customize
+        timezone: 'America/Denver',  // TODO: Customize
+        goalSquares: 365,
+        celebrationAutoDismissMs: 2000,
+        uploadLimits: {
+          maxBytes: 10485760,
+          maxFilesPerDay: 100,
+          allowedMimeTypes: ['image/jpeg', 'image/png', 'image/heic', 'image/heif']
+        },
+        baseUrls: {
+          kioskBaseUrl: 'https://meadowview-kiosk.web.app',
+          templeBaseUrl: 'https://meadowview-kiosk.web.app/temple365',
+          uploadBaseUrl: 'https://meadowview-kiosk.web.app/upload'
+        }
       };
 
       await initializeWard(wardId, wardConfig);

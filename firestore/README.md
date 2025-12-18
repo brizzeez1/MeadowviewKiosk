@@ -90,7 +90,8 @@ Templates and scripts for initializing Firestore:
 
 ## Notes
 
-- All ward-specific data lives under `wards/{wardId}`
-- No code changes needed to deploy to new wards
+- Ward-specific configuration lives in `wards/{wardId}` (source of truth for config)
+- Ward-scoped data is stored across top-level collections keyed by wardId (`wardStats`, `templeSquares`, `templeVisits`)
+- No code changes needed to deploy to new wards (only wardId and apiBaseUrl at build time)
 - Seed scripts use Firebase Admin SDK
-- Security rules enforce write-via-Cloud-Functions pattern
+- Security rules enforce write-via-Cloud-Functions pattern (client reads allowed, client writes denied)

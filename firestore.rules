@@ -7,15 +7,8 @@ service cloud.firestore {
     // ============================================================================
 
     /**
-     * Check if user is authenticated
-     */
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-
-    /**
      * Check if request is from a valid source
-     * TODO: Tighten this in production with API key validation
+     * TODO: Tighten this in production with API key validation or App Check
      */
     function isValidRequest() {
       return true;  // Permissive for development
@@ -23,55 +16,57 @@ service cloud.firestore {
 
 
     // ============================================================================
-    // WARDS COLLECTION
+    // WARDS COLLECTION (Ward Configuration)
     // ============================================================================
 
     match /wards/{wardId} {
-
-      // Ward configuration - Read only (public)
-      // Writes must go through Cloud Functions for validation
+      // Ward configuration - Read allowed for PWA/Kiosk (source of truth)
+      // Client writes denied (Cloud Functions only)
       allow read: if isValidRequest();
       allow write: if false;  // Only Cloud Functions can write
+    }
 
-      // ------------------------------------------------------------
-      // STATS SUBCOLLECTION
-      // ------------------------------------------------------------
-      match /stats/{statsDoc} {
-        // Stats are public read-only
-        // Only Cloud Functions can update (transactional)
-        allow read: if isValidRequest();
-        allow write: if false;
-      }
 
-      // ------------------------------------------------------------
-      // TEMPLE SQUARES SUBCOLLECTION
-      // ------------------------------------------------------------
-      match /templeSquares/{squareNumber} {
-        // Squares are public read-only
+    // ============================================================================
+    // WARD STATS COLLECTION (Top-level, keyed by wardId)
+    // ============================================================================
+
+    match /wardStats/{wardId} {
+      // Stats are public read-only for PWA/Kiosk
+      // Only Cloud Functions can update (transactional)
+      allow read: if isValidRequest();
+      allow write: if false;  // Only Cloud Functions can write
+    }
+
+
+    // ============================================================================
+    // TEMPLE SQUARES COLLECTION (Top-level, keyed by wardId)
+    // ============================================================================
+
+    match /templeSquares/{wardId} {
+      // Ward document is just a container
+      allow read: if isValidRequest();
+      allow write: if false;
+
+      // Squares subcollection
+      match /squares/{squareId} {
+        // Squares are public read-only for PWA/Kiosk
         // Only Cloud Functions can claim squares (transactional)
         allow read: if isValidRequest();
-        allow write: if false;
+        allow write: if false;  // Only Cloud Functions can write
       }
+    }
 
-      // ------------------------------------------------------------
-      // VISITS SUBCOLLECTION
-      // ------------------------------------------------------------
-      match /visits/{visitId} {
-        // Visits are public read-only (for audit log)
-        // Only Cloud Functions can create visits (transactional)
-        allow read: if isValidRequest();
-        allow write: if false;
-      }
 
-      // ------------------------------------------------------------
-      // SELFIES SUBCOLLECTION
-      // ------------------------------------------------------------
-      match /selfies/{selfieId} {
-        // Selfies are public read-only
-        // Only Cloud Functions can create selfie records (via Storage trigger)
-        allow read: if isValidRequest();
-        allow write: if false;
-      }
+    // ============================================================================
+    // TEMPLE VISITS COLLECTION (Top-level, shared across wards)
+    // ============================================================================
+
+    match /templeVisits/{visitId} {
+      // Visits can be read publicly (for audit log, if needed)
+      // Or restrict to authenticated users in production
+      allow read: if isValidRequest();
+      allow write: if false;  // Only Cloud Functions can write
     }
 
 
@@ -88,30 +83,29 @@ service cloud.firestore {
 
 
 // ============================================================================
-// PRODUCTION SECURITY NOTES
+// ARCHITECTURE NOTES
 // ============================================================================
 //
-// This ruleset is permissive for development. Before going to production:
+// CLIENT READS:
+// - PWA and kiosk read directly using Firestore client SDK
+// - Real-time sync via onSnapshot listeners
+// - Collections: wards/{wardId}, wardStats/{wardId}, templeSquares/{wardId}/squares/*
 //
-// 1. AUTHENTICATION:
-//    - Implement Firebase Auth or API key validation
-//    - Replace isValidRequest() with proper auth checks
+// CLIENT WRITES:
+// - All client writes are BLOCKED (allow write: if false)
+// - Mutations only via Cloud Functions API:
+//   - POST /api/v1/temple/logVisit
+//   - POST /api/v1/temple/logBonusVisit
 //
-// 2. RATE LIMITING:
-//    - Add App Check to prevent abuse
-//    - Consider Cloud Functions rate limiting
+// CLOUD FUNCTIONS:
+// - Use Admin SDK (bypasses security rules)
+// - Transactions for atomic updates (stats, squares, visits)
+// - No REST GET endpoints (clients read directly from Firestore)
 //
-// 3. FIELD VALIDATION:
-//    - Validate data types and ranges in Cloud Functions
-//    - Add server-side input sanitization
-//
-// 4. READ RESTRICTIONS (Optional):
-//    - If ward data should be private, add authentication
-//    - Current ruleset allows public reads (for kiosk displays)
-//
-// 5. WRITE PATH:
-//    - All writes MUST go through Cloud Functions
-//    - Direct client writes are blocked (allow write: if false)
-//    - This ensures data integrity and transactional safety
+// PRODUCTION HARDENING:
+// 1. Replace isValidRequest() with App Check or API key validation
+// 2. Add rate limiting via Cloud Functions
+// 3. Consider restricting templeVisits reads if audit log should be private
+// 4. Enable Firebase Authentication if user-specific access is needed
 //
 // ============================================================================

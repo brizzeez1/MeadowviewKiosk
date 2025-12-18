@@ -1,7 +1,7 @@
 {
   "indexes": [
     {
-      "collectionGroup": "templeSquares",
+      "collectionGroup": "squares",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -15,9 +15,13 @@
       ]
     },
     {
-      "collectionGroup": "visits",
+      "collectionGroup": "templeVisits",
       "queryScope": "COLLECTION",
       "fields": [
+        {
+          "fieldPath": "wardId",
+          "order": "ASCENDING"
+        },
         {
           "fieldPath": "clientRequestId",
           "order": "ASCENDING"
