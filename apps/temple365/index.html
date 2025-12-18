@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Temple 365 - Track your temple visits">
+    <meta name="theme-color" content="#003f5c">
+
+    <!-- iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Temple 365">
+
+    <title>Temple 365</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.webmanifest">
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <!-- Firebase SDK (version 10.x - modular) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/grid.css">
+    <link rel="stylesheet" href="css/keyboard.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+</head>
+<body>
+    <!-- Main Container -->
+    <div id="app-container">
+
+        <!-- Header -->
+        <header class="app-header">
+            <h1 class="app-title">Temple 365</h1>
+            <p class="ward-name" id="wardName">Loading...</p>
+        </header>
+
+        <!-- Stats Counters -->
+        <section class="stats-section">
+            <div class="stat-card">
+                <div class="stat-value" id="squaresFilled">0</div>
+                <div class="stat-label">Squares Filled</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalVisits">0</div>
+                <div class="stat-label">Total Visits</div>
+            </div>
+        </section>
+
+        <!-- Goal Met Banner (hidden by default) -->
+        <div id="goalMetBanner" class="goal-banner" style="display: none;">
+            <p class="goal-banner-text">
+                🎉 Minimum goal of 365 met! Keep going!
+            </p>
+        </div>
+
+        <!-- Log Another Visit Button (hidden by default) -->
+        <div id="bonusVisitSection" class="bonus-section" style="display: none;">
+            <button id="btnLogAnotherVisit" class="btn-primary btn-bonus">
+                Log Another Visit
+            </button>
+        </div>
+
+        <!-- 365 Grid -->
+        <section class="grid-section">
+            <div id="templeGrid" class="temple-grid">
+                <!-- Squares 1-365 rendered by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-overlay">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+
+    </div>
+
+    <!-- Visit Modal -->
+    <div id="visitModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Record Your Temple Visit</h2>
+                <button class="modal-close" id="btnCloseModal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Name Input -->
+                <div class="form-group">
+                    <label for="inputName">Your Name</label>
+                    <input
+                        type="text"
+                        id="inputName"
+                        class="form-input"
+                        placeholder="Enter your name"
+                        autocomplete="name"
+                        maxlength="100"
+                        inputmode="none"
+                        enterkeyhint="done"
+                        autocapitalize="words"
+                        autocorrect="off"
+                        spellcheck="false"
+                    >
+                </div>
+
+                <!-- Keyboard Mount Point -->
+                <div id="keyboardMount" class="keyboard-mount" style="display:none;"></div>
+
+                <!-- Image Upload Section -->
+                <div class="form-group">
+                    <label>Add a Selfie (Optional)</label>
+                    <div class="image-options">
+                        <button type="button" class="btn-secondary btn-image-option" id="btnUploadPhoto">
+                            📁 Upload Photo
+                        </button>
+                        <button type="button" class="btn-secondary btn-image-option" id="btnTakePhoto">
+                            📷 Take Photo
+                        </button>
+                    </div>
+                    <input
+                        type="file"
+                        id="inputImageUpload"
+                        accept="image/jpeg,image/jpg,image/png,image/heic"
+                        style="display: none;"
+                    >
+                    <input
+                        type="file"
+                        id="inputImageCapture"
+                        accept="image/*"
+                        capture="user"
+                        style="display: none;"
+                    >
+                    <div id="imagePreview" class="image-preview" style="display: none;">
+                        <img id="previewImg" alt="Preview">
+                        <button type="button" class="btn-remove-image" id="btnRemoveImage">&times;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btnCancelVisit">Cancel</button>
+                <button class="btn-primary" id="btnSaveVisit">Save Visit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Toast -->
+    <div id="confettiToast" class="confetti-toast" style="display: none;">
+        <div class="toast-content">
+            <span class="toast-icon">🎉</span>
+            <span class="toast-message" id="toastMessage">Visit recorded!</span>
+        </div>
+    </div>
+
+    <!-- Canvas for confetti animation -->
+    <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+    <!-- Scripts -->
+    <script src="js/firebase-init.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/celebration.js"></script>
+    <script src="js/keyboard.js"></script>
+    <script src="js/grid.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

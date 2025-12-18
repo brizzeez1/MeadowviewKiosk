@@ -1,0 +1,102 @@
+/**
+ * Temple 365 PWA - Grid Styles
+ *
+ * 365-square grid layout with responsive design
+ */
+
+#gridContainer {
+  display: grid;
+  gap: 4px;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+}
+
+/* Responsive grid columns */
+@media (min-width: 1024px) {
+  #gridContainer {
+    grid-template-columns: repeat(30, 1fr); /* 30 columns on desktop */
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  #gridContainer {
+    grid-template-columns: repeat(20, 1fr); /* 20 columns on tablet */
+  }
+}
+
+@media (max-width: 767px) {
+  #gridContainer {
+    grid-template-columns: repeat(15, 1fr); /* 15 columns on phone */
+  }
+}
+
+/* Grid Square */
+.grid-square {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.grid-square.unclaimed {
+  background: white;
+  border: 2px solid #e2e8f0;
+  color: #cbd5e0;
+}
+
+.grid-square.unclaimed:hover {
+  border-color: #667eea;
+  background: #f7fafc;
+  transform: scale(1.05);
+}
+
+.grid-square.claimed {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 2px solid #667eea;
+  color: white;
+}
+
+.grid-square.claimed:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Highlight animation (for celebrations) */
+.grid-square.highlight {
+  animation: pulse 0.5s ease-in-out 4;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px rgba(72, 187, 120, 0.6);
+  }
+}
+
+/* Square number label */
+.square-number {
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .square-number {
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .square-number {
+    font-size: 0.875rem;
+  }
+}
