@@ -13,20 +13,6 @@
           "order": "ASCENDING"
         }
       ]
-    },
-    {
-      "collectionGroup": "templeVisits",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "wardId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "clientRequestId",
-          "order": "ASCENDING"
-        }
-      ]
     }
   ],
   "fieldOverrides": []
