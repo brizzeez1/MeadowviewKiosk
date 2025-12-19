@@ -66,53 +66,11 @@ service cloud.firestore {
 
 
     // ============================================================================
-    // WARD STATS COLLECTION (Top-level, keyed by wardId)
-    // ============================================================================
-
-    match /wardStats/{wardId} {
-      // Stats are public read-only for PWA/Kiosk
-      // Only Cloud Functions can update (transactional)
-      allow read: if isValidRequest();
-      allow write: if false;  // Only Cloud Functions can write
-    }
-
-
-    // ============================================================================
-    // TEMPLE SQUARES COLLECTION (Top-level, keyed by wardId)
-    // ============================================================================
-
-    match /templeSquares/{wardId} {
-      // Ward document is just a container
-      allow read: if isValidRequest();
-      allow write: if false;
-
-      // Squares subcollection
-      match /squares/{squareId} {
-        // Squares are public read-only for PWA/Kiosk
-        // Only Cloud Functions can claim squares (transactional)
-        allow read: if isValidRequest();
-        allow write: if false;  // Only Cloud Functions can write
-      }
-    }
-
-
-    // ============================================================================
-    // TEMPLE VISITS COLLECTION (Top-level, shared across wards)
-    // ============================================================================
-
-    match /templeVisits/{visitId} {
-      // Visits can be read publicly (for audit log, if needed)
-      // Or restrict to authenticated users in production
-      allow read: if isValidRequest();
-      allow write: if false;  // Only Cloud Functions can write
-    }
-
-
-    // ============================================================================
     // DEFAULT DENY
     // ============================================================================
 
     // Deny all other reads/writes
+    // All data is stored under wards/{wardId}/ subcollections (ARCHITECTURE FIX)
     match /{document=**} {
       allow read, write: if false;
     }

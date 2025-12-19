@@ -89,7 +89,7 @@ module.exports = async (req, res) => {
       return res.status(403).json({ error: 'Missionary is not active' });
     }
 
-    console.log('[requestKioskVideoUpload] ✓ Missionary verified:', missionary.name);
+    console.log('[requestKioskVideoUpload] ✓ Missionary verified:', missionaryId);  // PII fix: log ID not name
 
   } catch (error) {
     console.error('[requestKioskVideoUpload] Error verifying missionary:', error);

@@ -56,8 +56,24 @@ const onMissionaryVideoUploaded = require('./src/missionary/onMissionaryVideoUpl
  * - POST /v1/missionary/kiosk/requestVideoUpload
  */
 exports.api = functions.https.onRequest(async (req, res) => {
-  // CORS headers
-  res.set('Access-Control-Allow-Origin', '*');
+  // CORS headers - restrict to known origins only (SECURITY FIX)
+  const allowedOrigins = [
+    'https://meadowview-kiosk.web.app',
+    'https://meadowview-kiosk.firebaseapp.com',
+    'http://localhost:5000',  // Development only
+    'http://localhost:5001',  // Development only
+    'http://127.0.0.1:5000',  // Development only
+    'http://127.0.0.1:5001'   // Development only
+  ];
+
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.set('Access-Control-Allow-Origin', origin);
+    res.set('Access-Control-Allow-Credentials', 'true');
+  } else if (origin) {
+    console.warn('[API] Rejected request from unauthorized origin:', origin);
+  }
+
   res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.set('Access-Control-Allow-Headers', 'Content-Type');
 

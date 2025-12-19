@@ -7,8 +7,8 @@
 
 const TEMPLE365_CONFIG = {
   // Build-time configuration (minimal)
-  wardId: 'meadowview',  // CHANGE for each ward deployment
-  apiBaseUrl: 'https://us-central1-your-project.cloudfunctions.net/api',  // CHANGE to your Cloud Functions URL
+  wardId: 'wUdBrGwVvafFGZFyxvFm',  // Production ward ID
+  apiBaseUrl: 'https://us-central1-meadowview-kiosk.cloudfunctions.net/api',  // Production Cloud Functions URL
 
   // Mode detection from URL parameter
   isKioskMode: false,

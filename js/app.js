@@ -520,14 +520,20 @@ function goToSelfieView() {
 
 // 2) Listen for messages coming from the Temple 365 iframe
 window.addEventListener('message', function(event) {
-  // SECURITY: Validate origin - accept from Google Apps Script domains
-  // Apps Script can serve from script.google.com or googleusercontent.com
-  var validOrigins = ['script.google.com', 'googleusercontent.com', 'google.com'];
+  // SECURITY: Validate origin using exact matching (SECURITY FIX)
+  // Accept messages from same-origin (Firebase hosted PWA) or localhost for development
+  var validOrigins = [
+    window.location.origin,  // Same origin (Firebase hosted PWA)
+    'http://localhost:5000',
+    'http://localhost:5001',
+    'http://127.0.0.1:5000',
+    'http://127.0.0.1:5001'
+  ];
   var originValid = false;
 
   if (event.origin) {
     for (var i = 0; i < validOrigins.length; i++) {
-      if (event.origin.indexOf(validOrigins[i]) !== -1) {
+      if (event.origin === validOrigins[i]) {
         originValid = true;
         break;
       }

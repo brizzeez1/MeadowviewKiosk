@@ -69,11 +69,19 @@ self.addEventListener('activate', (event) => {
  * Fetch event - network first, fallback to cache
  */
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // NEVER cache Firebase SDKs or external CDN resources (SECURITY FIX)
+  const shouldNotCache = url.hostname.includes('gstatic.com') ||
+                         url.hostname.includes('googleapis.com') ||
+                         url.hostname.includes('firebaseio.com') ||
+                         url.hostname.includes('cloudfunctions.net');
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Cache successful responses
-        if (response && response.status === 200) {
+        // Cache successful responses (except Firebase SDKs and external resources)
+        if (response && response.status === 200 && !shouldNotCache) {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseToCache);
@@ -82,7 +90,14 @@ self.addEventListener('fetch', (event) => {
         return response;
       })
       .catch(() => {
-        // Network failed - try cache
+        // Network failed - try cache (only for cacheable resources)
+        if (shouldNotCache) {
+          return new Response('Network required for this resource', {
+            status: 503,
+            statusText: 'Service Unavailable'
+          });
+        }
+
         return caches.match(event.request).then((response) => {
           if (response) {
             return response;

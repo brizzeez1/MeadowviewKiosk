@@ -206,6 +206,10 @@ TEMPLE_PHOTOS: [
         // Stake name (optional)
         STAKE: "Gateway Stake",
 
+        // Firestore Ward ID (IMPORTANT: This must match your Firestore ward document ID)
+        // This ID is used for all Firebase operations (temple visits, selfies, missionaries)
+        WARD_ID: "wUdBrGwVvafFGZFyxvFm",
+
         // Ward bulletin URL (for floating QR code)
         // This is the URL that the QR code will link to
         BULLETIN_URL: "https://app.wardbullet.com/channel/1007701",

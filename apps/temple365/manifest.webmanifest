@@ -2,7 +2,7 @@
   "name": "Temple 365",
   "short_name": "Temple365",
   "description": "Track your temple visits throughout the year",
-  "start_url": "/",
+  "start_url": "/apps/temple365/",
   "display": "standalone",
   "background_color": "#667eea",
   "theme_color": "#667eea",

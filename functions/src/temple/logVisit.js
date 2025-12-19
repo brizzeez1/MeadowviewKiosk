@@ -54,31 +54,45 @@ async function logVisit(req, res) {
     console.log('[logVisit]', {
       wardId,
       mode,
-      name,
+      name: name ? '[REDACTED]' : null,  // PII - do not log full name
       desiredSquareNumber,
       isBonusVisit,
       clientRequestId
     });
 
-    // Check for duplicate request (idempotency)
-    if (clientRequestId) {
-      const existingVisit = await checkDuplicateRequest(wardId, clientRequestId);
-      if (existingVisit) {
-        console.log('[logVisit] Duplicate request detected, returning existing visit');
-        return res.status(200).json({
-          success: true,
-          duplicate: true,
-          data: existingVisit
-        });
-      }
-    }
-
-    // Execute transaction to log visit
+    // Execute transaction to log visit (IDEMPOTENCY FIX: moved check inside transaction)
     const result = await db.runTransaction(async (transaction) => {
       const wardRef = db.collection('wards').doc(wardId);
       const statsRef = wardRef.collection('stats').doc('current');
       const visitsCollectionRef = wardRef.collection('visits');
       const squaresCollectionRef = wardRef.collection('templeSquares');
+
+      // Check for duplicate request INSIDE transaction (SECURITY FIX for race condition)
+      if (clientRequestId) {
+        const duplicateQuery = visitsCollectionRef
+          .where('clientRequestId', '==', clientRequestId)
+          .limit(1);
+
+        const duplicateSnapshot = await transaction.get(duplicateQuery);
+
+        if (!duplicateSnapshot.empty) {
+          console.log('[logVisit] Duplicate request detected inside transaction');
+          const doc = duplicateSnapshot.docs[0];
+          const data = doc.data();
+
+          // Return existing visit data (will be wrapped in response below)
+          return {
+            duplicate: true,
+            visitId: doc.id,
+            assignedSquareNumber: data.squareNumber,
+            isBonusVisit: data.isBonusVisit,
+            collisionResolved: data.collisionResolved || false,
+            totalVisits: null,
+            squaresFilled: null,
+            totalBonusVisits: null
+          };
+        }
+      }
 
       // Read current stats
       const statsDoc = await transaction.get(statsRef);
@@ -185,7 +199,15 @@ async function logVisit(req, res) {
 
     console.log('[logVisit] Success:', result);
 
-    // Return success response
+    // Return success response (handle duplicate flag from transaction)
+    if (result.duplicate) {
+      return res.status(200).json({
+        success: true,
+        duplicate: true,
+        data: result
+      });
+    }
+
     return res.status(200).json({
       success: true,
       data: result
@@ -198,39 +220,6 @@ async function logVisit(req, res) {
       error: error.message
     });
   }
-}
-
-/**
- * Check for duplicate request (idempotency)
- *
- * @param {string} wardId - Ward ID
- * @param {string} clientRequestId - Client request ID
- * @returns {Object|null} Existing visit data or null
- */
-async function checkDuplicateRequest(wardId, clientRequestId) {
-  const visitsRef = db.collection('wards').doc(wardId).collection('visits');
-  const duplicateQuery = visitsRef
-    .where('clientRequestId', '==', clientRequestId)
-    .limit(1);
-
-  const snapshot = await duplicateQuery.get();
-
-  if (snapshot.empty) {
-    return null;
-  }
-
-  const doc = snapshot.docs[0];
-  const data = doc.data();
-
-  return {
-    visitId: doc.id,
-    assignedSquareNumber: data.squareNumber,
-    isBonusVisit: data.isBonusVisit,
-    collisionResolved: data.collisionResolved || false,
-    totalVisits: null, // Not stored in visit doc
-    squaresFilled: null,
-    totalBonusVisits: null
-  };
 }
 
 module.exports = { logVisit };

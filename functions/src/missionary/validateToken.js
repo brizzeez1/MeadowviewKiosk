@@ -37,55 +37,46 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { token } = req.body;
+  const { token, wardId } = req.body;
 
   // Validate input
-  if (!token || typeof token !== 'string') {
-    return res.status(400).json({ error: 'Missing or invalid token' });
+  if (!token || typeof token !== 'string' || !wardId) {
+    return res.status(400).json({ error: 'Missing required fields: token, wardId' });
   }
 
   try {
     const db = admin.firestore();
 
-    // Query all wards to find missionary with this token
-    // Note: In production, you might want to optimize this with a token index
-    const wardsSnapshot = await db.collection('wards').get();
+    // Query missionaries in specified ward with matching token
+    const missionariesSnapshot = await db
+      .collection('wards')
+      .doc(wardId)
+      .collection('missionaries')
+      .where('uploadToken', '==', token)
+      .where('active', '==', true) // Only active missionaries
+      .limit(1)
+      .get();
 
-    for (const wardDoc of wardsSnapshot.docs) {
-      const wardId = wardDoc.id;
-
-      // Query missionaries in this ward with matching token
-      const missionariesSnapshot = await db
-        .collection('wards')
-        .doc(wardId)
-        .collection('missionaries')
-        .where('uploadToken', '==', token)
-        .where('active', '==', true) // Only active missionaries
-        .limit(1)
-        .get();
-
-      if (!missionariesSnapshot.empty) {
-        // Token found!
-        const missionaryDoc = missionariesSnapshot.docs[0];
-        const missionaryData = missionaryDoc.data();
-
-        console.log('[validateToken] Token validated for:', missionaryData.name);
-
-        return res.status(200).json({
-          valid: true,
-          missionary: {
-            id: missionaryDoc.id,
-            wardId: wardId,
-            name: missionaryData.name,
-            mission: missionaryData.mission
-          }
-        });
-      }
+    if (missionariesSnapshot.empty) {
+      console.log('[validateToken] Invalid token for ward:', wardId);
+      return res.status(200).json({ valid: false });
     }
 
-    // Token not found
-    console.log('[validateToken] Invalid token');
-    return res.status(200).json({ valid: false });
+    // Token found!
+    const missionaryDoc = missionariesSnapshot.docs[0];
+    const missionaryData = missionaryDoc.data();
+
+    console.log('[validateToken] Token validated for missionary in ward:', wardId);
+
+    return res.status(200).json({
+      valid: true,
+      missionary: {
+        id: missionaryDoc.id,
+        wardId: wardId,
+        name: missionaryData.name,
+        mission: missionaryData.mission
+      }
+    });
 
   } catch (error) {
     console.error('[validateToken] Error:', error);

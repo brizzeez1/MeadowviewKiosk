@@ -1,7 +1,7 @@
 {
   "indexes": [
     {
-      "collectionGroup": "squares",
+      "collectionGroup": "templeSquares",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -11,6 +11,54 @@
         {
           "fieldPath": "squareNumber",
           "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "missionaries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uploadToken",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "active",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "missionaries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "active",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "displayOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "visits",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "clientRequestId",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "gallery",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
         }
       ]
     }

@@ -16,6 +16,7 @@
  */
 
 const admin = require('firebase-admin');
+const { v4: uuidv4 } = require('uuid');
 
 /**
  * Generate signed upload URL for selfie
@@ -54,8 +55,8 @@ async function requestSelfieUpload(req, res) {
       uploadedBy: uploadedBy || 'anonymous'
     });
 
-    // Generate unique file ID
-    const uniqueId = generateUniqueId();
+    // Generate unique file ID using UUID v4
+    const uniqueId = uuidv4();
     const fileName = `${uniqueId}.jpg`;
     const filePath = `wards/${wardId}/selfies/${fileName}`;
 
@@ -104,18 +105,6 @@ async function requestSelfieUpload(req, res) {
       error: error.message
     });
   }
-}
-
-/**
- * Generate unique ID for file naming
- * Format: timestamp-randomString
- *
- * @returns {string} Unique ID
- */
-function generateUniqueId() {
-  const timestamp = Date.now();
-  const random = Math.random().toString(36).substring(2, 11);
-  return `${timestamp}-${random}`;
 }
 
 module.exports = { requestSelfieUpload };

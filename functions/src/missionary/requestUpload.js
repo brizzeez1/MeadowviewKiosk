@@ -61,41 +61,37 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Unsupported file type' });
   }
 
+  // Extract wardId from request
+  let wardId = req.body.wardId;
+
+  // For backward compatibility, try to extract from token validation if not provided
+  // In production, wardId should always be provided by client
+  if (!wardId) {
+    console.warn('[requestUpload] wardId not provided - this is deprecated behavior');
+    return res.status(400).json({ error: 'Missing required field: wardId' });
+  }
+
   try {
     const db = admin.firestore();
 
-    // Validate token and find missionary
-    let wardId = null;
-    let missionaryId = null;
-    let missionaryData = null;
+    // Validate token and find missionary in specified ward
+    const missionariesSnapshot = await db
+      .collection('wards')
+      .doc(wardId)
+      .collection('missionaries')
+      .where('uploadToken', '==', token)
+      .where('active', '==', true)
+      .limit(1)
+      .get();
 
-    const wardsSnapshot = await db.collection('wards').get();
-
-    for (const wardDoc of wardsSnapshot.docs) {
-      const currentWardId = wardDoc.id;
-
-      const missionariesSnapshot = await db
-        .collection('wards')
-        .doc(currentWardId)
-        .collection('missionaries')
-        .where('uploadToken', '==', token)
-        .where('active', '==', true)
-        .limit(1)
-        .get();
-
-      if (!missionariesSnapshot.empty) {
-        wardId = currentWardId;
-        missionaryId = missionariesSnapshot.docs[0].id;
-        missionaryData = missionariesSnapshot.docs[0].data();
-        break;
-      }
-    }
-
-    if (!missionaryId) {
+    if (missionariesSnapshot.empty) {
       return res.status(403).json({ error: 'Invalid or expired token' });
     }
 
-    console.log('[requestUpload] Token validated for:', missionaryData.name);
+    const missionaryId = missionariesSnapshot.docs[0].id;
+    const missionaryData = missionariesSnapshot.docs[0].data();
+
+    console.log('[requestUpload] Token validated for missionary in ward:', wardId);
 
     // Generate unique filename with UUID to prevent collisions
     const fileExtension = fileName.split('.').pop();

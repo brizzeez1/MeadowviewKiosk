@@ -17,9 +17,10 @@ const SelfieCapture = (function() {
        ============================================================ */
 
     // Firebase Cloud Functions API URL (Phase 6 - Selfie Upload Pipeline)
-    // TODO: Update these values to match your Firebase project
-    const FIREBASE_API_BASE_URL = 'https://us-central1-your-project.cloudfunctions.net/api';
-    const WARD_ID = 'meadowview';  // CHANGE for each ward deployment
+    // Loaded from Firebase config at runtime
+    const FIREBASE_API_BASE_URL = window.FIREBASE_FUNCTIONS_URL || 'https://us-central1-meadowview-kiosk.cloudfunctions.net/api';
+    // Ward ID loaded from centralized config
+    const WARD_ID = window.KIOSK_CONFIG.ORGANIZATION.WARD_ID;
 
     // Camera constraints
     const CAMERA_CONSTRAINTS = {
