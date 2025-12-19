@@ -187,7 +187,71 @@ All 12 locked decisions from spec followed exactly:
 - [ ] Fallback to config works if Firebase unavailable
 - [ ] Security rules prevent client writes
 
+## Phase 8: Upload Portal with Secret Token
+
+**Completed:**
+- Upload portal web app (apps/upload/) for family/friend photo/video uploads
+- Secret token system for missionary-specific uploads
+- Token validation Cloud Function (POST /api/v1/missionary/validateToken)
+- Upload request Cloud Function with signed URLs (POST /api/v1/missionary/requestUpload)
+- Storage trigger for auto-publishing uploads (onMissionaryPhotoUploaded)
+- Storage rules for missionary gallery uploads (100MB max)
+- Updated missionary schema to include uploadToken field
+
+**Architecture:**
+- **Upload Portal**: Simple HTML/CSS/JS web app, mobile-friendly
+- **Token System**: 32-character URL-safe tokens per missionary
+- **Upload Flow**:
+  1. User enters token (or uses URL with ?token=...)
+  2. Cloud Function validates token, returns missionary info
+  3. User selects photos/videos (100MB max per spec decision #10)
+  4. Cloud Function generates signed Cloud Storage URL (15-min expiration)
+  5. Client uploads directly to Cloud Storage
+  6. Storage trigger creates gallery document (auto-published per spec decision #9)
+- **Security**: Signed URLs, no authentication required, token-based access control
+
+**Files Created:**
+- `apps/upload/index.html` - Upload portal HTML
+- `apps/upload/css/upload.css` - Upload portal styles
+- `apps/upload/js/firebase-init.js` - Firebase SDK initialization
+- `apps/upload/js/config.js` - Build configuration
+- `apps/upload/js/upload.js` - Upload logic
+- `functions/src/missionary/validateToken.js` - Token validation endpoint
+- `functions/src/missionary/requestUpload.js` - Upload request with signed URLs
+- `functions/src/missionary/onMissionaryPhotoUploaded.js` - Storage trigger
+
+**Files Updated:**
+- `functions/index.js` - Added Phase 8 routes and storage trigger
+- `functions/package.json` - Added uuid dependency
+- `storage.rules` - Added missionary gallery upload rules
+- `firestore/MISSIONARIES_SCHEMA.md` - Added uploadToken field and documentation
+
+**Key Features:**
+- URL-based token passing (?token=...) for easy sharing
+- Drag-and-drop file upload
+- File validation (type, size)
+- Progress tracking
+- Auto-publishing to gallery (spec decision #9)
+- Video support up to 100MB (spec decision #10)
+
+**Upload Portal URL:**
+`/upload?token=<missionary-upload-token>`
+
+**Token Generation:**
+- Tokens auto-generated when missionaries are seeded
+- 32-character URL-safe random strings
+- Stored in missionary document: `uploadToken` field
+- Shared privately with family (not displayed on kiosk)
+
+**Testing Checklist:**
+- [ ] Upload portal loads with token in URL
+- [ ] Token validation works (valid and invalid tokens)
+- [ ] File selection and preview works
+- [ ] Photo uploads create gallery documents
+- [ ] Video uploads work (up to 100MB)
+- [ ] Gallery photos display on kiosk in real-time
+- [ ] Auto-publishing works (featured: true)
+
 ## Next Steps
 
-Phase 8: Upload Portal with Secret Token
 Phase 9: Kiosk-Recorded Missionary Video

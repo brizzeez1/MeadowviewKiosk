@@ -5,9 +5,12 @@
  * - POST /api/v1/temple/logVisit - Log temple visit (Phase 2)
  * - POST /api/v1/temple/logBonusVisit - Log bonus visit (convenience wrapper)
  * - POST /api/v1/mosaic/requestSelfieUpload - Generate signed URL for selfie upload (Phase 6)
+ * - POST /api/v1/missionary/validateToken - Validate upload token (Phase 8)
+ * - POST /api/v1/missionary/requestUpload - Generate signed URL for missionary photo upload (Phase 8)
  *
  * Storage Triggers:
  * - onSelfieUploaded - Process selfie uploads to Cloud Storage (Phase 6)
+ * - onMissionaryPhotoUploaded - Process missionary photo uploads (Phase 8)
  */
 
 const functions = require('firebase-functions');
@@ -26,6 +29,13 @@ const { requestSelfieUpload } = require('./src/mosaic/requestSelfieUpload');
 // Import Storage Triggers - Mosaic (Phase 6)
 const { onSelfieUploaded } = require('./src/mosaic/onSelfieUploaded');
 
+// Import API handlers - Missionary (Phase 8)
+const validateToken = require('./src/missionary/validateToken');
+const requestUpload = require('./src/missionary/requestUpload');
+
+// Import Storage Triggers - Missionary (Phase 8)
+const onMissionaryPhotoUploaded = require('./src/missionary/onMissionaryPhotoUploaded');
+
 /**
  * Main API endpoint
  *
@@ -33,6 +43,8 @@ const { onSelfieUploaded } = require('./src/mosaic/onSelfieUploaded');
  * - POST /v1/temple/logVisit
  * - POST /v1/temple/logBonusVisit
  * - POST /v1/mosaic/requestSelfieUpload
+ * - POST /v1/missionary/validateToken
+ * - POST /v1/missionary/requestUpload
  */
 exports.api = functions.https.onRequest(async (req, res) => {
   // CORS headers
@@ -60,6 +72,13 @@ exports.api = functions.https.onRequest(async (req, res) => {
     else if (path === '/v1/mosaic/requestSelfieUpload' && req.method === 'POST') {
       await requestSelfieUpload(req, res);
     }
+    // Missionary routes (Phase 8)
+    else if (path === '/v1/missionary/validateToken' && req.method === 'POST') {
+      await validateToken(req, res);
+    }
+    else if (path === '/v1/missionary/requestUpload' && req.method === 'POST') {
+      await requestUpload(req, res);
+    }
     // 404 - Not found
     else {
       res.status(404).json({ error: 'Not found' });
@@ -78,4 +97,23 @@ exports.api = functions.https.onRequest(async (req, res) => {
  */
 exports.onSelfieUploaded = functions.storage.object().onFinalize(async (object) => {
   return onSelfieUploaded(object);
+});
+
+/**
+ * Storage Trigger - Missionary Photo Uploaded
+ *
+ * Fires when a file is uploaded to Cloud Storage.
+ * Processes missionary photos uploaded to: wards/{wardId}/missionaries/gallery/{missionaryId}/{fileName}
+ * Auto-publishes to missionary gallery per spec decision #9.
+ */
+exports.onMissionaryPhotoUploaded = functions.storage.object().onFinalize(async (object) => {
+  const filePath = object.name;
+
+  // Only process missionary gallery uploads
+  if (filePath && filePath.includes('/missionaries/gallery/')) {
+    return onMissionaryPhotoUploaded(object);
+  }
+
+  // Ignore other uploads
+  return null;
 });

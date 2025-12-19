@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Upload photos and videos to support your missionary">
+    <title>Missionary Photo Upload</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/upload.css">
+</head>
+<body>
+    <div id="app-container">
+
+        <!-- ========================================================
+             SCREEN 1: TOKEN INPUT
+             ======================================================== -->
+        <section id="token-screen" class="screen active">
+            <div class="container">
+                <div class="card">
+                    <h1 class="title">Missionary Photo Upload</h1>
+                    <p class="description">
+                        Enter the special code you received to upload photos and videos
+                        for your missionary.
+                    </p>
+
+                    <form id="token-form" class="token-form">
+                        <label for="token-input" class="form-label">Upload Code</label>
+                        <input
+                            type="text"
+                            id="token-input"
+                            class="form-input"
+                            placeholder="Enter your upload code"
+                            required
+                            autocomplete="off"
+                            spellcheck="false">
+
+                        <p class="error-message" id="token-error" style="display: none;"></p>
+
+                        <button type="submit" class="btn btn-primary" id="token-submit">
+                            Continue
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================
+             SCREEN 2: UPLOAD INTERFACE
+             ======================================================== -->
+        <section id="upload-screen" class="screen">
+            <div class="container">
+                <div class="card">
+                    <!-- Missionary Info Header -->
+                    <div class="missionary-header">
+                        <div class="missionary-info">
+                            <h2 class="missionary-name" id="missionary-name">Loading...</h2>
+                            <p class="missionary-mission" id="missionary-mission"></p>
+                        </div>
+                    </div>
+
+                    <p class="description">
+                        Share photos and videos from home! Your uploads will appear in the
+                        missionary gallery on the ward kiosk.
+                    </p>
+
+                    <!-- File Upload Area -->
+                    <div class="upload-zone" id="upload-zone">
+                        <div class="upload-icon">📷</div>
+                        <p class="upload-prompt">
+                            <strong>Click to select</strong> or drag and drop
+                        </p>
+                        <p class="upload-hint">
+                            Photos and videos up to 100MB each
+                        </p>
+                        <input
+                            type="file"
+                            id="file-input"
+                            accept="image/*,video/*"
+                            multiple
+                            style="display: none;">
+                    </div>
+
+                    <!-- File List -->
+                    <div id="file-list" class="file-list"></div>
+
+                    <!-- Upload Button -->
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="upload-button"
+                        style="display: none;">
+                        Upload Files
+                    </button>
+
+                    <!-- Progress -->
+                    <div id="upload-progress" class="upload-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <p class="progress-text" id="progress-text">Uploading...</p>
+                    </div>
+
+                    <!-- Success Message -->
+                    <div id="success-message" class="success-message" style="display: none;">
+                        <div class="success-icon">✓</div>
+                        <h3>Upload Complete!</h3>
+                        <p>Your photos have been added to the missionary gallery.</p>
+                        <button type="button" class="btn btn-secondary" id="upload-more">
+                            Upload More
+                        </button>
+                    </div>
+
+                    <!-- Change Missionary Link -->
+                    <p class="change-missionary">
+                        <a href="javascript:void(0)" id="change-missionary-link">
+                            Upload for a different missionary
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- Application Scripts -->
+    <script src="js/firebase-init.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/upload.js"></script>
+</body>
+</html>

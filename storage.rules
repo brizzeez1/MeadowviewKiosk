@@ -1,9 +1,10 @@
 rules_version = '2';
 
 /**
- * Firebase Storage Security Rules - Temple 365 & Selfie Mosaic
+ * Firebase Storage Security Rules - Temple 365, Selfie Mosaic, Missionary Uploads
  *
  * Phase 6: Selfie-Only Upload Pipeline
+ * Phase 8: Missionary Photo/Video Upload Portal
  *
  * IMPORTANT:
  * - Signed URL uploads don't require authentication
@@ -48,13 +49,35 @@ service firebase.storage {
     }
 
     // ========================================================================
-    // MISSIONARY CONTENT (Future - Phase 7+)
+    // MISSIONARY GALLERY UPLOADS (Phase 8)
     // ========================================================================
-    // Missionary uploads via portal (authenticated)
+    // Path: wards/{wardId}/missionaries/gallery/{missionaryId}/{fileName}
     //
-    match /wards/{wardId}/missionary/{type}/{fileName} {
-      // Require authentication for missionary uploads
-      allow write: if request.auth != null;
+    // Write access: Via signed URLs only (family/friend uploads with token)
+    // Read access: Public (for kiosk gallery display)
+    //
+    match /wards/{wardId}/missionaries/gallery/{missionaryId}/{fileName} {
+      // Allow signed URL uploads (request.auth is null for signed URLs)
+      // Support both photos and videos
+      allow write: if request.auth == null
+                   && (request.resource.contentType.matches('image/.*')
+                       || request.resource.contentType.matches('video/.*'))
+                   && request.resource.size < 100 * 1024 * 1024;  // Max 100MB (spec decision #10)
+
+      // Allow public read for kiosk gallery display
+      allow read: if true;
+    }
+
+    // ========================================================================
+    // MISSIONARY PROFILE PHOTOS (Phase 7)
+    // ========================================================================
+    // Path: wards/{wardId}/missionaries/photos/{fileName}
+    //
+    // Admin-only writes (via seed scripts)
+    // Public reads (for kiosk display)
+    //
+    match /wards/{wardId}/missionaries/photos/{fileName} {
+      allow write: if false;  // Admin SDK only
       allow read: if true;
     }
 

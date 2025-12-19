@@ -23,6 +23,7 @@ firestore/
                 ├── companionId: string?       # Optional: Reference to companion document
                 ├── displayOrder: number       # Sort order for display (default: id)
                 ├── active: boolean            # true if currently serving
+                ├── uploadToken: string        # Secret token for family/friend uploads (Phase 8)
                 ├── createdAt: timestamp       # When record was created
                 ├── updatedAt: timestamp       # Last update
                 │
@@ -55,6 +56,7 @@ firestore/
 - `companionId` (string, optional): Document ID of companion (for pairs)
 - `displayOrder` (number, optional): Custom sort order (defaults to `id`)
 - `active` (boolean, required): true if currently serving, false if returned
+- `uploadToken` (string, required): Secret token for family/friend uploads (Phase 8, auto-generated)
 - `createdAt` (timestamp, required): When record was created
 - `updatedAt` (timestamp, required): Last update
 
@@ -74,6 +76,7 @@ firestore/
   "companionId": null,
   "displayOrder": 1,
   "active": true,
+  "uploadToken": "a7b9c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
   "createdAt": "2025-01-15T10:00:00Z",
   "updatedAt": "2025-01-15T10:00:00Z"
 }
@@ -240,6 +243,50 @@ match /wards/{wardId}/missionaries/{missionaryId} {
 
 ---
 
+## Upload Tokens (Phase 8)
+
+**Purpose**: Enable family/friends to upload photos/videos to missionary gallery using a secret token.
+
+**Token Format**:
+- 32-character URL-safe random string
+- Example: `a7b9c3d4e5f6g7h8i9j0k1l2m3n4o5p6`
+- Generated automatically when missionary is created
+- Shared privately with family (not displayed on kiosk)
+
+**Upload Portal Flow**:
+1. User visits upload portal URL with token in query string: `/upload?token=...`
+2. Cloud Function validates token and returns missionary info
+3. User selects photos/videos to upload (100MB max per file)
+4. Cloud Function generates signed Cloud Storage URL
+5. Client uploads directly to Cloud Storage
+6. Storage trigger automatically creates gallery document (auto-published per spec decision #9)
+
+**Token Validation** (via Cloud Function):
+```javascript
+// POST /api/v1/missionary/validateToken
+{
+  "token": "a7b9c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
+}
+
+// Response:
+{
+  "valid": true,
+  "missionary": {
+    "id": "abc123",
+    "name": "Sister Kylie Gorecki",
+    "mission": "Poland Warsaw Mission"
+  }
+}
+```
+
+**Security**:
+- Tokens are secret and should not be logged or exposed
+- Tokens do not expire (simplifies family usage)
+- One token per missionary
+- Tokens can be regenerated if compromised
+
+---
+
 ## Future Enhancements
 
 - Video support (store video URLs in missionary document)
@@ -247,3 +294,4 @@ match /wards/{wardId}/missionaries/{missionaryId} {
 - Statistics (track photo upload counts, views)
 - Admin portal for managing missionaries
 - Automatic retirement when `returnDate` passes
+- Token expiration/regeneration
