@@ -58,6 +58,7 @@ const onMissionaryVideoUploaded = require('./src/missionary/onMissionaryVideoUpl
 exports.api = functions.https.onRequest(async (req, res) => {
   // CORS headers - restrict to known origins only (SECURITY FIX)
   const allowedOrigins = [
+    'https://kiosk.meadowviewward.com',  // Custom domain (primary)
     'https://meadowview-kiosk.web.app',
     'https://meadowview-kiosk.firebaseapp.com',
     'http://localhost:5000',  // Development only

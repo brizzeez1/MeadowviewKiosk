@@ -11,9 +11,13 @@
     "runtime": "nodejs18"
   },
   "hosting": {
-    "public": "apps",
+    "public": ".",
     "ignore": [
       "firebase.json",
+      "functions",
+      "firestore",
+      "backend",
+      "docs",
       "**/.*",
       "**/node_modules/**"
     ],

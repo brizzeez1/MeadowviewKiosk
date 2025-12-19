@@ -10,9 +10,9 @@
     "allowedMimeTypes": ["image/jpeg", "image/png", "image/heic", "image/heif"]
   },
   "baseUrls": {
-    "kioskBaseUrl": "https://meadowview-kiosk.web.app",
-    "templeBaseUrl": "https://meadowview-kiosk.web.app/temple365",
-    "uploadBaseUrl": "https://meadowview-kiosk.web.app/upload"
+    "kioskBaseUrl": "https://kiosk.meadowviewward.com",
+    "templeBaseUrl": "https://kiosk.meadowviewward.com/apps/temple365",
+    "uploadBaseUrl": "https://kiosk.meadowviewward.com/apps/upload"
   },
   "createdAt": "{{TIMESTAMP}}",
   "updatedAt": "{{TIMESTAMP}}"
