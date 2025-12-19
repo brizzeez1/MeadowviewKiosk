@@ -247,13 +247,35 @@
       return false;
     }
 
-    // Check file type
-    if (!UPLOAD_CONFIG.allowedMimeTypes.includes(file.type)) {
-      alert(`File "${file.name}" is not a supported type. Please upload images or videos only.`);
+    // Check file type - ACCEPT EMPTY MIME TYPES (iPhone HEIC fix per spec)
+    // iPhone HEIC files may have empty file.type, so validate by extension as fallback
+    const fileName = file.name.toLowerCase();
+    const validExtensions = ['.jpg', '.jpeg', '.png', '.heic', '.heif', '.mp4', '.mov', '.avi'];
+    const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
+    const hasValidMimeType = file.type && UPLOAD_CONFIG.allowedMimeTypes.includes(file.type);
+
+    // Accept if EITHER MIME type is valid OR extension is valid (handles empty MIME)
+    if (!hasValidMimeType && !hasValidExtension) {
+      alert(`File "${file.name}" is not a supported type. Please upload images (.jpg, .png, .heic) or videos (.mp4, .mov) only.`);
       return false;
     }
 
     return true;
+  }
+
+  function inferContentTypeFromExtension(fileName) {
+    const ext = fileName.toLowerCase().split('.').pop();
+    const mimeMap = {
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'heic': 'image/heic',
+      'heif': 'image/heif',
+      'mp4': 'video/mp4',
+      'mov': 'video/quicktime',
+      'avi': 'video/x-msvideo'
+    };
+    return mimeMap[ext] || 'application/octet-stream';
   }
 
   function removeFile(index) {
@@ -342,6 +364,9 @@
   async function uploadFile(file) {
     console.log('[Upload] Uploading file:', file.name);
 
+    // Infer content type from extension if file.type is empty (iPhone HEIC fix)
+    const effectiveContentType = file.type || inferContentTypeFromExtension(file.name);
+
     // Step 1: Request signed URL from Cloud Function
     const signedUrlResponse = await fetch(`${UPLOAD_CONFIG.apiBaseUrl}/v1/missionary/requestUpload`, {
       method: 'POST',
@@ -351,7 +376,7 @@
       body: JSON.stringify({
         token: _token,
         fileName: file.name,
-        contentType: file.type,
+        contentType: effectiveContentType,
         fileSizeBytes: file.size
       })
     });
@@ -366,7 +391,7 @@
     const uploadResponse = await fetch(uploadUrl, {
       method: 'PUT',
       headers: {
-        'Content-Type': file.type
+        'Content-Type': effectiveContentType
       },
       body: file
     });

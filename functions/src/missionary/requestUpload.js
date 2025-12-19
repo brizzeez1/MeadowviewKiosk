@@ -34,8 +34,8 @@ module.exports = async (req, res) => {
 
   const { token, fileName, contentType, fileSizeBytes } = req.body;
 
-  // Validate input
-  if (!token || !fileName || !contentType || !fileSizeBytes) {
+  // Validate input - contentType is now optional (can be empty for iPhone HEIC)
+  if (!token || !fileName || !fileSizeBytes) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
@@ -45,8 +45,11 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'File size exceeds 100MB limit' });
   }
 
-  // Validate content type
-  const ALLOWED_TYPES = [
+  // Validate file type by extension (fallback for empty MIME type - iPhone HEIC fix)
+  const fileExtension = fileName.toLowerCase().split('.').pop();
+  const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'heic', 'heif', 'mp4', 'mov', 'avi'];
+
+  const ALLOWED_MIME_TYPES = [
     'image/jpeg',
     'image/jpg',
     'image/png',
@@ -57,9 +60,31 @@ module.exports = async (req, res) => {
     'video/x-msvideo'
   ];
 
-  if (!ALLOWED_TYPES.includes(contentType)) {
+  // Accept if EITHER MIME type is valid OR extension is valid
+  const hasValidMimeType = contentType && ALLOWED_MIME_TYPES.includes(contentType);
+  const hasValidExtension = ALLOWED_EXTENSIONS.includes(fileExtension);
+
+  if (!hasValidMimeType && !hasValidExtension) {
     return res.status(400).json({ error: 'Unsupported file type' });
   }
+
+  // Infer content type from extension if not provided (iPhone HEIC fix)
+  function inferContentType(ext) {
+    const map = {
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'heic': 'image/heic',
+      'heif': 'image/heif',
+      'mp4': 'video/mp4',
+      'mov': 'video/quicktime',
+      'avi': 'video/x-msvideo'
+    };
+    return map[ext] || 'application/octet-stream';
+  }
+
+  // Use provided content type or infer from extension
+  const effectiveContentType = contentType || inferContentType(fileExtension);
 
   // Extract wardId from request
   let wardId = req.body.wardId;
@@ -108,7 +133,7 @@ module.exports = async (req, res) => {
       version: 'v4',
       action: 'write',
       expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-      contentType: contentType,
+      contentType: effectiveContentType,
       extensionHeaders: {
         // Custom metadata for storage trigger
         'x-goog-meta-ward-id': wardId,
