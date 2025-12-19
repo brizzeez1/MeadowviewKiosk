@@ -252,6 +252,74 @@ All 12 locked decisions from spec followed exactly:
 - [ ] Gallery photos display on kiosk in real-time
 - [ ] Auto-publishing works (featured: true)
 
+## Phase 9: Kiosk-Recorded Missionary Video
+
+**Completed:**
+- Webcam video recording directly on kiosk
+- 30-second recording limit (locked decision #11)
+- Live countdown timer showing remaining time
+- Recording indicator (red dot + "REC")
+- Preview before upload
+- Retake functionality
+- Direct upload to Firebase Cloud Storage
+- Auto-publishing to missionary gallery
+
+**Architecture:**
+- **MediaRecorder API**: Browser-native video capture (VP9 codec, WebM container)
+- **Recording Constraints**: 1280x720 resolution, 2.5 Mbps bitrate, 30-second max
+- **Storage Path**: `wards/{wardId}/missionaries/videos/{missionaryId}/{filename}`
+- **Upload Flow**:
+  1. User clicks "Record Video Message" on missionary detail page
+  2. Browser requests camera/microphone permissions
+  3. User records video (auto-stops at 30 seconds)
+  4. User previews video with playback controls
+  5. On "Upload Video": Cloud Function generates signed URL (15-min expiration)
+  6. Client uploads directly to Cloud Storage
+  7. Storage trigger creates gallery document (auto-published per spec decision #9)
+- **File Size**: ~5-15MB for 30-second videos at 2.5 Mbps (50MB max safety margin)
+
+**Files Created:**
+- `js/missionaryVideoRecorder.js` - Complete video recording module (525 lines)
+- `functions/src/missionary/requestKioskVideoUpload.js` - Kiosk video upload endpoint
+- `functions/src/missionary/onMissionaryVideoUploaded.js` - Video storage trigger
+
+**Files Updated:**
+- `index.html` - Added missionaryVideoRecorder.js script
+- `js/app.js` - Added MissionaryVideoRecorder.init()
+- `js/missionaryDetail.js` - Added "Record Video Message" button and handler
+- `css/styles.css` - Added video recorder modal styles (188 lines)
+- `functions/index.js` - Added kiosk video routes and storage trigger
+- `storage.rules` - Added kiosk video upload rules
+- `firestore/schema.md` - Updated gallery schema for videos, added Cloud Storage paths
+
+**Key Features:**
+- **30-Second Cap**: Auto-stops recording at 30 seconds (locked decision #11)
+- **Countdown Timer**: Visual countdown from 0:30 to 0:00
+- **Recording Indicator**: Pulsing red dot + "REC" text overlay
+- **Preview**: Full playback controls before upload
+- **Retake**: Easy re-recording if not satisfied
+- **Auto-Publishing**: Videos immediately appear in gallery (spec decision #9)
+- **Gallery Integration**: Videos stored alongside photos in unified gallery
+
+**Browser Compatibility:**
+- Requires: `navigator.mediaDevices.getUserMedia()`, `MediaRecorder` API
+- Supported: Chrome, Edge, Safari 14.1+, Firefox
+- Graceful degradation: Error message if camera access fails
+
+**Testing Checklist:**
+- [ ] Camera permission prompt appears
+- [ ] Video preview shows live camera feed
+- [ ] Recording starts with button click
+- [ ] Timer counts down from 0:30 to 0:00
+- [ ] Recording auto-stops at 30 seconds
+- [ ] Preview shows recorded video with controls
+- [ ] Retake clears recording and restarts camera
+- [ ] Upload creates signed URL and uploads to Cloud Storage
+- [ ] Storage trigger creates gallery document
+- [ ] Video appears in missionary gallery
+- [ ] Modal close button works
+- [ ] Camera stream properly released on close
+
 ## Next Steps
 
-Phase 9: Kiosk-Recorded Missionary Video
+Phase 10: TBD (Future enhancements)

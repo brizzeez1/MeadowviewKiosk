@@ -90,6 +90,7 @@ const KioskApp = (function() {
             MissionarySpotlight.init();
             MissionaryGallery.init();
             MissionaryDetail.init();
+            MissionaryVideoRecorder.init(); // Phase 9: Kiosk video recording
 
             // Initialize floating QR code
             FloatingQR.init();

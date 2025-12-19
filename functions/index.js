@@ -7,10 +7,12 @@
  * - POST /api/v1/mosaic/requestSelfieUpload - Generate signed URL for selfie upload (Phase 6)
  * - POST /api/v1/missionary/validateToken - Validate upload token (Phase 8)
  * - POST /api/v1/missionary/requestUpload - Generate signed URL for missionary photo upload (Phase 8)
+ * - POST /api/v1/missionary/kiosk/requestVideoUpload - Generate signed URL for kiosk video upload (Phase 9)
  *
  * Storage Triggers:
  * - onSelfieUploaded - Process selfie uploads to Cloud Storage (Phase 6)
  * - onMissionaryPhotoUploaded - Process missionary photo uploads (Phase 8)
+ * - onMissionaryVideoUploaded - Process missionary video uploads from kiosk (Phase 9)
  */
 
 const functions = require('firebase-functions');
@@ -33,8 +35,14 @@ const { onSelfieUploaded } = require('./src/mosaic/onSelfieUploaded');
 const validateToken = require('./src/missionary/validateToken');
 const requestUpload = require('./src/missionary/requestUpload');
 
+// Import API handlers - Missionary Kiosk (Phase 9)
+const requestKioskVideoUpload = require('./src/missionary/requestKioskVideoUpload');
+
 // Import Storage Triggers - Missionary (Phase 8)
 const onMissionaryPhotoUploaded = require('./src/missionary/onMissionaryPhotoUploaded');
+
+// Import Storage Triggers - Missionary Kiosk (Phase 9)
+const onMissionaryVideoUploaded = require('./src/missionary/onMissionaryVideoUploaded');
 
 /**
  * Main API endpoint
@@ -45,6 +53,7 @@ const onMissionaryPhotoUploaded = require('./src/missionary/onMissionaryPhotoUpl
  * - POST /v1/mosaic/requestSelfieUpload
  * - POST /v1/missionary/validateToken
  * - POST /v1/missionary/requestUpload
+ * - POST /v1/missionary/kiosk/requestVideoUpload
  */
 exports.api = functions.https.onRequest(async (req, res) => {
   // CORS headers
@@ -79,6 +88,10 @@ exports.api = functions.https.onRequest(async (req, res) => {
     else if (path === '/v1/missionary/requestUpload' && req.method === 'POST') {
       await requestUpload(req, res);
     }
+    // Missionary kiosk routes (Phase 9)
+    else if (path === '/v1/missionary/kiosk/requestVideoUpload' && req.method === 'POST') {
+      await requestKioskVideoUpload(req, res);
+    }
     // 404 - Not found
     else {
       res.status(404).json({ error: 'Not found' });
@@ -112,6 +125,26 @@ exports.onMissionaryPhotoUploaded = functions.storage.object().onFinalize(async 
   // Only process missionary gallery uploads
   if (filePath && filePath.includes('/missionaries/gallery/')) {
     return onMissionaryPhotoUploaded(object);
+  }
+
+  // Ignore other uploads
+  return null;
+});
+
+/**
+ * Storage Trigger - Missionary Video Uploaded
+ *
+ * Fires when a file is uploaded to Cloud Storage.
+ * Processes missionary videos uploaded from kiosk: wards/{wardId}/missionaries/videos/{missionaryId}/{fileName}
+ * Auto-publishes to missionary gallery per spec decision #9.
+ * Kiosk videos capped at 30 seconds (locked decision #11).
+ */
+exports.onMissionaryVideoUploaded = functions.storage.object().onFinalize(async (object) => {
+  const filePath = object.name;
+
+  // Only process missionary video uploads from kiosk
+  if (filePath && filePath.includes('/missionaries/videos/')) {
+    return onMissionaryVideoUploaded(object);
   }
 
   // Ignore other uploads

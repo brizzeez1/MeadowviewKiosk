@@ -82,6 +82,27 @@ service firebase.storage {
     }
 
     // ========================================================================
+    // MISSIONARY KIOSK VIDEO MESSAGES (Phase 9)
+    // ========================================================================
+    // Path: wards/{wardId}/missionaries/videos/{missionaryId}/{fileName}
+    //
+    // Write access: Via signed URLs only (kiosk recordings)
+    // Read access: Public (for kiosk gallery display)
+    //
+    // Kiosk videos are capped at 30 seconds (locked decision #11)
+    // Expected file size: 5-15MB at 2.5 Mbps bitrate
+    //
+    match /wards/{wardId}/missionaries/videos/{missionaryId}/{fileName} {
+      // Allow signed URL uploads (request.auth is null for signed URLs)
+      allow write: if request.auth == null
+                   && request.resource.contentType.matches('video/.*')
+                   && request.resource.size < 50 * 1024 * 1024;  // Max 50MB (safety margin for 30-sec videos)
+
+      // Allow public read for kiosk gallery display
+      allow read: if true;
+    }
+
+    // ========================================================================
     // DENY ALL OTHER ACCESS
     // ========================================================================
     match /{allPaths=**} {

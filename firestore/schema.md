@@ -85,13 +85,16 @@ firestore/
                 ├── createdAt: timestamp
                 ├── updatedAt: timestamp
                 │
-                └── gallery/                    # Missionary photos (subcollection)
+                └── gallery/                    # Missionary photos & videos (subcollection)
                     └── {photoId}/              # Auto-generated document ID
                         ├── url: string          # Cloud Storage URL
-                        ├── caption: string?     # Optional caption
-                        ├── uploadedBy: string?  # Family/friend name
+                        ├── contentType: string  # MIME type (image/* or video/*)
+                        ├── sizeBytes: number    # File size in bytes
+                        ├── originalFileName: string  # Original filename
+                        ├── uploadedBy: string   # 'family', 'kiosk', etc.
+                        ├── featured: boolean    # Auto-published (spec decision #9)
                         ├── createdAt: timestamp # Sorted newest first (spec #12)
-                        └── metadata: object?    # Custom metadata
+                        └── caption: string?     # Optional caption
 ```
 
 ## Document Details
@@ -372,3 +375,42 @@ To deploy Temple 365 to a new ward:
 - Use `missionaries-seed.js` for missionary data migration
 
 See `firestore/DEPLOYMENT.md` for complete migration guide.
+
+---
+
+## Cloud Storage Paths
+
+Firebase Cloud Storage file organization:
+
+```
+gs://{bucket}/
+└── wards/
+    └── {wardId}/
+        ├── selfies/                              # Phase 6: Selfie-only uploads
+        │   └── {timestamp}-{uuid}.jpg            # Direct kiosk uploads
+        │
+        ├── visit-selfies/                        # Future: Temple 365 visit selfies
+        │   └── {timestamp}-{uuid}.jpg
+        │
+        └── missionaries/
+            ├── photos/                           # Phase 7: Profile photos
+            │   └── {missionaryId}.jpg            # Admin-uploaded only
+            │
+            ├── gallery/                          # Phase 8: Family/friend uploads
+            │   └── {missionaryId}/
+            │       └── {timestamp}-{uuid}.{ext}  # Photos/videos via upload portal
+            │
+            └── videos/                           # Phase 9: Kiosk video messages
+                └── {missionaryId}/
+                    └── {timestamp}-{uuid}.webm   # 30-second video messages
+```
+
+**File Size Limits**:
+- Selfies: 10MB max (image/* only)
+- Family uploads: 100MB max (spec decision #10) - image/* and video/*
+- Kiosk videos: 50MB max - video/* only (30-second cap, spec decision #11)
+
+**Upload Methods**:
+- Signed URLs (15-minute expiration) for all client uploads
+- All uploads validated by Cloud Functions before signed URL generation
+- Storage rules enforce same constraints as Cloud Functions

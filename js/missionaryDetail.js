@@ -118,13 +118,20 @@ const MissionaryDetail = (function() {
                     </button>
                 </div>
 
+                <!-- Video Recording Button (Phase 9) -->
+                <div class="gallery-button-section">
+                    <button class="btn-view-gallery" id="btnRecordVideo">
+                        <span class="gallery-icon">🎥</span>
+                        Record Video Message
+                    </button>
+                </div>
+
                 <div class="missionary-features-section">
                     <p class="coming-soon-badge">Coming Soon</p>
                     <p class="feature-description">
                         Additional features will include:
                     </p>
                     <ul class="feature-list">
-                        <li><strong>Video Messages:</strong> Record a message for the missionary (saves to Google Drive)</li>
                         <li><strong>Messages from ${_currentMissionary.name}:</strong> View video messages sent by the missionary</li>
                     </ul>
                 </div>
@@ -184,8 +191,9 @@ const MissionaryDetail = (function() {
             </div>
         `;
 
-        // Set up gallery button click handler
+        // Set up button click handlers
         setupGalleryButton();
+        setupVideoRecordingButton();
 
         ConfigLoader.debugLog('Rendered detail for missionary:', _currentMissionary.name);
     }
@@ -209,6 +217,20 @@ const MissionaryDetail = (function() {
     }
 
     /**
+     * Set up the video recording button click handler (Phase 9).
+     */
+    function setupVideoRecordingButton() {
+        const videoBtn = document.getElementById('btnRecordVideo');
+        if (videoBtn && _currentMissionary) {
+            videoBtn.addEventListener('click', handleVideoRecordingClick);
+            videoBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                handleVideoRecordingClick();
+            });
+        }
+    }
+
+    /**
      * Handle gallery button click - open the photo gallery.
      */
     function handleGalleryClick() {
@@ -219,6 +241,20 @@ const MissionaryDetail = (function() {
             MissionaryGallery.open(_currentMissionary);
         } else {
             console.error('[MissionaryDetail] MissionaryGallery module not found');
+        }
+    }
+
+    /**
+     * Handle video recording button click - open the video recorder modal (Phase 9).
+     */
+    function handleVideoRecordingClick() {
+        if (!_currentMissionary) return;
+
+        // Check if MissionaryVideoRecorder module is available
+        if (window.MissionaryVideoRecorder && typeof MissionaryVideoRecorder.open === 'function') {
+            MissionaryVideoRecorder.open(_currentMissionary);
+        } else {
+            console.error('[MissionaryDetail] MissionaryVideoRecorder module not found');
         }
     }
 
