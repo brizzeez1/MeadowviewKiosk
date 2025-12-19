@@ -4,7 +4,7 @@
   "description": "Cloud Functions for Meadowview Ward Kiosk - Temple 365 & Selfie Upload",
   "main": "index.js",
   "engines": {
-    "node": "18"
+    "node": "22"
   },
   "scripts": {
     "serve": "firebase emulators:start --only functions",

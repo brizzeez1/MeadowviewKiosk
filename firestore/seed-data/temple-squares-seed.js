@@ -101,9 +101,9 @@ async function initializeWard(wardId, wardConfig) {
       allowedMimeTypes: ['image/jpeg', 'image/png', 'image/heic', 'image/heif']
     },
     baseUrls: wardConfig.baseUrls || {
-      kioskBaseUrl: 'https://meadowview-kiosk.web.app',
-      templeBaseUrl: 'https://meadowview-kiosk.web.app/temple365',
-      uploadBaseUrl: 'https://meadowview-kiosk.web.app/upload'
+      kioskBaseUrl: 'https://kiosk.meadowviewward.com',
+      templeBaseUrl: 'https://kiosk.meadowviewward.com/apps/temple365',
+      uploadBaseUrl: 'https://kiosk.meadowviewward.com/apps/upload'
     },
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
@@ -164,9 +164,9 @@ async function main() {
           allowedMimeTypes: ['image/jpeg', 'image/png', 'image/heic', 'image/heif']
         },
         baseUrls: {
-          kioskBaseUrl: 'https://meadowview-kiosk.web.app',
-          templeBaseUrl: 'https://meadowview-kiosk.web.app/temple365',
-          uploadBaseUrl: 'https://meadowview-kiosk.web.app/upload'
+          kioskBaseUrl: 'https://kiosk.meadowviewward.com',
+          templeBaseUrl: 'https://kiosk.meadowviewward.com/apps/temple365',
+          uploadBaseUrl: 'https://kiosk.meadowviewward.com/apps/upload'
         }
       };
 

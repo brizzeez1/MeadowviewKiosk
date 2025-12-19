@@ -42,7 +42,7 @@ MeadowviewKiosk/
 │
 ├── functions/                        # Cloud Functions (Phase 2)
 │   ├── index.js                      # API router
-│   ├── package.json                  # Dependencies (Node.js 18)
+│   ├── package.json                  # Dependencies (Node.js 22)
 │   └── src/temple/
 │       ├── logVisit.js               # POST /api/v1/temple/logVisit
 │       └── logBonusVisit.js          # POST /api/v1/temple/logBonusVisit
