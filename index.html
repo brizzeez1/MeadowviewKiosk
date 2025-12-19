@@ -562,6 +562,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <!-- ============================================================
+         FIREBASE SDK (Phase 6-7)
+         ============================================================
+         Firebase client SDK for:
+         - Real-time missionary data from Firestore (Phase 7)
+         - Selfie uploads to Cloud Storage (Phase 6)
+         ============================================================ -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- Firebase initialization (kiosk config) -->
+    <script src="js/firebase-init-kiosk.js"></script>
+
+    <!-- ============================================================
          JAVASCRIPT FILES
          ============================================================
          Loaded in order of dependency:
@@ -571,12 +585,14 @@
          4. js/views.js               - View rendering helpers
          5. js/screensaver.js         - Screensaver logic
          6. js/homeScreen.js          - Home screen logic
-         7. js/missionarySpotlight.js - Missionary grid view
-         8. js/missionaryGallery.js   - Photo gallery viewer
+         7. js/missionarySpotlight.js - Missionary grid view (uses Firestore)
+         8. js/missionaryGallery.js   - Photo gallery viewer (uses Firestore)
          9. js/missionaryDetail.js    - Individual missionary detail
          10. js/floatingQR.js         - Floating QR code component
          11. js/phase2Placeholders.js - Phase 2 stubs
-         12. js/app.js                - Main app initialization (must be last)
+         12. js/selfieCapture.js      - Selfie capture (uses Cloud Storage)
+         13. js/temple365Video.js     - Video player
+         14. js/app.js                - Main app initialization (must be last)
          ============================================================ -->
     <script src="config/config.js"></script>
     <script src="js/configLoader.js"></script>

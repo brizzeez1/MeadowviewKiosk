@@ -4,7 +4,7 @@ This document defines the complete Firestore database structure for the Temple 3
 
 ## Design Principles
 
-- **Ward Portability**: Ward-specific configuration lives in `wards/{wardId}` (source of truth for config). Ward-scoped data is stored across top-level collections keyed by wardId (`wardStats`, `templeSquares`, `templeVisits`).
+- **Ward Portability**: All ward-specific data is stored as subcollections under `wards/{wardId}`. This enables clean ward deletion (cascading deletes) and better data isolation.
 - **No Code Changes**: Deploying to a new ward requires only database setup (no code modification). Frontends only require `wardId` and `apiBaseUrl` at build time. All other ward-specific values are loaded at runtime from `wards/{wardId}`.
 - **Real-Time Sync**: Uses Firestore onSnapshot listeners for live updates
 - **Transactional Writes**: Critical operations use Cloud Functions with Firestore transactions
@@ -14,55 +14,84 @@ This document defines the complete Firestore database structure for the Temple 3
 
 ```
 firestore/
-├── wards/                                    # Ward configuration (top-level)
-│   └── {wardId}/                             # Document per ward (e.g., "meadowview-1st")
-│       ├── name: string                       # "Meadowview 1st Ward"
-│       ├── templeAffiliation: string          # "Bountiful Utah Temple"
-│       ├── timezone: string                   # "America/Denver"
-│       ├── goalSquares: number                # 365 (locked decision #1)
-│       ├── celebrationAutoDismissMs: number   # 2000 (locked decision #3)
-│       ├── uploadLimits: object               # Upload constraints
-│       │   ├── maxBytes: number
-│       │   ├── maxFilesPerDay: number
-│       │   └── allowedMimeTypes: array
-│       ├── baseUrls: object                   # Deployment URLs
-│       │   ├── kioskBaseUrl: string
-│       │   ├── templeBaseUrl: string
-│       │   └── uploadBaseUrl: string
-│       ├── createdAt: timestamp
-│       └── updatedAt: timestamp
-│
-├── wardStats/                                # Ward statistics (top-level, keyed by wardId)
-│   └── {wardId}/                             # Document per ward
-│       ├── totalVisits: number                # All-time visit count (regular + bonus)
-│       ├── totalBonusVisits: number           # Visits after 365 squares filled
-│       ├── totalSelfies: number               # Selfie-only uploads (no visit)
-│       ├── squaresFilled: number              # 0-365
-│       ├── goalMetAt: timestamp?              # When 365th square was filled
-│       ├── lastVisitAt: timestamp?            # Most recent visit timestamp
-│       └── updatedAt: timestamp
-│
-├── templeSquares/                            # Temple squares (top-level, keyed by wardId)
-│   └── {wardId}/                             # Document per ward
-│       └── squares/                           # Subcollection: 365 squares
-│           └── {squareId}/                    # Document per square ("1" through "365")
-│               ├── squareNumber: number       # 1-365
-│               ├── claimed: boolean           # true if filled
-│               ├── claimedAt: timestamp?      # When filled
-│               ├── claimedByName: string?     # Visitor name
-│               └── selfieUrl: string?         # Optional selfie URL
-│
-└── templeVisits/                             # Visit log (top-level, shared across wards)
-    └── {visitId}/                            # Auto-generated document ID
-        ├── wardId: string                     # Which ward (for filtering)
-        ├── name: string                       # Visitor name
-        ├── mode: string                       # "phone" | "kiosk"
-        ├── squareNumber: number?              # 1-365 or null (bonus)
-        ├── isBonusVisit: boolean              # true if no square assigned
-        ├── collisionResolved: boolean         # true if auto-assigned
-        ├── selfieUrl: string?                 # Optional selfie URL
+└── wards/                                    # Ward configuration (top-level)
+    └── {wardId}/                             # Document per ward (e.g., "meadowview-1st")
+        ├── name: string                       # "Meadowview 1st Ward"
+        ├── templeAffiliation: string          # "Bountiful Utah Temple"
+        ├── timezone: string                   # "America/Denver"
+        ├── goalSquares: number                # 365 (locked decision #1)
+        ├── celebrationAutoDismissMs: number   # 2000 (locked decision #3)
+        ├── uploadLimits: object               # Upload constraints
+        │   ├── maxBytes: number
+        │   ├── maxFilesPerDay: number
+        │   └── allowedMimeTypes: array
+        ├── baseUrls: object                   # Deployment URLs
+        │   ├── kioskBaseUrl: string
+        │   ├── templeBaseUrl: string
+        │   └── uploadBaseUrl: string
         ├── createdAt: timestamp
-        └── clientRequestId: string?           # For idempotency
+        ├── updatedAt: timestamp
+        │
+        ├── stats/                             # Ward statistics (subcollection)
+        │   └── current/                       # Document: current stats
+        │       ├── totalVisits: number         # All-time visit count (regular + bonus)
+        │       ├── totalBonusVisits: number    # Visits after 365 squares filled
+        │       ├── totalSelfies: number        # Selfie-only uploads (Phase 6)
+        │       ├── squaresFilled: number       # 0-365
+        │       ├── goalMetAt: timestamp?       # When 365th square was filled
+        │       ├── lastVisitAt: timestamp?     # Most recent visit timestamp
+        │       └── updatedAt: timestamp
+        │
+        ├── templeSquares/                     # Temple squares (subcollection)
+        │   └── {squareId}/                    # Document per square ("1" through "365")
+        │       ├── squareNumber: number        # 1-365
+        │       ├── claimed: boolean            # true if filled
+        │       ├── claimedAt: timestamp?       # When filled
+        │       ├── claimedByName: string?      # Visitor name
+        │       └── selfieUrl: string?          # Optional selfie URL
+        │
+        ├── visits/                            # Visit log (subcollection)
+        │   └── {visitId}/                     # Auto-generated document ID
+        │       ├── name: string                # Visitor name
+        │       ├── mode: string                # "phone" | "kiosk"
+        │       ├── squareNumber: number?       # 1-365 or null (bonus)
+        │       ├── isBonusVisit: boolean       # true if no square assigned
+        │       ├── collisionResolved: boolean  # true if auto-assigned
+        │       ├── selfieUrl: string?          # Optional selfie URL
+        │       ├── createdAt: timestamp
+        │       └── clientRequestId: string?    # For idempotency
+        │
+        ├── selfies/                           # Selfie uploads (subcollection - Phase 6)
+        │   └── {selfieId}/                    # Auto-generated document ID
+        │       ├── url: string                 # Cloud Storage URL
+        │       ├── uploadedAt: timestamp       # When uploaded
+        │       ├── uploadedBy: string?         # Optional uploader name
+        │       └── metadata: object?           # Custom metadata
+        │
+        └── missionaries/                      # Missionary data (subcollection - Phase 7)
+            └── {missionaryId}/                # Document per missionary
+                ├── name: string                # Full name
+                ├── mission: string             # Mission name
+                ├── language: string            # Language spoken
+                ├── scripture: string           # Favorite scripture
+                ├── photoUrl: string            # Cloud Storage URL
+                ├── homeLocation: string?       # Home city/state
+                ├── callDate: timestamp?        # Mission call date
+                ├── departureDate: timestamp?   # Departure date
+                ├── returnDate: timestamp?      # Expected return
+                ├── active: boolean             # Currently serving
+                ├── displayOrder: number        # Sort order for display
+                ├── companionId: string?        # Linked companion missionary ID
+                ├── createdAt: timestamp
+                ├── updatedAt: timestamp
+                │
+                └── gallery/                    # Missionary photos (subcollection)
+                    └── {photoId}/              # Auto-generated document ID
+                        ├── url: string          # Cloud Storage URL
+                        ├── caption: string?     # Optional caption
+                        ├── uploadedBy: string?  # Family/friend name
+                        ├── createdAt: timestamp # Sorted newest first (spec #12)
+                        └── metadata: object?    # Custom metadata
 ```
 
 ## Document Details
@@ -113,14 +142,16 @@ firestore/
 
 ---
 
-### wardStats/{wardId}
+### wards/{wardId}/stats/current
 
-**Purpose**: Real-time aggregated statistics (top-level collection, one document per ward)
+**Purpose**: Real-time aggregated statistics (subcollection under wards, always use document ID "current")
+
+**Collection Path**: `wards/{wardId}/stats/current`
 
 **Fields**:
 - `totalVisits` (number): All-time visit count (regular + bonus)
 - `totalBonusVisits` (number): Visits after 365 squares filled
-- `totalSelfies` (number): Selfie-only uploads (no visit)
+- `totalSelfies` (number): Selfie-only uploads (Phase 6)
 - `squaresFilled` (number): Count of claimed squares (0-365)
 - `goalMetAt` (timestamp, nullable): When 365th square was filled
 - `lastVisitAt` (timestamp, nullable): Most recent visit timestamp
@@ -139,15 +170,15 @@ firestore/
 }
 ```
 
-**Note**: Updated atomically by Cloud Functions during visit logging.
+**Note**: Updated atomically by Cloud Functions during visit logging. Document ID is always "current".
 
 ---
 
-### templeSquares/{wardId}/squares/{squareId}
+### wards/{wardId}/templeSquares/{squareId}
 
 **Purpose**: Individual square state (1-365 per ward)
 
-**Collection Path**: `templeSquares/{wardId}/squares/{squareId}`
+**Collection Path**: `wards/{wardId}/templeSquares/{squareId}`
 
 **Fields**:
 - `squareNumber` (number, required): 1-365
@@ -181,14 +212,13 @@ firestore/
 
 ---
 
-### templeVisits/{visitId}
+### wards/{wardId}/visits/{visitId}
 
-**Purpose**: Audit log of all temple visits (shared across all wards)
+**Purpose**: Audit log of all temple visits for this ward
 
-**Collection Path**: `templeVisits` (top-level)
+**Collection Path**: `wards/{wardId}/visits/{visitId}`
 
 **Fields**:
-- `wardId` (string, required): Which ward this visit belongs to
 - `name` (string, required): Visitor name
 - `mode` (string, required): "phone" or "kiosk"
 - `squareNumber` (number, nullable): 1-365 or null for bonus visits
@@ -201,7 +231,6 @@ firestore/
 **Example (Regular Visit)**:
 ```json
 {
-  "wardId": "meadowview-1st",
   "name": "Jane Doe",
   "mode": "phone",
   "squareNumber": 127,
@@ -215,7 +244,6 @@ firestore/
 **Example (Bonus Visit)**:
 ```json
 {
-  "wardId": "meadowview-1st",
   "name": "Bob Johnson",
   "mode": "kiosk",
   "squareNumber": null,
@@ -226,21 +254,33 @@ firestore/
 }
 ```
 
+**Note**: No wardId field needed since visits are scoped to ward via subcollection path.
+
 ---
 
 ## Indexes
 
 **Required Composite Indexes**:
 
-1. **templeSquares/squares - Find Available Square**
-   - Collection Group: `squares`
+1. **wards/{wardId}/templeSquares - Find Available Square**
+   - Collection Group: `templeSquares`
    - Fields: `claimed` (Ascending), `squareNumber` (Ascending)
    - Purpose: Efficiently find next unclaimed square during collision
 
-2. **templeVisits - Idempotency Check**
-   - Collection: `templeVisits`
-   - Fields: `wardId` (Ascending), `clientRequestId` (Ascending)
+2. **wards/{wardId}/visits - Idempotency Check**
+   - Collection: `visits` (collection group)
+   - Fields: `clientRequestId` (Ascending)
    - Purpose: Prevent duplicate visit logging per ward
+
+3. **wards/{wardId}/missionaries - Active Missionaries**
+   - Collection: `missionaries` (collection group)
+   - Fields: `active` (Ascending), `displayOrder` (Ascending)
+   - Purpose: Query active missionaries in display order (Phase 7)
+
+4. **missionaries/{missionaryId}/gallery - Gallery Photos**
+   - Collection: `gallery` (collection group)
+   - Fields: `createdAt` (Descending)
+   - Purpose: Load gallery photos newest first (Phase 7, spec decision #12)
 
 **Note**: Firestore will auto-create single-field indexes. Composite indexes above must be created manually or via `firestore.indexes.json`.
 
@@ -254,13 +294,30 @@ Frontends use Firestore client SDK with onSnapshot listeners for real-time sync:
 // Ward config (source of truth)
 db.collection('wards').doc(wardId).onSnapshot(...)
 
-// Stats
-db.collection('wardStats').doc(wardId).onSnapshot(...)
+// Stats (subcollection)
+db.collection('wards').doc(wardId)
+  .collection('stats').doc('current')
+  .onSnapshot(...)
 
-// Squares
-db.collection('templeSquares').doc(wardId)
-  .collection('squares')
+// Squares (subcollection)
+db.collection('wards').doc(wardId)
+  .collection('templeSquares')
   .orderBy('squareNumber', 'asc')
+  .onSnapshot(...)
+
+// Missionaries (subcollection - Phase 7)
+db.collection('wards').doc(wardId)
+  .collection('missionaries')
+  .where('active', '==', true)
+  .orderBy('displayOrder', 'asc')
+  .onSnapshot(...)
+
+// Missionary gallery photos (nested subcollection - Phase 7)
+db.collection('wards').doc(wardId)
+  .collection('missionaries').doc(missionaryId)
+  .collection('gallery')
+  .orderBy('createdAt', 'desc')
+  .limit(20)
   .onSnapshot(...)
 ```
 
@@ -274,11 +331,13 @@ All writes go through Cloud Functions API:
 
 - `POST /api/v1/temple/logVisit` - Log temple visit (regular or bonus)
 - `POST /api/v1/temple/logBonusVisit` - Convenience wrapper for bonus visits
+- `POST /api/v1/mosaic/requestSelfieUpload` - Generate signed Cloud Storage URL (Phase 6)
 
 Cloud Functions use Admin SDK with transactions for atomic updates to:
-- `wardStats/{wardId}` - Increment counters
-- `templeSquares/{wardId}/squares/{squareId}` - Claim square
-- `templeVisits/{visitId}` - Create visit record
+- `wards/{wardId}/stats/current` - Increment counters
+- `wards/{wardId}/templeSquares/{squareId}` - Claim square
+- `wards/{wardId}/visits/{visitId}` - Create visit record
+- `wards/{wardId}/selfies/{selfieId}` - Create selfie record (Phase 6, via storage trigger)
 
 **Client writes are blocked by security rules.** All mutations via Cloud Functions only.
 
@@ -289,19 +348,27 @@ Cloud Functions use Admin SDK with transactions for atomic updates to:
 To deploy Temple 365 to a new ward:
 
 1. **Create ward configuration**: `wards/{newWardId}` with ward-specific config
-2. **Initialize stats**: Create `wardStats/{newWardId}` with zero values
-3. **Initialize 365 squares**: Create `templeSquares/{newWardId}/squares/1` through `squares/365`
-4. **Update PWA build config**: Set `wardId` and `apiBaseUrl` in build config
+2. **Initialize stats**: Create `wards/{newWardId}/stats/current` with zero values
+3. **Initialize 365 squares**: Create `wards/{newWardId}/templeSquares/1` through `templeSquares/365`
+4. **Seed missionaries** (Phase 7): Run `missionaries-seed.js` to populate `wards/{newWardId}/missionaries`
+5. **Update PWA build config**: Set `wardId` and `apiBaseUrl` in build config
 
 **No code changes required** - all ward-specific settings are runtime-loaded from `wards/{wardId}`.
+
+**Use seed scripts**: Run `temple-squares-seed.js` and `missionaries-seed.js` for automated ward setup.
 
 ---
 
 ## Migration from Apps Script
 
 **Legacy Data Mapping**:
-- Apps Script spreadsheet rows → Firestore `templeVisits` documents (add `wardId` field)
-- Sheet "Current Stats" → Firestore `wardStats/{wardId}`
-- Sheet "365 Grid" → Firestore `templeSquares/{wardId}/squares` subcollection
+- Apps Script spreadsheet rows → Firestore `wards/{wardId}/visits` documents
+- Sheet "Current Stats" → Firestore `wards/{wardId}/stats/current`
+- Sheet "365 Grid" → Firestore `wards/{wardId}/templeSquares` subcollection
+- Missionary config → Firestore `wards/{wardId}/missionaries` (Phase 7)
+
+**Automated Migration**:
+- Use `temple-squares-seed.js` for 365 squares initialization
+- Use `missionaries-seed.js` for missionary data migration
 
 See `firestore/DEPLOYMENT.md` for complete migration guide.

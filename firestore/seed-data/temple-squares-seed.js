@@ -27,14 +27,15 @@ const db = admin.firestore();
 
 /**
  * Generate seed data for 365 temple squares
- * Collection structure: templeSquares/{wardId}/squares/{squareId}
+ * Collection structure: wards/{wardId}/templeSquares/{squareId}
  * @param {string} wardId - Ward identifier
  */
 async function seedTempleSquares(wardId) {
   console.log(`[Seed] Initializing 365 temple squares for ward: ${wardId}`);
 
-  // Correct collection structure: templeSquares/{wardId}/squares/{squareId}
-  const squaresRef = db.collection('templeSquares').doc(wardId).collection('squares');
+  // CORRECT collection structure (subcollection under wards): wards/{wardId}/templeSquares/{squareId}
+  const wardRef = db.collection('wards').doc(wardId);
+  const squaresRef = wardRef.collection('templeSquares');
 
   // Create batch writes (max 500 per batch)
   const batches = [];
@@ -109,8 +110,8 @@ async function initializeWard(wardId, wardConfig) {
   });
   console.log('[Seed] ✅ Ward configuration created');
 
-  // 2. Create initial ward stats (top-level collection)
-  const statsRef = db.collection('wardStats').doc(wardId);
+  // 2. Create initial ward stats (subcollection under wards)
+  const statsRef = wardRef.collection('stats').doc('current');
   await statsRef.set({
     totalVisits: 0,
     totalBonusVisits: 0,
@@ -122,7 +123,7 @@ async function initializeWard(wardId, wardConfig) {
   });
   console.log('[Seed] ✅ Ward stats initialized');
 
-  // 3. Create 365 temple squares (top-level collection with subcollection)
+  // 3. Create 365 temple squares (subcollection under wards)
   await seedTempleSquares(wardId);
 
   console.log(`[Seed] ✅ Ward ${wardId} fully initialized!`);
