@@ -1,5 +1,5 @@
 /**
- * Missionary Data Seed Script (Phase 7)
+ * Missionary Data Seed Script (Phase 7 + Phase 8)
  *
  * This script initializes missionary data in Firestore for a ward.
  *
@@ -14,6 +14,14 @@
  * - Creates missionary documents in wards/{wardId}/missionaries collection
  * - Sets up proper timestamps and metadata
  * - Validates data structure
+ * - Generates unique upload tokens for each missionary (Phase 8)
+ * - Displays upload URLs for sharing with families
+ *
+ * PHASE 8 TOKENS:
+ * - Each missionary gets a unique 32-character upload token
+ * - Tokens are used by family/friends to upload photos/videos
+ * - Share the "Upload URL" with missionary families
+ * - Upload portal: /upload?token=<token>
  *
  * NOTE: This script creates missionary metadata only.
  * Photos must be uploaded to Cloud Storage separately.
@@ -21,6 +29,7 @@
  */
 
 const admin = require('firebase-admin');
+const crypto = require('crypto');
 
 // ============================================================================
 // CONFIGURATION
@@ -102,6 +111,25 @@ try {
 }
 
 const db = admin.firestore();
+
+// ============================================================================
+// TOKEN GENERATION (Phase 8)
+// ============================================================================
+
+/**
+ * Generate a secure random upload token for missionary uploads
+ * @returns {string} 32-character URL-safe random token
+ */
+function generateUploadToken() {
+  // Generate 24 random bytes (will become 32 chars in base64)
+  const randomBytes = crypto.randomBytes(24);
+
+  // Convert to URL-safe base64 (replace +/= with -/_/nothing)
+  return randomBytes.toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+}
 
 // ============================================================================
 // VALIDATION
@@ -192,6 +220,9 @@ async function seedMissionaries() {
         .collection('missionaries')
         .doc(); // Auto-generate ID
 
+      // Generate unique upload token for this missionary (Phase 8)
+      const uploadToken = generateUploadToken();
+
       const missionaryData = {
         id: missionary.id,
         name: missionary.name,
@@ -206,6 +237,7 @@ async function seedMissionaries() {
         companionId: missionary.companionId || null,
         displayOrder: missionary.displayOrder || missionary.id,
         active: missionary.active,
+        uploadToken: uploadToken,  // Phase 8: Secret token for family uploads
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       };
@@ -213,6 +245,8 @@ async function seedMissionaries() {
       await missionaryRef.set(missionaryData);
 
       console.log(`✓ Created: ${missionary.name} (ID: ${missionary.id})`);
+      console.log(`  Upload Token: ${uploadToken}`);
+      console.log(`  Upload URL: /upload?token=${uploadToken}`);
       successCount++;
 
     } catch (error) {
@@ -234,7 +268,11 @@ async function seedMissionaries() {
     console.log('NEXT STEPS:');
     console.log('1. Upload missionary photos to Cloud Storage');
     console.log('2. Verify data in Firebase Console → Firestore Database');
-    console.log('3. Update kiosk to read from Firestore (Phase 7 complete)\n');
+    console.log('3. Update kiosk to read from Firestore (Phase 7 complete)');
+    console.log('4. Share upload tokens with missionary families (Phase 8):');
+    console.log('   - Copy the "Upload URL" from above for each missionary');
+    console.log('   - Share via email/text with family members');
+    console.log('   - Family can upload photos/videos using the link\n');
   } else {
     console.log('✗ Some missionaries failed to seed. Check errors above.\n');
   }
