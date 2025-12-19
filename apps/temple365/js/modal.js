@@ -233,10 +233,10 @@
 
     console.log('[Modal] Emitting postMessage:', message);
 
-    window.parent.postMessage(message, '*');
-
-    // TODO Phase 5: Add origin check when known
-    // window.parent.postMessage(message, 'https://expected-parent-origin.com');
+    // Security fix: Send to same origin (kiosk and iframe served from same Firebase Hosting)
+    // This prevents malicious sites from embedding the iframe and intercepting visit data
+    const targetOrigin = window.location.origin;
+    window.parent.postMessage(message, targetOrigin);
   }
 
   // ============================================================================
