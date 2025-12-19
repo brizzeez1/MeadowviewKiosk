@@ -24,6 +24,44 @@ service cloud.firestore {
       // Client writes denied (Cloud Functions only)
       allow read: if isValidRequest();
       allow write: if false;  // Only Cloud Functions can write
+
+      // Stats subcollection
+      match /stats/{statsId} {
+        allow read: if isValidRequest();
+        allow write: if false;  // Only Cloud Functions can write
+      }
+
+      // Temple Squares subcollection
+      match /templeSquares/{squareId} {
+        allow read: if isValidRequest();
+        allow write: if false;  // Only Cloud Functions can write
+      }
+
+      // Visits subcollection
+      match /visits/{visitId} {
+        allow read: if isValidRequest();
+        allow write: if false;  // Only Cloud Functions can write
+      }
+
+      // Selfies subcollection (Phase 6)
+      match /selfies/{selfieId} {
+        allow read: if isValidRequest();
+        allow write: if false;  // Only Cloud Functions/Storage triggers can write
+      }
+
+      // Missionaries subcollection (Phase 7)
+      match /missionaries/{missionaryId} {
+        // Missionaries are public read-only for Kiosk
+        // Only Cloud Functions/admin can write
+        allow read: if isValidRequest();
+        allow write: if false;  // Only Cloud Functions can write
+
+        // Missionary gallery photos subcollection
+        match /gallery/{photoId} {
+          allow read: if isValidRequest();
+          allow write: if false;  // Only Cloud Functions/storage triggers can write
+        }
+      }
     }
 
 

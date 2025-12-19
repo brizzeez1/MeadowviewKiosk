@@ -10,6 +10,11 @@
    PURPOSE:
    Shows all current missionaries from the ward in an organized
    grid layout that auto-sizes to fit all missionaries on screen.
+
+   PHASE 7 UPDATE:
+   - Reads missionary data from Firestore (not config)
+   - Real-time updates via onSnapshot listeners
+   - Dynamic count (no hardcoded values)
    ================================================================ */
 
 const MissionarySpotlight = (function() {
@@ -29,6 +34,9 @@ const MissionarySpotlight = (function() {
     let _touchStartY = 0;
     let _hasScrolled = false;
     let _scrollEndTimer = null;
+
+    // PHASE 7: Firestore listener
+    let _unsubscribeMissionaries = null;
 
     /* ============================================================
        SECTION 2: INITIALIZATION
@@ -86,16 +94,68 @@ const MissionarySpotlight = (function() {
     }
 
     /* ============================================================
-       SECTION 3: DATA LOADING
+       SECTION 3: DATA LOADING (PHASE 7 - FIRESTORE)
        ============================================================ */
 
     /**
-     * Load missionary data from the config.
+     * Load missionary data from Firestore.
+     * PHASE 7: Real-time updates via onSnapshot
      */
     function loadMissionaryData() {
+        // Check if Firebase/Firestore is available
+        if (!window.firebase || !window.firebase.firestore) {
+            console.warn('[MissionarySpotlight] Firebase not initialized, falling back to config');
+            loadMissionaryDataFromConfig();
+            return;
+        }
+
+        // Get ward ID from config or use default
+        const wardId = (window.KIOSK_CONFIG && window.KIOSK_CONFIG.ORGANIZATION && window.KIOSK_CONFIG.ORGANIZATION.WARD_ID) || 'meadowview';
+
+        console.log('[MissionarySpotlight] Subscribing to Firestore missionaries:', wardId);
+
+        const db = window.firebase.firestore();
+
+        // Subscribe to active missionaries, sorted by displayOrder
+        _unsubscribeMissionaries = db.collection('wards')
+            .doc(wardId)
+            .collection('missionaries')
+            .where('active', '==', true)
+            .orderBy('displayOrder', 'asc')
+            .onSnapshot(
+                (snapshot) => {
+                    const missionaries = [];
+                    snapshot.forEach((doc) => {
+                        missionaries.push({
+                            firestoreId: doc.id,  // Firestore document ID
+                            ...doc.data()
+                        });
+                    });
+
+                    console.log('[MissionarySpotlight] Missionaries updated from Firestore:', missionaries.length);
+                    _missionaries = missionaries;
+
+                    // Re-render if active
+                    if (_isActive) {
+                        renderGrid();
+                    }
+                },
+                (error) => {
+                    console.error('[MissionarySpotlight] Error loading missionaries from Firestore:', error);
+                    // Fallback to config on error
+                    loadMissionaryDataFromConfig();
+                }
+            );
+    }
+
+    /**
+     * FALLBACK: Load missionary data from config.
+     * Used when Firebase is not available or initialization fails.
+     */
+    function loadMissionaryDataFromConfig() {
         if (window.KIOSK_CONFIG && window.KIOSK_CONFIG.MISSIONARIES) {
             _missionaries = window.KIOSK_CONFIG.MISSIONARIES.MISSIONARIES_LIST || [];
-            ConfigLoader.debugLog('Loaded', _missionaries.length, 'missionaries');
+            console.log('[MissionarySpotlight] Loaded from config:', _missionaries.length, 'missionaries');
         } else {
             console.error('[MissionarySpotlight] No missionary data in config!');
             _missionaries = [];
@@ -318,6 +378,17 @@ const MissionarySpotlight = (function() {
     function deactivate() {
         _isActive = false;
         ConfigLoader.debugLog('Missionary spotlight deactivated');
+
+        // PHASE 7: Unsubscribe from Firestore when deactivating
+        // (Optional - can keep subscription active for real-time updates even when not visible)
+        // Uncomment below to unsubscribe on deactivate:
+        /*
+        if (_unsubscribeMissionaries) {
+            _unsubscribeMissionaries();
+            _unsubscribeMissionaries = null;
+            console.log('[MissionarySpotlight] Unsubscribed from Firestore');
+        }
+        */
     }
 
     /**

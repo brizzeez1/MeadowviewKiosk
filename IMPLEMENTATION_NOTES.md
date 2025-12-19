@@ -136,8 +136,58 @@ All 12 locked decisions from spec followed exactly:
 - [ ] NO visit documents are created for selfie-only uploads
 - [ ] Kiosk UI shows success message
 
+## Phase 7: Missionary Portal Data
+
+**Completed:**
+- Firestore schema for missionaries collection (wards/{wardId}/missionaries)
+- Missionary seed script (missionaries-seed.js) for data migration
+- Updated kiosk missionarySpotlight.js to read from Firestore (real-time)
+- Missionary gallery view with onSnapshot listeners (newest first)
+- Security rules for missionaries and gallery collections
+- Dynamic missionary count (no hardcoded values)
+
+**Architecture:**
+- **Data Model**: wards/{wardId}/missionaries/{missionaryId}
+- **Fields**: id, name, mission, language, scripture, photoUrl, active, displayOrder, etc.
+- **Gallery**: missionaries/{missionaryId}/gallery/{photoId} subcollection
+- **Read Pattern**: onSnapshot listeners for real-time updates
+- **Write Pattern**: Cloud Functions/admin only (clients read-only)
+- **Sorting**: Gallery photos sorted by createdAt DESC (spec decision #12)
+
+**Files Created:**
+- `firestore/MISSIONARIES_SCHEMA.md` - Complete missionary schema documentation
+- `firestore/seed-data/missionaries-seed.js` - Migration script from config to Firestore
+- `js/missionaryGallery.js` - Gallery view module with pagination
+
+**Files Updated:**
+- `js/missionarySpotlight.js` - Read from Firestore instead of config, real-time updates
+- `firestore.rules` - Added missionaries and gallery security rules
+- `IMPLEMENTATION_NOTES.md` - Phase 7 documentation
+
+**Key Features:**
+- Real-time missionary updates (no page refresh needed)
+- Fallback to config if Firebase not initialized
+- Pagination support for gallery photos (20 per page)
+- Active/inactive missionary filtering
+- Custom display order support
+- Companion pairing support (via companionId field)
+
+**Migration Path:**
+1. Upload missionary photos to Cloud Storage
+2. Update photo URLs in seed script (gs:// format)
+3. Run missionaries-seed.js to populate Firestore
+4. Verify data in Firebase Console
+5. Kiosk automatically loads from Firestore
+
+**Testing Checklist:**
+- [ ] Missionary data loads from Firestore on kiosk
+- [ ] Real-time updates work when missionaries change
+- [ ] Gallery photos load correctly (newest first)
+- [ ] Pagination works for large galleries
+- [ ] Fallback to config works if Firebase unavailable
+- [ ] Security rules prevent client writes
+
 ## Next Steps
 
-Phase 7: Missionary Portal Data
-Phase 8: Upload Portal
+Phase 8: Upload Portal with Secret Token
 Phase 9: Kiosk-Recorded Missionary Video
