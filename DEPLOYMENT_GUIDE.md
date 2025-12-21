@@ -1105,7 +1105,47 @@ Edge in kiosk mode needs additional configuration:
 2. Edge should open automatically to your kiosk URL
 3. Edge will be in fullscreen mode without address bar
 
-### Step 4: Enable Touch Keyboard
+### Step 4: Grant Permanent Camera Permission (CRITICAL)
+
+> ⚠️ **Without this step, Edge will repeatedly ask for camera permission every time a user tries to take a selfie.**
+
+**Method A: Using Edge Settings (Before Kiosk Mode)**
+
+Before setting up kiosk mode, configure Edge to always allow camera:
+
+1. Sign in as KioskUser
+2. Open Edge and navigate to your kiosk URL: `https://kiosk.yourward.com`
+3. Click the **padlock icon** (🔒) in the address bar
+4. Click **"Site permissions"** (or **"Permissions for this site"**)
+5. Find **Camera** and set it to **"Allow"**
+6. Close and reopen Edge to verify the setting persists
+
+**Method B: Using Windows Registry (Permanent, Recommended)**
+
+This method sets camera permission permanently via Windows policy:
+
+1. Press **Win + R**, type `regedit`, press Enter
+2. Navigate to: `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Edge`
+   - If the `Edge` folder doesn't exist, right-click `Microsoft` → **New** → **Key** → name it `Edge`
+3. Right-click in the right pane → **New** → **String Value**
+4. Name: `VideoCaptureAllowedUrls`
+5. Double-click to edit, set Value data to: `https://kiosk.yourward.com`
+6. Restart the computer
+
+**Method C: Using Group Policy (Enterprise/Pro)**
+
+1. Press **Win + R**, type `gpedit.msc`, press Enter
+2. Navigate to: **Computer Configuration** → **Administrative Templates** → **Microsoft Edge** → **Content Settings**
+3. Find **"Allow access to video capture on these sites"**
+4. Enable and add: `https://kiosk.yourward.com`
+5. Restart the computer
+
+**Verification:**
+1. Sign in as KioskUser
+2. Go to the selfie page
+3. Camera should start automatically without any permission prompt
+
+### Step 5: Enable Touch Keyboard
 
 For Temple 365 name entry, you need the on-screen keyboard:
 
@@ -1113,7 +1153,7 @@ For Temple 365 name entry, you need the on-screen keyboard:
 2. Turn ON **"Use the On-Screen Keyboard"**
 3. Alternatively, configure Edge to show keyboard for input fields
 
-### Step 5: Auto-Login Setup
+### Step 6: Auto-Login Setup
 
 1. Press **Win + R**, type `netplwiz`, press Enter
 2. Select the KioskUser account
