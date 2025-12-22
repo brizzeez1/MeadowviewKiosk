@@ -1,0 +1,382 @@
+/* ================================================================
+   MISSIONARY UPLOAD PORTAL - STYLES
+   ================================================================
+   Clean, mobile-first design for family photo uploads
+   ================================================================ */
+
+/* ============================================================
+   RESET & BASE STYLES
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+#app-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+    width: 100%;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.description {
+    font-size: 16px;
+    color: #718096;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+/* ============================================================
+   MISSIONARY HEADER
+   ============================================================ */
+.missionary-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.missionary-info {
+    flex: 1;
+}
+
+.missionary-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 4px;
+}
+
+.missionary-mission {
+    font-size: 14px;
+    color: #718096;
+}
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+.token-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: -8px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.error-message {
+    font-size: 14px;
+    color: #e53e3e;
+    margin-top: -8px;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: #edf2f7;
+    color: #4a5568;
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0;
+}
+
+/* ============================================================
+   UPLOAD ZONE
+   ============================================================ */
+.upload-zone {
+    border: 3px dashed #cbd5e0;
+    border-radius: 12px;
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 24px;
+}
+
+.upload-zone:hover {
+    border-color: #667eea;
+    background: #f7fafc;
+}
+
+.upload-zone.drag-over {
+    border-color: #667eea;
+    background: #ebf4ff;
+}
+
+.upload-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.upload-prompt {
+    font-size: 16px;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.upload-prompt strong {
+    color: #667eea;
+}
+
+.upload-hint {
+    font-size: 14px;
+    color: #a0aec0;
+}
+
+/* ============================================================
+   FILE LIST
+   ============================================================ */
+.file-list {
+    margin-bottom: 24px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f7fafc;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.file-icon {
+    font-size: 24px;
+}
+
+.file-info {
+    flex: 1;
+}
+
+.file-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 2px;
+}
+
+.file-size {
+    font-size: 12px;
+    color: #a0aec0;
+}
+
+.file-remove {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #a0aec0;
+    cursor: pointer;
+    padding: 4px 8px;
+}
+
+.file-remove:hover {
+    color: #e53e3e;
+}
+
+/* ============================================================
+   PROGRESS
+   ============================================================ */
+.upload-progress {
+    margin-bottom: 24px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.progress-text {
+    font-size: 14px;
+    color: #718096;
+    text-align: center;
+}
+
+/* ============================================================
+   SUCCESS MESSAGE
+   ============================================================ */
+.success-message {
+    text-align: center;
+    padding: 24px;
+}
+
+.success-icon {
+    width: 64px;
+    height: 64px;
+    background: #48bb78;
+    color: white;
+    font-size: 36px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.success-message h3 {
+    font-size: 24px;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.success-message p {
+    font-size: 16px;
+    color: #718096;
+    margin-bottom: 24px;
+}
+
+/* ============================================================
+   FOOTER LINKS
+   ============================================================ */
+.change-missionary {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.change-missionary a {
+    font-size: 14px;
+    color: #667eea;
+    text-decoration: none;
+}
+
+.change-missionary a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 640px) {
+    body {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 24px;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+
+    .missionary-name {
+        font-size: 20px;
+    }
+
+    .upload-zone {
+        padding: 32px 16px;
+    }
+}

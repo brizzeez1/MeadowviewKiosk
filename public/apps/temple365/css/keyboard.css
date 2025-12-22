@@ -1,0 +1,118 @@
+/**
+ * Temple 365 PWA - On-Screen Keyboard Styles
+ *
+ * Keyboard for kiosk mode (Phase 4)
+ */
+
+.keyboard-mount {
+  display: none;
+  margin-top: 1rem;
+}
+
+.on-screen-keyboard {
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  user-select: none;
+}
+
+.keyboard-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  justify-content: center;
+}
+
+.keyboard-row:last-child {
+  margin-bottom: 0;
+}
+
+.keyboard-key {
+  background: white;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  padding: 0.75rem;
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+.keyboard-key:hover {
+  background: #edf2f7;
+  border-color: #667eea;
+}
+
+.keyboard-key:active {
+  background: #e2e8f0;
+  transform: scale(0.95);
+}
+
+/* Special Keys */
+.keyboard-key.key-space {
+  flex: 1;
+  min-width: 200px;
+}
+
+.keyboard-key.key-back {
+  background: #fed7d7;
+  color: #c53030;
+  min-width: 60px;
+}
+
+.keyboard-key.key-back:hover {
+  background: #fc8181;
+  color: white;
+}
+
+.keyboard-key.key-shift {
+  background: #e2e8f0;
+  min-width: 60px;
+}
+
+.keyboard-key.key-shift.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.keyboard-key.key-done {
+  background: #48bb78;
+  color: white;
+  border-color: #48bb78;
+  min-width: 80px;
+}
+
+.keyboard-key.key-done:hover {
+  background: #38a169;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .keyboard-key {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .keyboard-key.key-space {
+    min-width: 150px;
+  }
+
+  .keyboard-key.key-back,
+  .keyboard-key.key-shift {
+    min-width: 50px;
+  }
+
+  .keyboard-key.key-done {
+    min-width: 70px;
+  }
+}

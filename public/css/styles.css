@@ -1,0 +1,1332 @@
+/* ================================================================
+   STYLES.CSS - GLOBAL STYLES
+   ================================================================
+   This file contains global styles for the kiosk app including:
+   - CSS Custom Properties (variables) for colors and fonts
+   - Reset and base styles
+   - Typography rules
+   - Common utility classes
+   
+   Target: 24" touchscreen at 1920x1080 resolution
+   ================================================================ */
+
+/* ================================================================
+   SECTION 1: CSS CUSTOM PROPERTIES (VARIABLES)
+   ================================================================
+   All colors, fonts, and common values are defined here.
+   Change these to update the look of the entire app.
+   ================================================================ */
+
+:root {
+    /* ----------------------------------------------------------
+       COLOR PALETTE
+       ---------------------------------------------------------- */
+    
+    /* Primary background colors */
+    --color-bg-light: #F8F7F3;          /* Soft warm white */
+    --color-bg-cream: #F7F3E8;          /* Light cream */
+    --color-bg-dark: #1a1a1a;           /* Near black */
+    
+    /* Text colors */
+    --color-text-primary: #2C2416;      /* Warm dark brown */
+    --color-text-secondary: #5A5247;    /* Medium brown */
+    --color-text-light: #F7F3E8;        /* Cream for dark backgrounds */
+    --color-text-muted: #8B8478;        /* Muted brown */
+    
+    /* Accent colors */
+    --color-accent-gold: #C9A227;       /* Sacred gold */
+    --color-accent-warm: #B8860B;       /* Dark goldenrod */
+    
+    /* Button gradients - Temple 365 */
+    --gradient-temple-start:  #A69679;  
+    --gradient-temple-end:    #A69679;  
+
+    
+    /* Button gradients - Selfie */
+    --gradient-selfie-start:  #E6BB6E; 
+    --gradient-selfie-end:    #E6BB6E;  
+
+    
+    /* Button gradients - Bulletin */
+    --gradient-bulletin-start: #80D0C7;
+    --gradient-bulletin-end: #0093E9;
+    
+    /* Phase 2 button gradients */
+    --gradient-youth-start: #A18CD1;
+    --gradient-youth-end: #FBC2EB;
+    
+    --gradient-primary-start: #84FAB0;
+    --gradient-primary-end: #8FD3F4;
+    
+    --gradient-miracles-start: #FFE985;
+    --gradient-miracles-end: #FA742B;
+    
+    --gradient-missionaries-start: #768291;  
+    --gradient-missionaries-end:   #768291;  
+
+    
+    --gradient-calendar-start: #F093FB;
+    --gradient-calendar-end: #F5576C;
+    
+    /* Overlay colors */
+    --color-overlay-dark: rgba(0, 0, 0, 0.35);
+    --color-overlay-light: rgba(255, 255, 255, 0.1);
+    
+    /* Shadow colors */
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.15);
+    --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.25);
+        /* Button shadows – now using the missionary blue */
+    --shadow-button: 0 8px 25px rgba(30, 58, 138, 0.25);
+    --shadow-button-hover: 0 12px 35px rgba(30, 58, 138, 0.40);
+
+    
+    /* ----------------------------------------------------------
+       TYPOGRAPHY
+       ---------------------------------------------------------- */
+    
+    /* Font families */
+    --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    
+    /* Font sizes */
+    --text-xs: 0.75rem;      /* 12px */
+    --text-sm: 0.875rem;     /* 14px */
+    --text-base: 1rem;       /* 16px */
+    --text-lg: 1.125rem;     /* 18px */
+    --text-xl: 1.25rem;      /* 20px */
+    --text-2xl: 1.5rem;      /* 24px */
+    --text-3xl: 1.875rem;    /* 30px */
+    --text-4xl: 2.25rem;     /* 36px */
+    --text-5xl: 3rem;        /* 48px */
+    --text-6xl: 3.75rem;     /* 60px */
+    
+    /* Font weights */
+    --weight-normal: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+    
+    /* ----------------------------------------------------------
+       SPACING & SIZING
+       ---------------------------------------------------------- */
+    
+    --spacing-xs: 0.25rem;   /* 4px */
+    --spacing-sm: 0.5rem;    /* 8px */
+    --spacing-md: 1rem;      /* 16px */
+    --spacing-lg: 1.5rem;    /* 24px */
+    --spacing-xl: 2rem;      /* 32px */
+    --spacing-2xl: 3rem;     /* 48px */
+    --spacing-3xl: 4rem;     /* 64px */
+    
+    /* Border radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+    
+    /* ----------------------------------------------------------
+       TRANSITIONS
+       ---------------------------------------------------------- */
+    
+    --transition-fast: 150ms ease;
+    --transition-normal: 300ms ease;
+    --transition-slow: 500ms ease;
+    --transition-very-slow: 1000ms ease;
+}
+
+
+/* ================================================================
+   SECTION 2: RESET & BASE STYLES
+   ================================================================ */
+
+/* Box sizing reset */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Remove default margins */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* Prevent text selection on kiosk (cleaner UX) */
+/* TODO: Consider making this configurable for debugging */
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Prevent pull-to-refresh and overscroll */
+html, body {
+    overscroll-behavior: none;
+    overflow: hidden;
+}
+
+/* Base HTML and body */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--weight-normal);
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-dark);
+    min-height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+/* Remove touch highlighting on mobile/touch devices */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ================================================================
+   SECTION 3: TYPOGRAPHY STYLES
+   ================================================================ */
+
+/* Display headings (Cormorant Garamond) */
+h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: var(--weight-semibold);
+    line-height: 1.2;
+    color: var(--color-text-primary);
+}
+
+h1 {
+    font-size: var(--text-5xl);
+}
+
+h2 {
+    font-size: var(--text-4xl);
+}
+
+h3 {
+    font-size: var(--text-3xl);
+}
+
+/* Body text */
+p {
+    font-family: var(--font-body);
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+}
+
+/* Links */
+a {
+    color: var(--color-accent-gold);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-accent-warm);
+}
+
+/* ================================================================
+   SECTION 4: BUTTON BASE STYLES
+   ================================================================ */
+
+button {
+    font-family: var(--font-body);
+    cursor: pointer;
+    border: none;
+    background: none;
+    outline: none;
+    transition: all var(--transition-normal);
+}
+
+/* Disabled button state */
+button:disabled,
+button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Action button (used in views) */
+.action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    color: white;
+    background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-warm));
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-soft);
+}
+
+.action-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* Back button - Blue themed */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-2xl);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-medium);
+    color: white;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    border-radius: var(--radius-full);
+    margin: var(--spacing-xl) auto 0;
+    width: fit-content;
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+    transition: all var(--transition-normal);
+}
+
+.back-button:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #60a5fa 100%);
+    color: white;
+    transform: translateX(-4px);
+    box-shadow: 0 6px 20px rgba(30, 58, 138, 0.45);
+}
+
+.back-button:active {
+    transform: translateX(-2px);
+    box-shadow: 0 2px 10px rgba(30, 58, 138, 0.35);
+}
+
+/* ================================================================
+   SECTION 5: UTILITY CLASSES
+   ================================================================ */
+
+/* Screen reader only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Text alignment */
+.text-center {
+    text-align: center;
+}
+
+/* Flex utilities */
+.flex {
+    display: flex;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+/* Visibility */
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: block !important;
+}
+
+/* ================================================================
+   SECTION 6: ANIMATION KEYFRAMES
+   ================================================================ */
+
+/* Pulse animation for screensaver text */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Fade out animation */
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Slide up animation */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Scale in animation */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Subtle zoom for background images */
+@keyframes slowZoom {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.05);
+    }
+}
+
+/* ================================================================
+   SECTION 7: PLACEHOLDER & COMING SOON BADGES
+   ================================================================ */
+
+/* Placeholder box for future content */
+.placeholder-box {
+    background-color: var(--color-bg-cream);
+    border: 2px dashed var(--color-text-muted);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-2xl);
+    text-align: center;
+    margin: var(--spacing-lg) 0;
+}
+
+.placeholder-text {
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* Coming soon badge */
+.coming-soon-badge {
+    display: inline-block;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white;
+    background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-warm));
+    border-radius: var(--radius-full);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* ================================================================
+   SECTION 8: SCROLLBAR STYLING (if ever needed)
+   ================================================================ */
+
+/* Hide scrollbars but keep functionality */
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+/* ================================================================
+   SECTION 9: FOCUS STYLES FOR ACCESSIBILITY
+   ================================================================
+   Note: On a kiosk, focus styles may not be needed since 
+   interaction is primarily touch-based. However, keeping 
+   them for potential keyboard/remote access.
+   ================================================================ */
+
+button:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--color-accent-gold);
+    outline-offset: 2px;
+}
+
+/* ================================================================
+   SECTION 10: MISSIONARY SPOTLIGHT STYLES
+   ================================================================
+   Styles for the missionary grid view and detail pages.
+   ================================================================ */
+
+/* Missionary Grid Container */
+/* Missionary Grid Container */
+.missionary-grid {
+    flex: 1;
+    display: grid;
+
+    /* 4 columns on the kiosk for 4×2 grid */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* Tall rows so only ~2 rows fit on a 1080p screen */
+    grid-auto-rows: minmax(340px, auto);
+
+    gap: var(--spacing-xl);
+    padding: var(--spacing-xl);
+    box-shadow: 0 -20px 40px rgba(30, 58, 138, 0.25),0 20px 40px rgba(30, 58, 138, 0.25);
+
+    border-radius: var(--radius-xl);
+    background: linear-gradient(to bottom, rgba(50, 100, 160, 0.12), rgba(40, 80, 140, 0.08), rgba(30, 64, 120, 0.10));
+
+    width: 100%;
+    max-height: none;
+    min-height: 0;
+
+    /* Scroll when we have more than 2 rows of missionaries */
+    overflow-y: auto;
+    overflow-x: hidden;
+
+
+}
+
+
+/* Individual Missionary Square */
+.missionary-square {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    background-color: var(--color-bg-cream);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+
+    /* Taller presence inside each grid row */
+    min-height: 340px;
+    width: 100%;
+}
+
+.missionary-square:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-strong);
+}
+
+.missionary-square:active {
+    transform: translateY(-2px) scale(1.01);
+}
+
+.missionary-scroll-hint {
+    margin-top: var(--spacing-md);
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    animation: pulse 2.5s ease-in-out infinite;
+}
+
+/* Missionary Photo Container */
+.missionary-photo-container {
+    position: relative;
+
+    /* Big portrait box centered in the card */
+    width: 70%;
+    max-width: 260px;
+    aspect-ratio: 3 / 4;     /* portrait; use 1 / 1 if you want perfect squares */
+
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--color-bg-light);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.missionary-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;        /* keeps aspect ratio, crops edges instead of squishing */
+}
+
+.missionary-silhouette {
+    width: 60%;
+    height: 60%;
+}
+
+/* Missionary Name Label - Overlaid at bottom */
+.missionary-name-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-family: var(--font-body);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    color: white;
+    text-align: center;
+    padding: var(--spacing-md);
+    background: linear-gradient(to top, rgba(30, 64, 120, 0.72), rgba(40, 80, 140, 0.45), rgba(50, 100, 160, 0.25), transparent);
+    word-wrap: break-word;
+    z-index: 10;
+}
+
+/* Missionary Detail Page */
+.missionary-detail-card {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.missionary-detail-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.missionary-detail-name {
+    font-family: var(--font-display);
+    font-size: var(--text-5xl);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.missionary-detail-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xl);
+}
+
+/* Missionary Info Section */
+.missionary-info-section {
+    background-color: var(--color-bg-cream);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.info-label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-value {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    color: var(--color-text-primary);
+}
+
+/* Missionary Features Section */
+.missionary-features-section {
+    background-color: var(--color-bg-light);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+}
+
+.feature-description {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.feature-list li {
+    padding-left: var(--spacing-lg);
+    position: relative;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.feature-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--color-accent-gold);
+    font-weight: bold;
+}
+
+.feature-list li strong {
+    color: var(--color-text-primary);
+}
+/* Missionary grid responsive layout */
+@media screen and (max-width: 1399px) {
+    /* Tablets / medium screens: 2 columns */
+    .missionary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: minmax(300px, auto);
+    }
+
+    .missionary-square {
+        min-height: 300px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    /* Mobile: 1 column, scroll down to see more */
+    .missionary-grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: minmax(280px, auto);
+        gap: var(--spacing-lg);
+        padding: var(--spacing-lg);
+    }
+
+    .missionary-square {
+        min-height: 280px;
+        padding: var(--spacing-lg);
+    }
+
+    .missionary-photo-container {
+        width: 65%;
+        max-width: 240px;
+    }
+
+    .missionaries-card {
+        padding: 15px 20px 20px 20px;
+    }
+}
+
+/* ================================================================
+   SECTION 11: FLOATING QR CODE STYLES
+   ================================================================
+   Styles for the persistent floating QR code in top right corner.
+   ================================================================ */
+
+.floating-qr-container {
+    position: fixed;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    z-index: 9999;
+    opacity: 0.4;
+    transition: opacity var(--transition-normal);
+    cursor: pointer;
+}
+
+.floating-qr-container.hovered {
+    opacity: 0.9;
+}
+
+.floating-qr-code {
+    background-color: white;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-qr-code canvas,
+.floating-qr-code img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}
+
+.floating-qr-label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-text-light);
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+}
+
+/* ============================================================
+   Kiosk Selfie Prompt Modal
+   Uses existing palette + typography from styles.css
+   ============================================================ */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000; /* higher than floating-qr (9999) */
+  padding: var(--spacing-md);
+}
+
+.modal-backdrop.hidden {
+  display: none;
+}
+
+.modal {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-bg-cream);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-medium);
+}
+
+.modal h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-primary);
+}
+
+.modal p {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+}
+
+/* Button row inside modal */
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+/* ============================================================
+  /* Generic modal buttons that match kiosk styling */
+   ============================================================ */
+
+.btn {
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-soft);
+}
+
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-gold),
+    var(--color-accent-warm)
+  );
+  color: var(--color-text-light);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn-secondary {
+  background-color: var(--color-bg-light);
+  color: var(--color-text-secondary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-bg-cream);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   Kiosk Blue Theme Button
+   ============================================================ */
+
+.btn-kiosk-blue {
+  background: linear-gradient(
+    135deg,
+    #1e3a8a 0%,
+    #3b82f6 100%
+  );
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--spacing-md) var(--spacing-2xl);
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 15px rgba(30, 58, 138, 0.35);
+}
+
+.btn-kiosk-blue:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.5);
+}
+
+.btn-kiosk-blue:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(30, 58, 138, 0.4);
+}
+
+/* ================================================================
+   SECTION: MISSIONARY PHOTO GALLERY
+   ================================================================
+   Fullscreen photo gallery viewer with swipe navigation.
+   ================================================================ */
+
+/* Gallery Overlay - Fullscreen dark background */
+.gallery-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.gallery-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Gallery Back Button (below photos) */
+.gallery-back-btn {
+  position: absolute;
+  bottom: var(--spacing-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  /* Inherits .back-button styles */
+}
+
+/* Photo Counter */
+.gallery-counter {
+  position: absolute;
+  top: var(--spacing-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  background: rgba(0, 0, 0, 0.5);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-full);
+  z-index: 10;
+}
+
+/* Image Container */
+.gallery-image-container {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 100px); /* Leave room for back button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px var(--spacing-2xl) 20px;
+  cursor: grab;
+}
+
+.gallery-image-container:active {
+  cursor: grabbing;
+}
+
+/* Current Image */
+.gallery-current-image {
+  max-width: 90%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s ease;
+  pointer-events: none; /* Prevent image from interfering with swipe */
+  user-select: none;
+}
+
+.gallery-current-image.loading {
+  opacity: 0.5;
+}
+
+/* Navigation Arrows */
+.gallery-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.gallery-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.gallery-nav-btn.prev {
+  left: var(--spacing-xl);
+}
+
+.gallery-nav-btn.next {
+  right: var(--spacing-xl);
+}
+
+/* Swipe Hint Overlay */
+.gallery-swipe-hint {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.gallery-swipe-hint.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.gallery-swipe-hint.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Swipe Hand Animation */
+.swipe-hand {
+  width: 60px;
+  height: 60px;
+  animation: swipeHandAnimation 2s ease-in-out infinite;
+}
+
+.swipe-hand svg {
+  width: 100%;
+  height: 100%;
+  fill: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes swipeHandAnimation {
+  0%, 100% {
+    transform: translateX(30px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateX(-30px);
+    opacity: 1;
+  }
+}
+
+/* Swipe Hint Text */
+.swipe-hint-text {
+  color: white;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-full);
+}
+
+/* Gallery Button in Missionary Detail */
+.gallery-button-section {
+  margin-bottom: var(--spacing-xl);
+  text-align: center;
+}
+
+.btn-view-gallery {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--spacing-md) var(--spacing-2xl);
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 15px rgba(30, 58, 138, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.btn-view-gallery:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.5);
+}
+
+.btn-view-gallery .gallery-icon {
+  font-size: 1.2em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .gallery-nav-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 24px;
+  }
+
+  .gallery-close-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+  }
+
+  .gallery-counter {
+    font-size: var(--text-base);
+  }
+
+  .gallery-current-image {
+    max-width: 95%;
+  }
+}
+
+/* ================================================================
+   VIDEO RECORDER MODAL (Phase 9)
+   ================================================================
+   Styles for the kiosk missionary video recording interface.
+   30-second video messages recorded directly on the kiosk.
+   ================================================================ */
+
+.video-recorder-modal {
+  max-width: 700px;
+  width: 90%;
+}
+
+.video-preview-container {
+  position: relative;
+  width: 100%;
+  background: #000;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: var(--spacing-lg) 0;
+}
+
+.video-preview-container video {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 500px;
+  object-fit: contain;
+}
+
+/* Recording Indicator - Red Dot */
+.recording-indicator {
+  position: absolute;
+  top: var(--spacing-md);
+  left: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: rgba(0, 0, 0, 0.7);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-full);
+  z-index: 10;
+}
+
+.rec-dot {
+  width: 12px;
+  height: 12px;
+  background: #ef4444;
+  border-radius: 50%;
+  animation: pulse-rec 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-rec {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.rec-text {
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.05em;
+}
+
+/* Countdown Timer */
+.recording-timer {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: rgba(0, 0, 0, 0.7);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  z-index: 10;
+}
+
+.timer-text {
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Status Message */
+.video-status-message {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  margin: var(--spacing-md) 0;
+  min-height: 1.5em;
+}
+
+/* Video Controls */
+.video-controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+/* Modal Close Button (X) */
+.modal-close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: transparent;
+  border: none;
+  font-size: var(--text-3xl);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-md);
+}
+
+.modal-close:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--color-text-primary);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+  padding-right: 40px; /* Space for close button */
+}
+
+.modal-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Danger Button (Stop Recording) */
+.btn-danger {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35);
+}
+
+.btn-danger:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+}
+
+.btn-danger:disabled,
+.btn-kiosk-blue:disabled,
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .video-recorder-modal {
+    width: 95%;
+  }
+
+  .modal-title {
+    font-size: var(--text-2xl);
+  }
+
+  .modal-subtitle {
+    font-size: var(--text-base);
+  }
+}

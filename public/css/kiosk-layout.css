@@ -1,0 +1,1269 @@
+/* ================================================================
+   KIOSK-LAYOUT.CSS - KIOSK-SPECIFIC LAYOUTS
+   ================================================================
+   This file contains layout styles specific to the kiosk app:
+   - App container and screen management
+   - Screensaver / attract mode styles
+   - Home screen with circle buttons
+   - View/modal layouts
+   
+   Optimized for 24" touchscreen at 1920x1080 resolution
+   ================================================================ */
+
+/* ================================================================
+   SECTION 1: APP CONTAINER & SCREEN MANAGEMENT
+   ================================================================
+   The app uses a simple show/hide system for screens.
+   Only one screen is visible at a time.
+   ================================================================ */
+
+#app-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--color-bg-dark);
+}
+
+/* Base screen styles */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-slow), visibility var(--transition-slow);
+}
+
+/* Active screen */
+.screen.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+}
+
+/* Phase 2 screens (hidden until feature is enabled) */
+.phase2-screen {
+    /* Same as base screen, controlled by JS */
+}
+
+
+/* ================================================================
+   SECTION 2: SCREENSAVER / ATTRACT MODE
+   ================================================================
+   Fullscreen rotating temple photos with touch prompt.
+   ================================================================ */
+
+#screensaver-screen {
+    cursor: pointer;
+    background-color: var(--color-bg-dark);
+}
+
+/* ----------------------------------------------------------
+   2a. Background Image Layers
+   ---------------------------------------------------------- 
+   Two layers for smooth crossfade transitions.
+   ---------------------------------------------------------- */
+
+.screensaver-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    transition: none;
+    /* Subtle zoom animation for cinematic effect */
+    animation: slowZoom 20s ease-in-out infinite alternate;
+}
+
+#screensaver-bg-current {
+    z-index: 1;
+    opacity: 1;
+}
+
+#screensaver-bg-next {
+    z-index: 0;
+    opacity: 0;
+}
+
+/* ----------------------------------------------------------
+   2b. Dark Overlay - Not used right now.
+   ---------------------------------------------------------- */
+
+/*.screensaver-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.2) 0%,
+        rgba(0, 0, 0, 0.35) 50%,
+        rgba(0, 0, 0, 0.4) 100%
+    );
+    z-index: 2;
+/}*/
+
+/* ----------------------------------------------------------
+   2c. Touch Prompt Card
+   ---------------------------------------------------------- */
+
+.screensaver-prompt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.prompt-card {
+    position: relative;
+    background: rgba(0, 0, 0, 0.55); /* darker, more readable */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl) var(--spacing-3xl);
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+
+    /* gentle “breathing” animation */
+    animation: promptPulse 3s ease-in-out infinite alternate;
+}
+
+.prompt-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+        background: linear-gradient(
+        135deg,
+        rgba(30, 64, 120, 0.7),   /* deep blue */
+        rgba(59, 130, 246, 0.35), /* lighter blue highlight */
+        rgba(30, 64, 120, 0.7)
+    );
+    border-radius: calc(var(--radius-xl) + 2px);
+    z-index: -1;
+    opacity: 0.75;
+}
+
+
+.prompt-text {
+    font-family: "Georgia", "Times New Roman", serif; /* LDS-ish display */
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 600;
+    color: #fdf8ec; /* warm off-white, not stark white */
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+
+/* Optional: Subtle glow effect around the card */
+.prompt-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+        background: linear-gradient(
+        135deg,
+        rgba(30, 64, 120, 0.7),   /* deep blue */
+        rgba(59, 130, 246, 0.35), /* lighter blue highlight */
+        rgba(30, 64, 120, 0.7)
+    );
+    border-radius: calc(var(--radius-xl) + 2px);
+    z-index: -1;
+    opacity: 0.5;
+}
+
+.temple-name-overlay {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 28px;
+
+    /* Match exactly the "Touch anywhere" prompt-card styling */
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    /* Match the prompt card font styling */
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #fdf8ec;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    /* Glow + deep shadow for readability */
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+
+    /* Animations */
+    opacity: 0;
+    animation:
+        templeNameFadeIn 0.9s ease-out forwards,
+        templeNameGlowPulse 4s ease-in-out infinite alternate;
+
+    pointer-events: none;
+    z-index: 50;
+}
+
+/* Blue glow border effect to match prompt-card */
+.temple-name-overlay::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        135deg,
+        rgba(30, 64, 120, 0.7),
+        rgba(59, 130, 246, 0.35),
+        rgba(30, 64, 120, 0.7)
+    );
+    border-radius: 16px;
+    z-index: -1;
+    opacity: 0.75;
+}
+
+
+
+
+
+/* ================================================================
+   SECTION 3: HOME SCREEN
+   ================================================================
+   Main menu with circular navigation buttons.
+   ================================================================ */
+
+#home-screen {
+    background-color: var(--color-bg-light);
+}
+
+/* ----------------------------------------------------------
+   3a. Background
+   ---------------------------------------------------------- */
+
+.home-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Option 1: Solid gradient background */
+    background: linear-gradient(
+        135deg,
+        var(--color-bg-light) 0%,
+        var(--color-bg-cream) 50%,
+        #EDE8DA 100%
+    );
+    /* Option 2: Blurred temple image (uncomment to use) */
+    /* background-image: url('../assets/temple_photos/placeholder1.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(30px) brightness(0.9);
+    transform: scale(1.1); */
+    z-index: 0;
+}
+
+/* Subtle pattern overlay for texture */
+.home-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(201, 162, 39, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(201, 162, 39, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* ----------------------------------------------------------
+   3b. Main Content Area
+   ---------------------------------------------------------- */
+
+.home-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    padding: var(--spacing-2xl);
+}
+
+/* ----------------------------------------------------------
+   3c. Header / Ward Title
+   ---------------------------------------------------------- */
+
+.home-header {
+    position: absolute;
+    top: var(--spacing-3xl);
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.ward-title {
+    font-family: var(--font-display);
+    font-size: var(--text-5xl);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    letter-spacing: 0.02em;
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* ----------------------------------------------------------
+   3d. Circle Buttons Container
+   ---------------------------------------------------------- */
+
+.circle-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+    padding: var(--spacing-2xl);
+    animation: slideUp 0.6s ease-out;
+    animation-delay: 0.2s;
+    animation-fill-mode: both;
+}
+
+/* ----------------------------------------------------------
+   3e. Individual Circle Button
+   ---------------------------------------------------------- */
+
+.circle-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform var(--transition-normal);
+}
+
+.circle-button:hover {
+    transform: scale(1.05);
+}
+
+.circle-button:active {
+    transform: scale(0.98);
+}
+
+/* Circle button inner (the actual circle) */
+.circle-button-inner {
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-button);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shine effect on hover */
+.circle-button-inner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.circle-button:hover .circle-button-inner::before {
+    left: 100%;
+}
+
+.circle-button:hover .circle-button-inner {
+    box-shadow: var(--shadow-button-hover);
+}
+
+/* Button icon */
+.button-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    /* Makes icons white */
+}
+
+/* Button label */
+.button-label {
+    font-family: var(--font-body);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+/* ----------------------------------------------------------
+   3f. Button Gradient Classes
+   ---------------------------------------------------------- */
+
+.temple365-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-temple-start) 0%,
+        var(--gradient-temple-end) 100%
+    );
+}
+
+.selfie-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-selfie-start) 0%,
+        var(--gradient-selfie-end) 100%
+    );
+}
+
+.bulletin-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-bulletin-start) 0%,
+        var(--gradient-bulletin-end) 100%
+    );
+}
+
+/* Phase 2 gradients */
+.youth-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-youth-start) 0%,
+        var(--gradient-youth-end) 100%
+    );
+}
+
+.primary-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-primary-start) 0%,
+        var(--gradient-primary-end) 100%
+    );
+}
+
+.miracles-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-miracles-start) 0%,
+        var(--gradient-miracles-end) 100%
+    );
+}
+
+.missionaries-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-missionaries-start) 0%,
+        var(--gradient-missionaries-end) 100%
+    );
+}
+
+.calendar-gradient {
+    background: linear-gradient(
+        135deg,
+        var(--gradient-calendar-start) 0%,
+        var(--gradient-calendar-end) 100%
+    );
+}
+
+
+/* ================================================================
+   SECTION 4: VIEW/MODAL LAYOUTS
+   ================================================================
+   Common layouts for Temple 365, Selfie, Bulletin, and
+   Phase 2 placeholder screens.
+   ================================================================ */
+
+/* ----------------------------------------------------------
+   4a. View Container (centers content)
+   ---------------------------------------------------------- */
+
+.view-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+        135deg,
+        var(--color-bg-light) 0%,
+        var(--color-bg-cream) 100%
+    );
+    padding: var(--spacing-2xl);
+}
+
+/* ----------------------------------------------------------
+   4b. View Card (main content card)
+   ---------------------------------------------------------- */
+
+.view-card {
+    width: 100%;
+    max-width: 900px;
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-3xl);
+    box-shadow: var(--shadow-strong);
+    text-align: center;
+    animation: scaleIn 0.4s ease-out;
+}
+
+/* Missionaries card - full screen layout */
+.missionaries-card {
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    box-shadow: none;
+    padding: 10px 45px 30px 45px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.missionaries-card .view-title {
+    margin-top: 0;
+    margin-bottom: var(--spacing-sm);
+}
+
+.missionaries-card .view-description {
+    margin-bottom: var(--spacing-sm);
+}
+
+.missionaries-card .view-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+   /* NEW: crucial so the flex child (.missionary-grid) can shrink & scroll */
+    min-height: 0;
+    overflow: hidden; /* optional, just keeps the grid nicely clipped */
+}
+
+.missionaries-card .back-button {
+    margin-top: var(--spacing-2xl);
+}
+
+.view-title {
+    font-family: var(--font-display);
+    font-size: var(--text-5xl);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.view-content {
+    margin-bottom: var(--spacing-lg);
+}
+
+.view-description {
+    font-size: var(--text-xl);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto var(--spacing-xl);
+}
+/*-----------------------------------------------------------
+   4b1. Temple 365 Embedded web app
+  -----------------------------------------------------------*/
+/* Temple 365 embedded web app */
+#temple365-screen .view-card {
+    max-width: 1600px;       /* wider layout for 3-column grid */
+    width: 100%;
+    padding: var(--spacing-3xl);
+}
+
+.temple365-iframe-wrapper {
+    margin-top: var(--spacing-xl);
+    width: 100%;
+    height: 720px;
+   
+    /* Nice rounded “window” */
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background-color: white;
+    box-shadow: var(--shadow-soft);
+
+    /* Height tuned for 1920x1080 kiosk */
+    height: 600px;                                /* Turn this up of down to adjust how it looks on screen*/
+    /* Or, for auto-sizing based on viewport:
+       height: calc(100vh - 320px);
+    */
+}
+
+.temple365-iframe-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* Temple 365 full-screen, side-by-side layout */
+#temple365-screen .temple365-fullscreen {
+    width: 100%;
+    height: 100%;
+    padding: var(--spacing-lg) var(--spacing-3xl) var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background: linear-gradient(
+        135deg,
+        var(--color-bg-light) 0%,
+        var(--color-bg-cream) 100%
+    );
+}
+
+/* Two-column area: sidebar on left, iframe on right */
+.temple365-layout {
+    flex: 1;                       /* take all available height above Back button */
+    width: 100%;
+    max-width: 1800px;
+    display: flex;
+    gap: var(--spacing-xl);
+    margin: 0 auto;
+    min-height: 0;                 /* Allow flex child to shrink */
+}
+
+/* Left sidebar: title + description + video */
+.temple365-sidebar {
+    width: 280px;                  /* Fixed sidebar width */
+    min-width: 260px;
+    max-width: 320px;
+    flex-shrink: 0;                /* Don't let it shrink */
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    padding-right: var(--spacing-md);
+}
+
+/* Header section within sidebar */
+.temple365-header {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.temple365-header .view-title {
+    margin-bottom: var(--spacing-md);
+    font-size: var(--text-4xl);
+}
+
+.temple365-header .view-description {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: var(--text-base);
+    line-height: 1.6;
+}
+
+.temple365-header .temple365-goal {
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-primary);
+    margin-top: var(--spacing-sm);
+}
+
+/* Video card module */
+.temple365-video-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.temple365-video-card .video-container {
+    position: relative;
+    width: 100%;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: #000;
+    aspect-ratio: 16 / 9;
+}
+
+.temple365-video-card video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.temple365-video-card .video-play-btn {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--text-base);
+}
+
+/* Video fallback when streaming fails */
+.temple365-video-card .video-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    text-align: center;
+    padding: var(--spacing-md);
+}
+
+.temple365-video-card .video-fallback p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: var(--spacing-sm);
+}
+
+.temple365-video-card .video-link {
+    color: #60a5fa;
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+}
+
+.temple365-video-card .video-link:hover {
+    text-decoration: underline;
+}
+
+/* Right column: iframe fills height */
+.temple365-iframe-wrapper {
+    flex: 1;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background-color: white;
+    box-shadow: var(--shadow-soft);
+
+    /* Fill vertical space inside the layout */
+    height: 100%;
+}
+
+.temple365-iframe-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* Back button positioned to align with iframe column */
+#temple365-screen .back-button {
+    margin-top: var(--spacing-lg);
+    /* Offset by sidebar width to center under iframe */
+    margin-left: calc(280px + var(--spacing-xl));
+}
+
+
+
+/* ----------------------------------------------------------
+   4c. Selfie-Specific Styles
+   ---------------------------------------------------------- */
+
+.camera-placeholder {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #1a1a1a;
+    border-color: #333;
+}
+
+.camera-icon-large {
+    font-size: 80px;
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.5;
+}
+
+.camera-placeholder .placeholder-text {
+    color: #888;
+}
+
+.selfie-actions {
+    margin-top: var(--spacing-xl);
+}
+
+/* ----------------------------------------------------------
+   4d. Bulletin / QR Code Styles
+   ---------------------------------------------------------- */
+
+.bulletin-card {
+    max-width: 700px;
+}
+
+.qr-container {
+    display: flex;
+    justify-content: center;
+    margin: var(--spacing-xl) 0;
+}
+
+.qr-placeholder {
+    width: 280px;
+    height: 280px;
+    background: white;
+    border: 3px solid var(--color-text-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.bulletin-url {
+    margin-top: var(--spacing-xl);
+}
+
+.url-label {
+    display: block;
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-sm);
+}
+
+.url-text {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-semibold);
+    color: var(--color-accent-gold);
+}
+
+
+/* ================================================================
+   SECTION 5: RESPONSIVE ADJUSTMENTS
+   ================================================================
+   The kiosk is primarily 1920x1080, but these adjustments
+   help if the display resolution varies.
+   ================================================================ */
+
+/* For smaller screens (tablets, smaller displays) */
+@media screen and (max-width: 1400px) {
+    .circle-button-inner {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .button-icon {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .circle-buttons-container {
+        gap: 50px;
+    }
+    
+    .prompt-text {
+        font-size: var(--text-3xl);
+    }
+}
+
+/* For very small screens */
+@media screen and (max-width: 1024px) {
+    .circle-button-inner {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .button-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .circle-buttons-container {
+        gap: 30px;
+    }
+    
+    .button-label {
+        font-size: var(--text-base);
+    }
+    
+    .view-card {
+        padding: var(--spacing-xl);
+    }
+    
+    .view-title {
+        font-size: var(--text-4xl);
+    }
+}
+
+/* For larger 4K displays */
+@media screen and (min-width: 2500px) {
+    .circle-button-inner {
+        width: 400px;
+        height: 400px;
+    }
+    
+    .button-icon {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .circle-buttons-container {
+        gap: 120px;
+    }
+    
+    .prompt-text {
+        font-size: var(--text-5xl);
+    }
+}
+
+
+/* ================================================================
+   SECTION 6: TOUCH-SPECIFIC STYLES
+   ================================================================
+   Styles optimized for touch interaction.
+   ================================================================ */
+
+/* Larger touch targets */
+@media (pointer: coarse) {
+    .back-button {
+        min-height: 60px;
+        padding: var(--spacing-lg) var(--spacing-xl);
+    }
+    
+    .action-button {
+        min-height: 60px;
+        padding: var(--spacing-lg) var(--spacing-2xl);
+    }
+}
+
+/* Disable hover effects on touch (prevents sticky hover states) */
+@media (hover: none) {
+    .circle-button:hover {
+        transform: none;
+    }
+    
+    .circle-button:hover .circle-button-inner {
+        box-shadow: var(--shadow-button);
+    }
+    
+    .circle-button:active {
+        transform: scale(0.95);
+    }
+    
+    .circle-button:active .circle-button-inner {
+        box-shadow: var(--shadow-medium);
+    }
+}
+/* ============================================================
+   KEYFRAME ANIMATIONS FOR TEMPLE NAME OVERLAY
+   ============================================================ */
+
+@keyframes templeNameFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(12px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes templeNameGlowPulse {
+    0% {
+        box-shadow: 0 10px 28px rgba(30, 58, 138, 0.45);
+        opacity: 0.95;
+    }
+    100% {
+        box-shadow: 0 16px 40px rgba(30, 58, 138, 0.65);
+        opacity: 1;
+    }
+}
+@keyframes promptPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.95;
+        box-shadow: 0 10px 28px rgba(30, 58, 138, 0.45);
+    }
+    100% {
+        transform: scale(1.03);
+        opacity: 1;
+        box-shadow: 0 16px 40px rgba(30, 58, 138, 0.65);
+    }
+}
+
+
+/* ================================================================
+   SECTION 7: SELFIE CAPTURE SCREEN STYLES
+   ================================================================
+   Styles for the webcam selfie capture functionality.
+   ================================================================ */
+
+/* Selfie view container */
+.selfie-view-container {
+    padding: var(--spacing-xl);
+}
+
+.selfie-card {
+    max-width: 700px;
+    padding: var(--spacing-xl) var(--spacing-2xl);
+}
+
+.selfie-card .view-title {
+    margin-bottom: var(--spacing-md);
+}
+
+.selfie-instructions {
+    font-size: var(--text-lg);
+    max-width: 550px;
+    margin: 0 auto var(--spacing-sm);
+    text-align: center;
+}
+
+.selfie-instructions strong {
+    color: var(--color-text-primary);
+}
+
+/* Camera preview wrapper */
+.selfie-preview-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: var(--spacing-xl) 0;
+}
+
+/* Camera preview container */
+.selfie-preview-container {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    aspect-ratio: 4 / 3;
+    background: #1a1a1a;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-medium);
+    border: 3px solid var(--border, #e2e8f0);
+}
+
+.selfie-preview-container video,
+.selfie-preview-container canvas,
+.selfie-preview-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.selfie-preview-container video {
+    transform: scaleX(-1);  /* Mirror the preview */
+}
+
+.selfie-preview-container canvas {
+    display: none;
+}
+
+.selfie-preview-container img {
+    transform: scaleX(-1);  /* Keep mirrored for preview */
+    z-index: 5;
+}
+
+/* Countdown overlay */
+.selfie-countdown-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.selfie-countdown-overlay.active {
+    display: flex;
+}
+
+.countdown-number {
+    font-family: var(--font-display);
+    font-size: 8rem;
+    font-weight: var(--weight-bold);
+    color: white;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    animation: countdownPulse 1s ease-in-out infinite;
+}
+
+@keyframes countdownPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.8;
+    }
+}
+
+/* Camera error overlay */
+.selfie-error-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(30, 30, 30, 0.95);
+    z-index: 15;
+}
+
+.selfie-error-overlay .error-icon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.selfie-error-overlay .error-message {
+    color: #f87171;
+    font-size: var(--text-lg);
+    text-align: center;
+    padding: 0 var(--spacing-lg);
+}
+
+/* Capture button area */
+.selfie-actions {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    justify-content: center;
+}
+
+.selfie-capture-btn {
+    min-width: 200px;
+    padding: var(--spacing-md) var(--spacing-2xl);
+    font-size: var(--text-xl);
+}
+
+.selfie-capture-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Status message */
+.selfie-status {
+    text-align: center;
+    margin-top: var(--spacing-md);
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    min-height: 1.5em;
+}
+
+/* Selfie confirmation modal - positioned BELOW the photo, NOT centered */
+#selfieConfirmModal.modal-backdrop {
+    /* Override centered alignment - position at bottom of screen */
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 80px;  /* Space for Back button underneath */
+}
+
+#selfieConfirmModal .modal {
+    /* Position modal so it doesn't cover the photo */
+    max-width: 380px;
+    margin: 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.selfie-confirm-modal {
+    text-align: center;
+    padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.selfie-confirm-modal h2 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--spacing-md);
+}
+
+.selfie-confirm-modal .modal-buttons {
+    gap: var(--spacing-lg);
+}
+
+.selfie-confirm-modal .btn {
+    min-width: 120px;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--text-lg);
+}
+
+/* Selfie success modal */
+.selfie-success-modal {
+    text-align: center;
+    padding: var(--spacing-xl);
+}
+
+.selfie-success-modal .success-icon-large {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-lg);
+    font-size: 2.5rem;
+    color: white;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+}
+
+.selfie-success-modal h2 {
+    color: #16a34a;
+    font-size: var(--text-3xl);
+    margin-bottom: var(--spacing-sm);
+}
+
+.selfie-success-modal p {
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Responsive adjustments for selfie screen */
+@media screen and (max-width: 600px) {
+    .selfie-preview-container {
+        max-width: 100%;
+    }
+
+    .selfie-instructions {
+        font-size: var(--text-base);
+    }
+
+    .countdown-number {
+        font-size: 5rem;
+    }
+}

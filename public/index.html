@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ============================================================
+         KIOSK APP - MAIN HTML FILE
+         ============================================================
+         This is the main entry point for the LDS Meetinghouse Kiosk.
+         
+         Purpose:
+         - Displays a screensaver with rotating temple photos
+         - Shows a home screen with three main action buttons
+         - Prepared for future Phase 2 features
+         
+         Target Hardware:
+         - Lenovo ThinkCentre M700 Tiny (Windows 10 Pro)
+         - Lenovo Tiny-in-One 24" Touch Monitor (1920x1080)
+         - Running in kiosk mode with Edge or Chrome
+         ============================================================ -->
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ward Kiosk - Interactive touchscreen for your meetinghouse">
+    
+    <!-- Prevent zoom on touch devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>Ward Kiosk</title>
+    
+    <!-- ============================================================
+         FONTS
+         ============================================================
+         Using Google Fonts for a clean, modern, sacred feel:
+         - Cormorant Garamond: Elegant serif for headings
+         - Montserrat: Clean sans-serif for body/labels
+         ============================================================ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- ============================================================
+         STYLESHEETS
+         ============================================================ -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/kiosk-layout.css">
+</head>
+<body>
+    <!-- ============================================================
+         MAIN APP CONTAINER
+         ============================================================
+         This container holds all screens/views of the kiosk app.
+         Only one screen is visible at a time, controlled by JavaScript.
+         ============================================================ -->
+    <div id="app-container">
+        
+        <!-- ========================================================
+             SCREEN 1: SCREENSAVER / ATTRACT MODE
+             ========================================================
+             Displays rotating temple photos with a "touch to begin" prompt.
+             This is the default state when the kiosk is idle.
+             ======================================================== -->
+        <section id="screensaver-screen" class="screen active">
+            <!-- Background image container (for crossfade effect) -->
+            <div id="screensaver-bg-current" class="screensaver-bg"></div>
+            <div id="screensaver-bg-next" class="screensaver-bg"></div>
+            <div id="temple-name-overlay" class="temple-name-overlay"></div>
+
+            <!-- Dark overlay for better text readability -->
+            <div class="screensaver-overlay"></div>
+            
+            <!-- Central "Touch to Begin" card -->
+            <div class="screensaver-prompt">
+                <div class="prompt-card">
+                    <p class="prompt-text">Touch Anywhere To Explore</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ========================================================
+             SCREEN 2: HOME SCREEN
+             ========================================================
+             Main menu with three circular action buttons.
+             Phase 2 buttons are defined but hidden by default.
+             ======================================================== -->
+        <section id="home-screen" class="screen">
+            <!-- Subtle background (blurred temple or gradient) -->
+            <div class="home-background"></div>
+            
+            <!-- Main content area -->
+            <div class="home-content">
+                <!-- Ward name / header (optional) -->
+                <header class="home-header">
+                    <h1 class="ward-title">Welcome</h1>
+                    <!-- TODO: Make this configurable via config.js -->
+                </header>
+                
+                <!-- ====================================================
+                     CIRCLE BUTTONS CONTAINER
+                     ==================================================== -->
+                <div class="circle-buttons-container">
+                    
+                    <!-- BUTTON 1: TEMPLE 365 -->
+                    <button class="circle-button" data-action="temple365" id="btn-temple365">
+                        <div class="circle-button-inner temple365-gradient">
+                            <img src="assets/icons/temple.svg" alt="Temple" class="button-icon">
+                        </div>
+                        <span class="button-label">TEMPLE 365</span>
+                    </button>
+                    
+                    <!-- BUTTON 2: TAKE A SELFIE -->
+                    <button class="circle-button" data-action="selfie" id="btn-selfie">
+                        <div class="circle-button-inner selfie-gradient">
+                            <img src="assets/icons/camera.svg" alt="Camera" class="button-icon">
+                        </div>
+                        <span class="button-label">TAKE A SELFIE</span>
+                    </button>
+                    
+                    <!-- BUTTON 3: MISSIONARY SPOTLIGHT -->
+                    <button class="circle-button" data-action="missionaries" id="btn-missionaries">
+                        <div class="circle-button-inner missionaries-gradient">
+                            <img src="assets/icons/missionaries.svg" alt="Missionaries" class="button-icon">
+                        </div>
+                        <span class="button-label">MISSIONARIES</span>
+                    </button>
+                    
+                    <!-- ================================================
+                         PHASE 2 BUTTONS (Hidden by default)
+                         ================================================
+                         These buttons will be shown when their feature
+                         flags are enabled in config.js
+                         ================================================ -->
+                    
+                    <!-- TODO: Enable when YOUTH_SECTION_ENABLED = true -->
+                    <button class="circle-button phase2-button" data-action="youth" id="btn-youth" style="display: none;">
+                        <div class="circle-button-inner youth-gradient">
+                            <img src="assets/icons/youth.svg" alt="Youth" class="button-icon">
+                        </div>
+                        <span class="button-label">YOUTH</span>
+                    </button>
+                    
+                    <!-- TODO: Enable when PRIMARY_SECTION_ENABLED = true -->
+                    <button class="circle-button phase2-button" data-action="primary" id="btn-primary" style="display: none;">
+                        <div class="circle-button-inner primary-gradient">
+                            <img src="assets/icons/primary.svg" alt="Primary" class="button-icon">
+                        </div>
+                        <span class="button-label">PRIMARY</span>
+                    </button>
+                    
+                    <!-- TODO: Enable when MIRACLES_BOARD_ENABLED = true -->
+                    <button class="circle-button phase2-button" data-action="miracles" id="btn-miracles" style="display: none;">
+                        <div class="circle-button-inner miracles-gradient">
+                            <img src="assets/icons/miracles.svg" alt="Miracles" class="button-icon">
+                        </div>
+                        <span class="button-label">MIRACLES</span>
+                    </button>
+                    
+                    <!-- Missionaries button moved to Phase 1 (see above) -->
+                    
+                    <!-- TODO: Enable when WARD_CALENDAR_ENABLED = true -->
+                    <button class="circle-button phase2-button" data-action="calendar" id="btn-calendar" style="display: none;">
+                        <div class="circle-button-inner calendar-gradient">
+                            <img src="assets/icons/calendar.svg" alt="Calendar" class="button-icon">
+                        </div>
+                        <span class="button-label">CALENDAR</span>
+                    </button>
+                    
+                </div>
+            </div>
+        </section>
+        
+       <!-- ========================================================
+     SCREEN 3: TEMPLE 365 VIEW
+     ========================================================
+     Embedded Temple 365 Apps Script web app (side layout).
+     ======================================================== -->
+
+<section id="temple365-screen" class="screen">
+  <div class="temple365-fullscreen">
+
+    <div class="temple365-layout">
+      <!-- Left side: heading + description + video -->
+      <aside class="temple365-sidebar">
+        <div class="temple365-header">
+          <h2 class="view-title">Temple 365</h2>
+          <p class="view-description">
+            This is more than a counter—it's a ward-wide reminder to keep the temple in our lives throughout 2026.
+          </p>
+          <p class="view-description">
+            Log each visit you make. If you want, take a kiosk selfie to add to a mosaic that represents our ward becoming One in Christ.
+          </p>
+          <p class="view-description temple365-goal">
+            Together we're aiming for 365 total visits in 2026.
+          </p>
+            <p class="view-description temple365-video-note">
+  Watch a short inspirational message from President Russell M. Nelson about the power and blessings of temple worship.
+</p>
+
+        </div>
+
+        <!-- President Nelson Video Module (LOCAL ONLY) -->
+<div class="temple365-video-card">
+  <div class="video-container">
+    <video id="presidentNelsonVideo" preload="auto" playsinline>
+      <source src="assets/videos/president_nelson.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+    <!-- Local-only fallback (no Drive links) -->
+    <div class="video-fallback" id="videoFallback" style="display: none;">
+      <p>Video Not Found.</p>
+    </div>
+  </div>
+
+  <button class="btn btn-kiosk-blue video-play-btn" id="videoPlayBtn">
+    Start Video
+  </button>
+</div>
+
+      </aside>
+
+      <!-- Right side: full-height iframe -->
+      <div class="temple365-iframe-wrapper">
+        <iframe
+          src="/apps/temple365/index.html?mode=kiosk"
+          title="Temple 365 Tracker"
+          loading="lazy"
+          referrerpolicy="no-referrer"
+          allowfullscreen
+          sandbox="allow-scripts allow-same-origin allow-forms"
+        ></iframe>
+      </div>
+    </div>
+
+    <button class="back-button" data-action="home">
+      ← Back to Home
+    </button>
+  </div>
+</section>
+
+
+            
+        
+        <!-- ========================================================
+             SCREEN 4: SELFIE CAPTURE VIEW
+             ========================================================
+             Webcam selfie capture for the ward mosaic.
+             ======================================================== -->
+        <section id="selfie-screen" class="screen">
+            <div class="view-container selfie-view-container">
+                <div class="view-card selfie-card">
+                    <h2 class="view-title">Take a Selfie</h2>
+                    <div class="view-content">
+                        <p class="view-description selfie-instructions">
+                            Help us build our ward selfie mosaic—showing us becoming One in Christ.
+                        </p>
+                        <p class="view-description selfie-instructions">
+                            Tap <strong>Take Selfie</strong>, look at the camera, and smile. If you like the photo, choose <strong>Yes</strong> to add it to the mosaic.
+                        </p>
+
+                        <!-- Camera Preview Container -->
+                        <div class="selfie-preview-wrapper">
+                            <div class="selfie-preview-container" id="selfiePreviewContainer">
+                                <!-- Video preview (live camera) -->
+                                <video id="selfieVideo" autoplay playsinline muted></video>
+                                <!-- Canvas for captured image (hidden until capture) -->
+                                <canvas id="selfieCanvas"></canvas>
+                                <!-- Captured image preview -->
+                                <img id="selfiePreviewImg" alt="Captured selfie" style="display: none;">
+
+                                <!-- Countdown overlay -->
+                                <div class="selfie-countdown-overlay" id="selfieCountdown">
+                                    <span class="countdown-number" id="countdownNumber">3</span>
+                                </div>
+
+                                <!-- Camera error message -->
+                                <div class="selfie-error-overlay" id="selfieError" style="display: none;">
+                                    <div class="error-icon">⚠️</div>
+                                    <p class="error-message" id="selfieErrorMsg">Camera not available</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Capture Button -->
+                        <div class="selfie-actions">
+                            <button class="btn btn-kiosk-blue selfie-capture-btn" id="selfieCaptureBtn">
+                                Take Selfie
+                            </button>
+                        </div>
+
+                        <!-- Status message -->
+                        <p class="selfie-status" id="selfieStatus"></p>
+                    </div>
+                    <button class="back-button" data-action="home">
+                        ← Back to Home
+                    </button>
+                </div>
+            </div>
+
+            <!-- Selfie Confirmation Modal -->
+            <div id="selfieConfirmModal" class="modal-backdrop hidden">
+                <div class="modal selfie-confirm-modal">
+                    <h2>Use this photo?</h2>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn btn-secondary" id="selfieConfirmNo">
+                            No
+                        </button>
+                        <button type="button" class="btn btn-kiosk-blue" id="selfieConfirmYes">
+                            Yes
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selfie Success Modal -->
+            <div id="selfieSuccessModal" class="modal-backdrop hidden">
+                <div class="modal selfie-success-modal">
+                    <div class="success-icon-large">✓</div>
+                    <h2>Saved!</h2>
+                    <p>Thank you for adding to our ward mosaic.</p>
+                    <button type="button" class="btn btn-kiosk-blue" id="selfieSuccessOk">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ========================================================
+             SCREEN 5: BULLETIN / QR CODE VIEW
+             ========================================================
+             Displays QR code linking to ward bulletin.
+             ======================================================== -->
+        <section id="bulletin-screen" class="screen">
+            <div class="view-container">
+                <div class="view-card bulletin-card">
+                    <h2 class="view-title">Ward Bulletin</h2>
+                    <div class="view-content">
+                        <p class="view-description">
+                            Scan the QR code below to view this week's ward bulletin
+                            on your phone.
+                        </p>
+                        <div class="qr-container">
+                            <!-- Placeholder QR code -->
+                            <!-- TODO: Generate real QR code using a library or backend service -->
+                            <div class="qr-placeholder">
+                                <svg viewBox="0 0 200 200" class="qr-svg">
+                                    <!-- Simple placeholder pattern -->
+                                    <rect fill="#000" x="20" y="20" width="40" height="40"/>
+                                    <rect fill="#000" x="140" y="20" width="40" height="40"/>
+                                    <rect fill="#000" x="20" y="140" width="40" height="40"/>
+                                    <rect fill="#000" x="80" y="20" width="20" height="20"/>
+                                    <rect fill="#000" x="80" y="80" width="40" height="40"/>
+                                    <rect fill="#000" x="140" y="80" width="20" height="20"/>
+                                    <rect fill="#000" x="20" y="80" width="20" height="20"/>
+                                    <rect fill="#000" x="100" y="140" width="20" height="20"/>
+                                    <rect fill="#000" x="140" y="140" width="40" height="40"/>
+                                    <rect fill="#000" x="60" y="60" width="10" height="10"/>
+                                    <rect fill="#000" x="130" y="60" width="10" height="10"/>
+                                    <rect fill="#000" x="60" y="130" width="10" height="10"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="bulletin-url">
+                            <!-- TODO: Make this URL configurable in config.js -->
+                            <span class="url-label">Or visit:</span>
+                            <span class="url-text">bulletin.yourward.org</span>
+                        </p>
+                    </div>
+                    <button class="back-button" data-action="home">
+                        ← Back to Home
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ========================================================
+             PHASE 2 SCREENS (Hidden placeholders)
+             ========================================================
+             These screens will be activated when Phase 2 features
+             are enabled in config.js
+             ======================================================== -->
+        
+        <!-- YOUTH SCREEN -->
+        <section id="youth-screen" class="screen phase2-screen">
+            <div class="view-container">
+                <div class="view-card">
+                    <h2 class="view-title">Youth Section</h2>
+                    <div class="view-content">
+                        <p class="coming-soon-badge">Coming Soon</p>
+                        <p class="view-description">
+                            Youth activities, announcements, and resources will be available here.
+                        </p>
+                        <!-- TODO: Implement youth content display -->
+                    </div>
+                    <button class="back-button" data-action="home">
+                        ← Back to Home
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- PRIMARY SCREEN -->
+        <section id="primary-screen" class="screen phase2-screen">
+            <div class="view-container">
+                <div class="view-card">
+                    <h2 class="view-title">Primary Section</h2>
+                    <div class="view-content">
+                        <p class="coming-soon-badge">Coming Soon</p>
+                        <p class="view-description">
+                            Primary activities and children's resources will be available here.
+                        </p>
+                        <!-- TODO: Implement primary content display -->
+                    </div>
+                    <button class="back-button" data-action="home">
+                        ← Back to Home
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- MIRACLES BOARD SCREEN -->
+        <section id="miracles-screen" class="screen phase2-screen">
+            <div class="view-container">
+                <div class="view-card">
+                    <h2 class="view-title">Miracles Board</h2>
+                    <div class="view-content">
+                        <p class="coming-soon-badge">Coming Soon</p>
+                        <p class="view-description">
+                            Share and view testimonies of miracles and blessings in our ward.
+                        </p>
+                        <!-- TODO: Implement miracles board with /api/miracles -->
+                    </div>
+                    <button class="back-button" data-action="home">
+                        ← Back to Home
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- MISSIONARIES GRID SCREEN -->
+        <section id="missionaries-screen" class="screen">
+            <div class="view-container">
+                <div class="view-card missionaries-card">
+                    <h2 class="view-title">Our Missionaries</h2>
+                    <div class="view-content">
+                        <p class="view-description">
+                            Learn about our ward missionaries who are serving around the world.
+                        </p>
+                        <!-- Missionary grid will be dynamically populated here -->
+                        <div id="missionary-grid" class="missionary-grid">
+                            <!-- Grid items will be added by missionarySpotlight.js -->
+                        </div>
+                        <div id="missionary-scroll-hint" class="missionary-scroll-hint hidden">
+                            Swipe up to view more missionaries
+                        </div>
+                    </div>
+                    <button class="back-button" data-action="home">
+                        ← Back to Home
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MISSIONARY DETAIL SCREEN -->
+        <section id="missionary-detail-screen" class="screen">
+            <div class="view-container">
+                <div class="view-card missionary-detail-card">
+                    <!-- Content will be dynamically populated by missionaryDetail.js -->
+                    <div id="missionary-detail-content">
+                    </div>
+                    <button class="back-button" id="back-to-grid">
+                        ← Back to Missionaries
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CALENDAR SCREEN -->
+        <section id="calendar-screen" class="screen phase2-screen">
+            <div class="view-container">
+                <div class="view-card">
+                    <h2 class="view-title">Ward Calendar</h2>
+                    <div class="view-content">
+                        <p class="coming-soon-badge">Coming Soon</p>
+                        <p class="view-description">
+                            View upcoming ward events and activities.
+                        </p>
+                        <!-- TODO: Implement calendar display with /api/calendar -->
+                    </div>
+                    <button class="back-button" data-action="home">
+                        ← Back to Home
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+    <!-- Selfie Prompt Modal (Kiosk) -->
+<div id="selfiePromptModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h2>Would you like to add a selfie?</h2>
+    <p style="margin-top: 8px;">
+      Your temple visit has been recorded. Would you like to take a quick selfie
+      to add your family to the mosaic of Christ?
+    </p>
+
+    <div class="modal-buttons" style="margin-top: 24px; justify-content: center; gap: 16px;">
+      <button type="button" class="btn btn-secondary" id="selfiePromptNoBtn">
+        No, maybe later
+      </button>
+      <button type="button" class="btn btn-primary" id="selfiePromptYesBtn">
+        Yes, take a selfie
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MISSIONARY PHOTO GALLERY OVERLAY
+     ============================================================
+     Fullscreen gallery viewer for missionary photos.
+     Supports swipe navigation on touch devices.
+     ============================================================ -->
+<div id="missionaryGalleryOverlay" class="gallery-overlay">
+    <!-- Photo Counter -->
+    <div class="gallery-counter" id="galleryCounter">1 of 1</div>
+
+    <!-- Image Container with Navigation -->
+    <div class="gallery-image-container">
+        <!-- Previous Button -->
+        <button class="gallery-nav-btn prev" id="galleryPrevBtn" aria-label="Previous photo">
+            ‹
+        </button>
+
+        <!-- Current Image -->
+        <img class="gallery-current-image" id="galleryCurrentImage" src="" alt="Missionary photo">
+
+        <!-- Next Button -->
+        <button class="gallery-nav-btn next" id="galleryNextBtn" aria-label="Next photo">
+            ›
+        </button>
+
+        <!-- Swipe Hint (shows on first open, disappears after first swipe) -->
+        <div class="gallery-swipe-hint" id="gallerySwipeHint">
+            <div class="swipe-hand">
+                <!-- Hand pointing SVG icon -->
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.5 7.5V14l-2.25-2.25a1.5 1.5 0 0 0-2.12 2.12l4.24 4.24a3 3 0 0 0 2.12.89h4.01a3 3 0 0 0 3-3v-5a1.5 1.5 0 0 0-3 0v2a1.5 1.5 0 0 0-3 0v-1a1.5 1.5 0 0 0-3 0v-1.5a1.5 1.5 0 0 0-3 0v-3a1.5 1.5 0 0 0 3 0z"/>
+                </svg>
+            </div>
+            <span class="swipe-hint-text">Swipe to view more</span>
+        </div>
+    </div>
+
+    <!-- Back Button (below the photo) -->
+    <button class="back-button gallery-back-btn" id="galleryCloseBtn">
+        ← Back to Profile
+    </button>
+</div>
+
+    <!-- ============================================================
+         THIRD-PARTY LIBRARIES
+         ============================================================ -->
+    <!-- QR Code generation library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- ============================================================
+         FIREBASE SDK (Phase 6-7)
+         ============================================================
+         Firebase client SDK for:
+         - Real-time missionary data from Firestore (Phase 7)
+         - Selfie uploads to Cloud Storage (Phase 6)
+         ============================================================ -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- Firebase initialization (kiosk config) -->
+    <script src="js/firebase-init-kiosk.js"></script>
+
+    <!-- ============================================================
+         JAVASCRIPT FILES
+         ============================================================
+         Loaded in order of dependency:
+         1. config/config.js          - Configuration values
+         2. js/configLoader.js        - Loads and validates config
+         3. js/apiClient.js           - HTTP calls to backend
+         4. js/views.js               - View rendering helpers
+         5. js/screensaver.js         - Screensaver logic
+         6. js/homeScreen.js          - Home screen logic
+         7. js/missionarySpotlight.js - Missionary grid view (uses Firestore)
+         8. js/missionaryGallery.js   - Photo gallery viewer (uses Firestore)
+         9. js/missionaryDetail.js    - Individual missionary detail
+         10. js/floatingQR.js         - Floating QR code component
+         11. js/phase2Placeholders.js - Phase 2 stubs
+         12. js/selfieCapture.js      - Selfie capture (uses Cloud Storage)
+         13. js/temple365Video.js     - Video player
+         14. js/app.js                - Main app initialization (must be last)
+         ============================================================ -->
+    <script src="config/config.js"></script>
+    <script src="js/configLoader.js"></script>
+    <script src="js/apiClient.js"></script>
+    <script src="js/views.js"></script>
+    <script src="js/screensaver.js"></script>
+    <script src="js/homeScreen.js"></script>
+    <script src="js/missionarySpotlight.js"></script>
+    <script src="js/missionaryGallery.js"></script>
+    <script src="js/missionaryDetail.js"></script>
+    <script src="js/missionaryVideoRecorder.js"></script>
+    <script src="js/floatingQR.js"></script>
+    <script src="js/phase2Placeholders.js"></script>
+    <script src="js/selfieCapture.js"></script>
+    <script src="js/temple365Video.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
