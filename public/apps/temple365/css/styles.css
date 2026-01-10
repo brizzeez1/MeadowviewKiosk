@@ -270,3 +270,23 @@ body {
     max-height: 95vh;
   }
 }
+/* Temple image behind the grid (optional, kiosk-style) */
+.grid-section {
+  position: relative;
+}
+
+#templeGrid {
+  position: relative;
+  z-index: 1;
+}
+
+/* Put your temple image here */
+.grid-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("./assets/temple-background.png") center/cover no-repeat;
+  opacity: 0.22; /* adjust */
+  z-index: 0;
+  border-radius: 12px;
+}

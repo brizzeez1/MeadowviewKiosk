@@ -4,7 +4,7 @@
  * 365-square grid layout with responsive design
  */
 
-#gridContainer {
+#templeGrid {
   display: grid;
   gap: 4px;
   padding: 1rem;
@@ -14,19 +14,19 @@
 
 /* Responsive grid columns */
 @media (min-width: 1024px) {
-  #gridContainer {
+  #templeGrid {
     grid-template-columns: repeat(30, 1fr); /* 30 columns on desktop */
   }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
-  #gridContainer {
+  #templeGrid {
     grid-template-columns: repeat(20, 1fr); /* 20 columns on tablet */
   }
 }
 
 @media (max-width: 767px) {
-  #gridContainer {
+  #templeGrid {
     grid-template-columns: repeat(15, 1fr); /* 15 columns on phone */
   }
 }
@@ -34,22 +34,26 @@
 /* Grid Square */
 .grid-square {
   aspect-ratio: 1;
-  border-radius: 4px;
+  border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: transform 0.15s;
   position: relative;
-  font-size: 0.75rem;
-  font-weight: 600;
+
+  /* smaller text like old */
+  font-size: 0.55rem;
+  font-weight: 700;
 }
 
+
 .grid-square.unclaimed {
-  background: white;
-  border: 2px solid #e2e8f0;
-  color: #cbd5e0;
+  background: rgba(255, 255, 255, 0.70);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.22);
 }
+
 
 .grid-square.unclaimed:hover {
   border-color: #667eea;
@@ -58,10 +62,11 @@
 }
 
 .grid-square.claimed {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: 2px solid #667eea;
+  background: rgba(102, 126, 234, 0.90);
+  border: 1px solid rgba(102, 126, 234, 0.95);
   color: white;
 }
+
 
 .grid-square.claimed:hover {
   transform: scale(1.05);

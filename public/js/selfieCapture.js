@@ -18,7 +18,7 @@ const SelfieCapture = (function() {
 
     // Firebase Cloud Functions API URL (Phase 6 - Selfie Upload Pipeline)
     // Loaded from Firebase config at runtime
-    const FIREBASE_API_BASE_URL = window.FIREBASE_FUNCTIONS_URL || 'https://us-central1-meadowview-kiosk.cloudfunctions.net/api';
+    const FIREBASE_API_BASE_URL = window.FIREBASE_FUNCTIONS_URL || 'https://us-central1-ward-kiosk-test.cloudfunctions.net/api';
     // Ward ID loaded from centralized config
     const WARD_ID = window.KIOSK_CONFIG.ORGANIZATION.WARD_ID;
 

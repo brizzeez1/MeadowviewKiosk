@@ -110,7 +110,7 @@ const MissionarySpotlight = (function() {
         }
 
         // Get ward ID from config or use default
-        const wardId = (window.KIOSK_CONFIG && window.KIOSK_CONFIG.ORGANIZATION && window.KIOSK_CONFIG.ORGANIZATION.WARD_ID) || 'meadowview';
+        const wardId = (window.KIOSK_CONFIG && window.KIOSK_CONFIG.ORGANIZATION && window.KIOSK_CONFIG.ORGANIZATION.WARD_ID) || 'meadowview_az';
 
         console.log('[MissionarySpotlight] Subscribing to Firestore missionaries:', wardId);
 
@@ -235,17 +235,35 @@ const MissionarySpotlight = (function() {
         photoContainer.className = 'missionary-photo-container';
 
         if (missionary.photoUrl) {
-            // Use actual photo
-            const img = document.createElement('img');
-            img.src = missionary.photoUrl;
-            img.alt = missionary.name;
-            img.className = 'missionary-photo';
-            photoContainer.appendChild(img);
-        } else {
-            // Use silhouette placeholder
-            const silhouette = createSilhouetteSVG();
-            photoContainer.innerHTML = silhouette;
-        }
+  const img = document.createElement('img');
+  img.alt = missionary.name;
+  img.className = 'missionary-photo';
+
+  // Show placeholder while loading
+  img.src = 'assets/missionary_photos/placeholder.png'; // or leave blank if you prefer
+
+  const url = missionary.photoUrl;
+
+  // If it's a Firebase Storage gs:// URL, resolve to HTTPS download URL
+  if (url.startsWith('gs://') && window.firebase?.storage) {
+    window.firebase.storage().refFromURL(url).getDownloadURL()
+      .then((downloadUrl) => {
+        img.src = downloadUrl;
+      })
+      .catch((err) => {
+        console.warn('[MissionarySpotlight] Failed to resolve photoUrl:', url, err);
+        // keep placeholder
+      });
+  } else {
+    // Already a normal URL/path
+    img.src = url;
+  }
+
+  photoContainer.appendChild(img);
+} else {
+  photoContainer.innerHTML = createSilhouetteSVG();
+}
+
 
         square.appendChild(photoContainer);
 

@@ -215,8 +215,14 @@ const KioskApp = (function() {
         // Run state-specific activation
         switch (state) {
             case STATES.SCREENSAVER:
-                Screensaver.activate();
-                break;
+    // Close any open overlays/modals so nothing "sticks" over screensaver
+    if (window.MissionaryVideoRecorder?.isOpen?.()) MissionaryVideoRecorder.close();
+    if (window.MissionaryGallery?.closePhotos) MissionaryGallery.closePhotos();
+    if (window.MissionaryGallery?.closeVideos) MissionaryGallery.closeVideos();
+
+    Screensaver.activate();
+    break;
+
                 
             case STATES.HOME:
                 HomeScreen.activate();
